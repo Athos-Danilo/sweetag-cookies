@@ -1,0 +1,21 @@
+# Environments
+backend/venv/
+backend/.env
+.env
+.env.local
+
+# Python caches
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Node / Angular
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+
+# OS files
+.DS_Store
+Thumbs.db

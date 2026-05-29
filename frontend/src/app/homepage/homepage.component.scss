@@ -1,0 +1,525 @@
+.psycho-bakery-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    padding: 32px 64px 64px;
+  }
+}
+
+/* Header */
+.app-header {
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--color-surface-container-low);
+  border-radius: var(--rounded-lg);
+  padding: 16px 24px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-subtle);
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .brand-logo {
+      font-size: 28px;
+      color: var(--color-primary);
+      font-weight: 700;
+      background: rgba(122, 78, 39, 0.1);
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--rounded-full);
+    }
+
+    .brand-text {
+      h1 {
+        font-size: 20px;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        color: var(--color-primary);
+      }
+      .tagline {
+        font-size: 11px;
+        color: var(--color-on-surface-variant);
+        font-family: var(--font-body);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .clinic-badge {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-surface-container-lowest);
+    padding: 6px 14px;
+    border-radius: var(--rounded-full);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+    @media (min-width: 600px) {
+      display: flex;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-primary-container);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .badge-text {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-on-surface);
+    }
+  }
+
+  .cart-btn {
+    background: var(--color-primary);
+    border: none;
+    border-radius: var(--rounded-full);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--color-on-primary);
+    font-weight: 600;
+    font-size: 14px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+
+    &:hover {
+      background: #5A3517;
+      transform: translateY(-1px);
+    }
+
+    .cart-count {
+      background: var(--color-secondary);
+      color: var(--color-on-secondary);
+      font-size: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+
+      &.has-items {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* Hero Section */
+.hero-section {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 40px;
+
+  .hero-card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--rounded-xl);
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-subtle);
+    position: relative;
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      padding: 48px;
+      text-align: left;
+    }
+
+    .hero-clinical-id {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--color-primary-container);
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+
+      @media (min-width: 768px) {
+        font-size: 40px;
+      }
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--color-on-surface-variant);
+      max-width: 780px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .reinforcement-bar {
+      margin-top: 16px;
+      
+      .bar-track {
+        height: 6px;
+        width: 100%;
+        background-color: var(--color-surface-container);
+        border-radius: var(--rounded-full);
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .bar-fill {
+        height: 100%;
+        background-color: var(--color-primary-container);
+        border-radius: var(--rounded-full);
+      }
+
+      .reinforcement-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--color-primary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+  }
+}
+
+/* Menu Grid */
+.menu-grid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Cookie Card */
+.cookie-card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: var(--rounded-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-subtle);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-active);
+
+    .cookie-image {
+      transform: scale(1.08);
+    }
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--rounded-xl);
+    border: 2px solid var(--color-primary-container);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .cookie-id {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--color-on-surface-variant);
+      background: var(--color-surface-container-low);
+      padding: 2px 8px;
+      border-radius: var(--rounded-sm);
+    }
+
+    .cookie-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .image-wrapper {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-surface-container-low);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+
+    .cookie-image {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1));
+    }
+  }
+
+  .card-body {
+    flex-grow: 1;
+    margin-bottom: 24px;
+
+    .cookie-name {
+      font-size: 22px;
+      margin-bottom: 6px;
+      letter-spacing: -0.015em;
+    }
+
+    .cookie-flavor {
+      font-size: 14px;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+
+      strong {
+        font-weight: 600;
+        color: var(--color-on-surface-variant);
+      }
+    }
+
+    .cookie-desc {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--color-on-surface-variant);
+      line-height: 1.5;
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--color-surface-container-low);
+    padding-top: 16px;
+
+    .price-container {
+      display: flex;
+      flex-direction: column;
+
+      .price-label {
+        font-size: 11px;
+        color: var(--color-on-surface-variant);
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+
+      .price-value {
+        font-family: var(--font-headline);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-secondary);
+      }
+    }
+
+    .btn-prescribe {
+      background: var(--color-surface-container);
+      border: none;
+      color: var(--color-on-surface);
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: var(--rounded-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+
+      &:hover {
+        background: var(--color-secondary);
+        color: var(--color-on-secondary);
+        transform: scale(1.02);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      .btn-icon {
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+/* Footer */
+.app-footer {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 64px;
+  padding-bottom: 40px;
+  text-align: center;
+
+  .footer-divider {
+    height: 1px;
+    background-color: var(--color-surface-container);
+    margin-bottom: 32px;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .footer-logo-area {
+    .footer-logo {
+      font-family: var(--font-headline);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.01em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .footer-slogan {
+      font-size: 13px;
+      color: var(--color-on-surface-variant);
+      font-style: italic;
+    }
+  }
+
+  .footer-devs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    .dev-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-on-surface-variant);
+      font-weight: 600;
+    }
+
+    .dev-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .dev-badge {
+        background-color: var(--color-surface-container-low);
+        color: var(--color-primary);
+        font-weight: 600;
+        font-size: 13px;
+        padding: 6px 16px;
+        border-radius: var(--rounded-full);
+        border: 1px solid var(--color-surface-container);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          background-color: var(--color-primary-container);
+          color: var(--color-on-primary-container);
+        }
+      }
+    }
+  }
+
+  .footer-repo {
+    margin-top: 4px;
+
+    .repo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--rounded-full);
+      box-shadow: var(--shadow-subtle);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        background-color: #5A3517;
+        box-shadow: var(--shadow-active);
+      }
+
+      .repo-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .copyright {
+    font-size: 11px;
+    color: var(--color-on-surface-variant);
+    opacity: 0.8;
+  }
+}
+
+/* Pulse Animation for Clinic Badge */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.15);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

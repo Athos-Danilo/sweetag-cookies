@@ -1,0 +1,104 @@
+<div class="psycho-bakery-container">
+  <!-- Top Bar / Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand">
+        <span class="brand-logo">Ψ</span>
+        <div class="brand-text">
+          <h1>SweetAG</h1>
+          <p class="tagline">Padaria Psicológica & Análise de Sabores</p>
+        </div>
+      </div>
+
+      <div class="clinic-badge">
+        <span class="badge-dot animate-pulse"></span>
+        <span class="badge-text">In Analysis</span>
+      </div>
+
+      <button class="cart-btn" (click)="sacola() > 0 ? sacola.set(0) : null">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-count" [class.has-items]="sacola() > 0">{{ sacola() }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero / Introduction -->
+  <section class="hero-section">
+    <div class="hero-card">
+      <div class="hero-clinical-id">CLINICAL DIRECTORY // VOL. 01</div>
+      <h2>Prescrições do Dia</h2>
+      <p>
+        Explore nosso menu de cookies temáticos inspirados nas maiores mentes da psicologia. 
+        Cada cookie foi formulado com dosagens precisas de ingredientes selecionados para promover a sua satisfação cognitiva imediata.
+      </p>
+      <div class="reinforcement-bar">
+        <div class="bar-track">
+          <div class="bar-fill" style="width: 100%"></div>
+        </div>
+        <div class="reinforcement-label">Reforço Positivo: Cookies 100% analisados e assados com empatia.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cookies Grid -->
+  <main class="menu-grid">
+    @for (cookie of cookies(); track cookie.id) {
+      <div class="cookie-card">
+        <div class="card-header">
+          <span class="cookie-id">{{ cookie.id }}</span>
+          <span class="cookie-category">{{ cookie.categoria }}</span>
+        </div>
+
+        <div class="image-wrapper">
+          <img [src]="cookie.imagem" [alt]="cookie.nome" class="cookie-image">
+        </div>
+
+        <div class="card-body">
+          <h3 class="cookie-name">{{ cookie.nome }}</h3>
+          <p class="cookie-flavor"><strong>Sabor:</strong> {{ cookie.sabor }}</p>
+          <p class="cookie-desc">"{{ cookie.diagnostico }}"</p>
+        </div>
+
+        <div class="card-footer">
+          <div class="price-container">
+            <span class="price-label">Preço da sessão</span>
+            <span class="price-value">R$ {{ cookie.valor | number:'1.2-2' }}</span>
+          </div>
+
+          <button class="btn-prescribe" (click)="adicionarAoCarrinho()">
+            <span>Prescrever</span>
+            <span class="btn-icon">✚</span>
+          </button>
+        </div>
+      </div>
+    }
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-divider"></div>
+    <div class="footer-content">
+      <div class="footer-logo-area">
+        <span class="footer-logo">Ψ SweetAG</span>
+        <p class="footer-slogan">Abordagem Centrada no Cookie & Análise Confeiteira</p>
+      </div>
+      
+      <div class="footer-devs">
+        <span class="dev-label">Desenvolvido com ❤️ por:</span>
+        <div class="dev-badges">
+          <span class="dev-badge">Cauã Herculano</span>
+          <span class="dev-badge">Athos Inácio</span>
+        </div>
+      </div>
+
+      <div class="footer-repo">
+        <a href="https://github.com/Athos-Danilo/sweetag.git" target="_blank" rel="noopener noreferrer" class="repo-link">
+          <span class="repo-icon">🐙</span>
+          <span class="repo-text">Acessar Repositório Git</span>
+        </a>
+      </div>
+
+      <p class="copyright">© 2026 SweetAG. Todos os direitos reservados aos seus analistas de sabor.</p>
+    </div>
+  </footer>
+</div>
