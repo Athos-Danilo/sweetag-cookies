@@ -1,35 +1,26 @@
 <div class="psycho-bakery-container">
   <!-- Top Bar / Header -->
-  <header class="app-header">
+  <header class="app-header fade-in-up">
     <div class="header-content">
       <div class="brand">
-        <span class="brand-logo">Ψ</span>
+        <span class="brand-logo-cookie">🍪</span>
         <div class="brand-text">
-          <h1>SweetAG</h1>
-          <p class="tagline">Padaria Psicológica & Análise de Sabores</p>
+          <h1>SweetAg Cookies</h1>
+          <p class="tagline">Cookies Artesanais: Sua dose perfeita de reforço positivo para a sua mente.</p>
         </div>
       </div>
-
-      <div class="clinic-badge">
-        <span class="badge-dot animate-pulse"></span>
-        <span class="badge-text">In Analysis</span>
-      </div>
-
-      <button class="cart-btn" (click)="sacola() > 0 ? sacola.set(0) : null">
-        <span class="cart-icon">🛒</span>
-        <span class="cart-count" [class.has-items]="sacola() > 0">{{ sacola() }}</span>
-      </button>
     </div>
   </header>
 
   <!-- Hero / Introduction -->
-  <section class="hero-section">
+  <section class="hero-section fade-in-up">
     <div class="hero-card">
       <div class="hero-clinical-id">CLINICAL DIRECTORY // VOL. 01</div>
       <h2>Prescrições do Dia</h2>
       <p>
-        Explore nosso menu de cookies temáticos inspirados nas maiores mentes da psicologia. 
-        Cada cookie foi formulado com dosagens precisas de ingredientes selecionados para promover a sua satisfação cognitiva imediata.
+        Explore nosso menu de cookies temáticos inspirados nas maiores mentes da psicologia.
+        Cada cookie foi formulado com dosagens precisas de ingredientes selecionados para promover a sua satisfação
+        cognitiva imediata.
       </p>
       <div class="reinforcement-bar">
         <div class="bar-track">
@@ -41,64 +32,103 @@
   </section>
 
   <!-- Cookies Grid -->
-  <main class="menu-grid">
+  <main class="menu-grid fade-in-up">
     @for (cookie of cookies(); track cookie.id) {
-      <div class="cookie-card">
-        <div class="card-header">
-          <span class="cookie-id">{{ cookie.id }}</span>
-          <span class="cookie-category">{{ cookie.categoria }}</span>
-        </div>
-
-        <div class="image-wrapper">
-          <img [src]="cookie.imagem" [alt]="cookie.nome" class="cookie-image">
-        </div>
-
-        <div class="card-body">
-          <h3 class="cookie-name">{{ cookie.nome }}</h3>
-          <p class="cookie-flavor"><strong>Sabor:</strong> {{ cookie.sabor }}</p>
-          <p class="cookie-desc">"{{ cookie.diagnostico }}"</p>
-        </div>
-
-        <div class="card-footer">
-          <div class="price-container">
-            <span class="price-label">Preço da sessão</span>
-            <span class="price-value">R$ {{ cookie.valor | number:'1.2-2' }}</span>
-          </div>
-
-          <button class="btn-prescribe" (click)="adicionarAoCarrinho()">
-            <span>Prescrever</span>
-            <span class="btn-icon">✚</span>
-          </button>
-        </div>
+    <div class="cookie-card">
+      <div class="card-header">
+        <span class="cookie-id">{{ cookie.id }}</span>
+        <span class="cookie-category">{{ cookie.categoria }}</span>
       </div>
+
+      <div class="image-wrapper">
+        <img [src]="cookie.imagem" [alt]="cookie.nome" class="cookie-image">
+      </div>
+
+      <div class="card-body">
+        <h3 class="cookie-name">{{ cookie.nome }}</h3>
+        <p class="cookie-flavor"><strong>Sabor:</strong> {{ cookie.sabor }}</p>
+        <p class="cookie-desc">"{{ cookie.diagnostico }}"</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="price-container">
+          <span class="price-label">Preço da sessão</span>
+          <span class="price-value">R$ {{ cookie.valor | number:'1.2-2' }}</span>
+        </div>
+
+        <button class="btn-prescribe" (click)="adicionarAoCarrinho()">
+          <span>Prescrever</span>
+          <span class="btn-icon">✚</span>
+        </button>
+      </div>
+    </div>
     }
   </main>
 
   <!-- Footer -->
-  <footer class="app-footer">
+  <footer class="app-footer fade-in-up">
     <div class="footer-divider"></div>
-    <div class="footer-content">
-      <div class="footer-logo-area">
-        <span class="footer-logo">Ψ SweetAG</span>
-        <p class="footer-slogan">Abordagem Centrada no Cookie & Análise Confeiteira</p>
+    <div class="footer-grid">
+      <!-- Coluna 1: Branding e Conceito -->
+      <div class="footer-col branding-col">
+        <span class="footer-logo">Ψ SweetAg Cookies</span>
+        <p class="footer-tagline">Alimente sua mente. E sua fome. 🧠🍪</p>
+        <p class="footer-about">
+          Uma padaria conceitual inovadora que une a ciência do comportamento e a psicologia ao sabor irresistível de
+          cookies artesanais assados com empatia.
+        </p>
       </div>
-      
-      <div class="footer-devs">
-        <span class="dev-label">Desenvolvido com ❤️ por:</span>
-        <div class="dev-badges">
-          <span class="dev-badge">Cauã Herculano</span>
-          <span class="dev-badge">Athos Inácio</span>
+
+      <!-- Coluna 2: Links Clínicos -->
+      <div class="footer-col links-col">
+        <h4>Navegação Clínica</h4>
+        <ul>
+          <li><a href="#catalogo">Prescrições do Dia</a></li>
+          <li><a href="#sobre">Nossa Abordagem</a></li>
+          <li><a href="#campanha">Reforço de Comunidade</a></li>
+          <li><a href="#agendamento">Sessões Futuras</a></li>
+        </ul>
+      </div>
+
+      <!-- Coluna 3: Conexões e Redes -->
+      <div class="footer-col social-col">
+        <h4>Falar com Analista</h4>
+        <p class="social-intro">Precisa de um suporte imediato ou tem alguma dúvida diagnóstica?</p>
+        <div class="social-links">
+          <a href="https://wa.me/550000000000" target="_blank" rel="noopener noreferrer" class="social-btn whatsapp">
+            <span class="social-icon">💬</span>
+            <span>WhatsApp</span>
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+            <span class="social-icon">📸</span>
+            <span>Instagram</span>
+          </a>
+          <a href="https://github.com/Athos-Danilo/sweetag-cookies.git" target="_blank" rel="noopener noreferrer"
+            class="social-btn github">
+            <span class="social-icon">🐙</span>
+            <span>Repositório Git</span>
+          </a>
         </div>
       </div>
+    </div>
 
-      <div class="footer-repo">
-        <a href="https://github.com/Athos-Danilo/sweetag.git" target="_blank" rel="noopener noreferrer" class="repo-link">
-          <span class="repo-icon">🐙</span>
-          <span class="repo-text">Acessar Repositório Git</span>
-        </a>
+    <!-- Base do Footer: Créditos e Copyright -->
+    <div class="footer-base">
+      <div class="footer-devs">
+        <span class="dev-label">Desenvolvedores da Sessão:</span>
+        <div class="dev-badges">
+          <span class="dev-badge">
+            <span class="dev-avatar">🧠</span>
+            <span class="dev-name">Cauã Herculano</span>
+          </span>
+          <span class="dev-badge">
+            <span class="dev-avatar">💻</span>
+            <span class="dev-name">Athos Inácio</span>
+          </span>
+        </div>
       </div>
-
-      <p class="copyright">© 2026 SweetAG. Todos os direitos reservados aos seus analistas de sabor.</p>
+      <p class="copyright">© 2026 SweetAg Cookies. Todos os direitos reservados aos seus analistas de sabor. Abordagem
+        Centrada no Cliente.</p>
     </div>
   </footer>
 </div>

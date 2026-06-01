@@ -1,26 +1,75 @@
 .psycho-bakery-container {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--color-background);
+  /* Fundo degradê suave e acolhedor que transiciona do bege pálido para o bege quente oficial */
+  background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
   padding: 24px 20px 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden;
+  position: relative;
 
   @media (min-width: 768px) {
     padding: 32px 64px 64px;
   }
 }
 
-/* Header */
+/* ==========================================================================
+   Animações Globais e Efeitos de Entrada (Fade In Up)
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  opacity: 0; /* Inicia invisível para a animação */
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered Delay para entrada gradual e elegante */
+.app-header.fade-in-up {
+  animation-delay: 0.05s;
+}
+
+.hero-section.fade-in-up {
+  animation-delay: 0.2s;
+}
+
+.menu-grid.fade-in-up {
+  animation-delay: 0.35s;
+}
+
+.app-footer.fade-in-up {
+  animation-delay: 0.5s;
+}
+
+/* ==========================================================================
+   Header / Top Bar
+   ========================================================================== */
+@keyframes slowRotateCookie {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .app-header {
   width: 100%;
   max-width: 1200px;
-  background-color: var(--color-surface-container-low);
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 236, 215, 0.5);
   border-radius: var(--rounded-lg);
-  padding: 16px 24px;
+  padding: 18px 28px;
   margin-bottom: 32px;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: 0 10px 30px rgba(46, 28, 18, 0.04);
+  z-index: 10;
 
   .header-content {
     display: flex;
@@ -31,189 +80,209 @@
   .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 
-    .brand-logo {
-      font-size: 28px;
-      color: var(--color-primary);
-      font-weight: 700;
-      background: rgba(122, 78, 39, 0.1);
-      width: 44px;
-      height: 44px;
+    .brand-logo-cookie {
+      font-size: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--rounded-full);
+      animation: slowRotateCookie 20s linear infinite; /* Rotação bem lenta e elegante */
+      user-select: none;
+      filter: drop-shadow(0 4px 6px rgba(46, 28, 18, 0.15));
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      &:hover {
+        transform: scale(1.25) rotate(15deg);
+        animation-play-state: paused; /* Pausa no hover para interatividade */
+      }
     }
 
     .brand-text {
       h1 {
-        font-size: 20px;
+        font-size: 22px;
         line-height: 1.1;
-        letter-spacing: -0.01em;
-        color: var(--color-primary);
+        letter-spacing: -0.02em;
+        color: var(--color-on-surface);
+        font-weight: 800;
       }
       .tagline {
         font-size: 11px;
         color: var(--color-on-surface-variant);
         font-family: var(--font-body);
-        font-weight: 500;
-      }
-    }
-  }
-
-  .clinic-badge {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    background: var(--color-surface-container-lowest);
-    padding: 6px 14px;
-    border-radius: var(--rounded-full);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-
-    @media (min-width: 600px) {
-      display: flex;
-    }
-
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--color-primary-container);
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .badge-text {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-on-surface);
-    }
-  }
-
-  .cart-btn {
-    background: var(--color-primary);
-    border: none;
-    border-radius: var(--rounded-full);
-    padding: 10px 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: var(--color-on-primary);
-    font-weight: 600;
-    font-size: 14px;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-
-    &:hover {
-      background: #5A3517;
-      transform: translateY(-1px);
-    }
-
-    .cart-count {
-      background: var(--color-secondary);
-      color: var(--color-on-secondary);
-      font-size: 12px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.3;
-      transition: opacity 0.3s ease;
-
-      &.has-items {
-        opacity: 1;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
       }
     }
   }
 }
 
-/* Hero Section */
+/* Animação Tridimensional do Carrinho (Bounce) */
+@keyframes bounceCart {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.25) translateY(-10px) rotate(-8deg);
+  }
+  50% {
+    transform: scale(0.85) translateY(3px) rotate(4deg);
+  }
+  70% {
+    transform: scale(1.1) translateY(-3px) rotate(-2deg);
+  }
+  85% {
+    transform: scale(0.95) translateY(1px);
+  }
+}
+
+.animate-bounce-cart {
+  animation: bounceCart 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ==========================================================================
+   Hero Section / Prescrições do Dia
+   ========================================================================== */
 .hero-section {
   width: 100%;
   max-width: 1200px;
-  margin-bottom: 40px;
+  margin-bottom: 44px;
 
   .hero-card {
-    background-color: var(--color-surface-container-lowest);
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: var(--rounded-xl);
-    padding: 32px 24px;
+    padding: 36px 28px;
     text-align: center;
-    box-shadow: var(--shadow-subtle);
+    box-shadow: 0 15px 35px rgba(46, 28, 18, 0.04);
     position: relative;
     overflow: hidden;
 
     @media (min-width: 768px) {
-      padding: 48px;
+      padding: 48px 56px;
       text-align: left;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-secondary) 100%);
     }
 
     .hero-clinical-id {
       font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--color-primary-container);
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-secondary); /* Verde-sálvia */
+      letter-spacing: 0.15em;
+      margin-bottom: 14px;
+      text-transform: uppercase;
     }
 
     h2 {
-      font-size: 32px;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--color-on-surface);
+      margin-bottom: 18px;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
 
       @media (min-width: 768px) {
-        font-size: 40px;
+        font-size: 42px;
       }
     }
 
     p {
       font-size: 16px;
       color: var(--color-on-surface-variant);
-      max-width: 780px;
-      line-height: 1.6;
-      margin-bottom: 24px;
+      max-width: 820px;
+      line-height: 1.65;
+      margin-bottom: 28px;
     }
 
+    /* Barra de Reforço Positivo */
     .reinforcement-bar {
-      margin-top: 16px;
+      margin-top: 20px;
+      background: rgba(245, 236, 215, 0.4);
+      padding: 14px 20px;
+      border-radius: var(--rounded-md);
+      border: 1px solid rgba(245, 236, 215, 0.6);
       
       .bar-track {
         height: 6px;
         width: 100%;
-        background-color: var(--color-surface-container);
+        background-color: rgba(122, 158, 126, 0.15);
         border-radius: var(--rounded-full);
         overflow: hidden;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+
+      /* Animação de carregamento ao iniciar a página */
+      @keyframes fillBarAnimation {
+        from { width: 0%; }
+        to { width: 100%; }
       }
 
       .bar-fill {
         height: 100%;
-        background-color: var(--color-primary-container);
+        background: linear-gradient(to right, var(--color-secondary) 0%, #95BCA0 100%);
         border-radius: var(--rounded-full);
+        animation: fillBarAnimation 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: 0.6s;
+        width: 0%; /* Inicia em zero para a animação */
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+          animation: barGlow 2.5s infinite linear;
+        }
+      }
+
+      @keyframes barGlow {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(100%); }
       }
 
       .reinforcement-label {
         font-size: 12px;
-        font-weight: 500;
-        color: var(--color-primary);
+        font-weight: 700;
+        color: #4A5F4D; /* Verde escuro */
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        
+        &::before {
+          content: '💡';
+          font-size: 14px;
+        }
       }
     }
   }
 }
 
-/* Menu Grid */
+/* ==========================================================================
+   Menu Grid
+   ========================================================================== */
 .menu-grid {
   width: 100%;
   max-width: 1200px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 36px;
+  margin-bottom: 30px;
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
@@ -224,30 +293,51 @@
   }
 }
 
-/* Cookie Card */
+/* ==========================================================================
+   Cookie Cards (Premium Cards com Hover Vivo)
+   ========================================================================== */
 .cookie-card {
   background-color: var(--color-surface-container-lowest);
   border-radius: var(--rounded-xl);
-  padding: 24px;
+  padding: 26px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-subtle);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px rgba(46, 28, 18, 0.03);
+  border: 1px solid rgba(245, 236, 215, 0.4);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
 
+  /* Efeito de brilho interno sutil e contorno no Hover */
   &:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-active);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(196, 103, 58, 0.12); /* Sombra mais quente baseada em Terracota */
+    border-color: rgba(122, 158, 126, 0.35); /* Borda fica sutilmente sálvia */
 
     .cookie-image {
-      transform: scale(1.08);
+      transform: scale(1.1) rotate(2deg);
+    }
+
+    .image-wrapper {
+      background-color: #FAF4EB;
     }
 
     &::after {
       opacity: 1;
     }
+
+    .btn-prescribe {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #A35029 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(196, 103, 58, 0.25);
+      
+      .btn-icon {
+        transform: rotate(90deg);
+      }
+    }
   }
 
+  /* Borda dupla premium ativada no hover */
   &::after {
     content: '';
     position: absolute;
@@ -256,83 +346,109 @@
     right: 0;
     bottom: 0;
     border-radius: var(--rounded-xl);
-    border: 2px solid var(--color-primary-container);
+    border: 2px solid var(--color-secondary); /* Verde-sálvia oficial */
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    z-index: 3;
 
     .cookie-id {
       font-family: var(--font-mono);
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 700;
       color: var(--color-on-surface-variant);
-      background: var(--color-surface-container-low);
-      padding: 2px 8px;
+      background: rgba(245, 236, 215, 0.5);
+      padding: 3px 10px;
       border-radius: var(--rounded-sm);
+      border: 1px solid rgba(245, 236, 215, 0.7);
     }
 
     .cookie-category {
       font-size: 11px;
-      font-weight: 700;
-      color: var(--color-primary);
+      font-weight: 800;
+      color: var(--color-secondary); /* Verde-sálvia */
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      background-color: rgba(122, 158, 126, 0.1);
+      padding: 3px 10px;
+      border-radius: var(--rounded-full);
     }
   }
 
   .image-wrapper {
     width: 100%;
-    height: 200px;
+    height: 210px;
     border-radius: var(--rounded-lg);
-    background-color: var(--color-surface-container-low);
+    background-color: #FBF9F6;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+    margin-bottom: 22px;
+    box-shadow: inset 0 2px 10px rgba(46, 28, 18, 0.02);
+    border: 1px solid rgba(245, 236, 215, 0.2);
+    transition: background-color 0.45s ease;
 
     .cookie-image {
-      max-width: 90%;
-      max-height: 90%;
+      max-width: 88%;
+      max-height: 88%;
       object-fit: contain;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1));
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 8px 14px rgba(46, 28, 18, 0.12));
     }
   }
 
   .card-body {
     flex-grow: 1;
     margin-bottom: 24px;
+    z-index: 3;
 
     .cookie-name {
-      font-size: 22px;
-      margin-bottom: 6px;
-      letter-spacing: -0.015em;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      color: var(--color-on-surface);
     }
 
     .cookie-flavor {
       font-size: 14px;
-      color: var(--color-primary);
-      margin-bottom: 12px;
+      color: var(--color-primary); /* Terracota */
+      margin-bottom: 14px;
+      font-weight: 600;
 
       strong {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--color-on-surface-variant);
       }
     }
 
     .cookie-desc {
-      font-size: 13px;
+      font-size: 13.5px;
       font-style: italic;
       color: var(--color-on-surface-variant);
-      line-height: 1.5;
+      line-height: 1.55;
+      position: relative;
+      padding-left: 12px;
+      
+      &::before {
+        content: '"';
+        position: absolute;
+        left: 0;
+        top: -4px;
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--color-secondary);
+        font-family: Georgia, serif;
+      }
     }
   }
 
@@ -340,183 +456,310 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--color-surface-container-low);
-    padding-top: 16px;
+    border-top: 1px solid rgba(245, 236, 215, 0.5);
+    padding-top: 18px;
+    z-index: 3;
 
     .price-container {
       display: flex;
       flex-direction: column;
 
       .price-label {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--color-on-surface-variant);
         text-transform: uppercase;
-        font-weight: 500;
-        letter-spacing: 0.02em;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
       }
 
       .price-value {
         font-family: var(--font-headline);
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--color-secondary);
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--color-on-surface);
       }
     }
 
     .btn-prescribe {
-      background: var(--color-surface-container);
-      border: none;
+      background-color: rgba(245, 236, 215, 0.4);
+      border: 1px solid rgba(245, 236, 215, 0.8);
       color: var(--color-on-surface);
-      font-weight: 600;
-      padding: 10px 16px;
+      font-weight: 700;
+      padding: 10px 18px;
       border-radius: var(--rounded-full);
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-
-      &:hover {
-        background: var(--color-secondary);
-        color: var(--color-on-secondary);
-        transform: scale(1.02);
-      }
+      font-size: 13.5px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
       &:active {
-        transform: scale(0.98);
+        transform: scale(0.96);
       }
 
       .btn-icon {
-        font-size: 11px;
+        font-size: 12px;
+        display: inline-block;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       }
     }
   }
 }
 
-/* Footer */
+/* ==========================================================================
+   Footer Profissional e Elegante
+   ========================================================================== */
 .app-footer {
   width: 100%;
   max-width: 1200px;
-  margin-top: 64px;
-  padding-bottom: 40px;
-  text-align: center;
+  margin-top: 80px;
+  padding-bottom: 30px;
+  position: relative;
+  z-index: 5;
 
   .footer-divider {
-    height: 1px;
-    background-color: var(--color-surface-container);
-    margin-bottom: 32px;
+    height: 2px;
+    /* Linha gradiente sofisticada */
+    background: linear-gradient(to right, rgba(196, 103, 58, 0) 0%, rgba(196, 103, 58, 0.3) 25%, rgba(122, 158, 126, 0.3) 75%, rgba(122, 158, 126, 0) 100%);
+    margin-bottom: 48px;
+    border-radius: var(--rounded-full);
   }
 
-  .footer-content {
+  /* Grid Principal do Footer */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+    text-align: left;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 60px;
+    }
+  }
+
+  .footer-col {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .footer-logo-area {
-    .footer-logo {
-      font-family: var(--font-headline);
-      font-size: 20px;
+    
+    h4 {
+      font-size: 16px;
       font-weight: 800;
-      color: var(--color-primary);
-      letter-spacing: -0.01em;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .footer-slogan {
-      font-size: 13px;
-      color: var(--color-on-surface-variant);
-      font-style: italic;
-    }
-  }
-
-  .footer-devs {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-
-    .dev-label {
-      font-size: 12px;
+      color: var(--color-on-surface);
+      margin-bottom: 20px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--color-on-surface-variant);
-      font-weight: 600;
+      position: relative;
+      padding-bottom: 8px;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 32px;
+        height: 2px;
+        background-color: var(--color-primary); /* Terracota */
+      }
+    }
+  }
+
+  /* Coluna 1: Branding e Descrição */
+  .branding-col {
+    .footer-logo {
+      font-family: var(--font-headline);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+      display: block;
+      margin-bottom: 10px;
     }
 
-    .dev-badges {
+    .footer-tagline {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-on-surface);
+      margin-bottom: 14px;
+    }
+
+    .footer-about {
+      font-size: 13.5px;
+      color: var(--color-on-surface-variant);
+      line-height: 1.6;
+    }
+  }
+
+  /* Coluna 2: Links Clínicos */
+  .links-col {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
       display: flex;
+      flex-direction: column;
       gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
 
-      .dev-badge {
-        background-color: var(--color-surface-container-low);
-        color: var(--color-primary);
+      a {
+        font-size: 14px;
+        color: var(--color-on-surface-variant);
         font-weight: 600;
-        font-size: 13px;
-        padding: 6px 16px;
-        border-radius: var(--rounded-full);
-        border: 1px solid var(--color-surface-container);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-        transition: transform 0.2s ease, background-color 0.2s ease;
-
+        transition: all 0.2s ease;
+        display: inline-block;
+        
         &:hover {
-          transform: translateY(-2px);
-          background-color: var(--color-primary-container);
-          color: var(--color-on-primary-container);
+          color: var(--color-primary);
+          transform: translateX(4px);
         }
       }
     }
   }
 
-  .footer-repo {
-    margin-top: 4px;
+  /* Coluna 3: Conexões e Redes (Botões Sociais Premium) */
+  .social-col {
+    .social-intro {
+      font-size: 13.5px;
+      color: var(--color-on-surface-variant);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
 
-    .repo-link {
-      display: inline-flex;
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .social-btn {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      background-color: var(--color-primary);
-      color: var(--color-on-primary);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 10px 20px;
-      border-radius: var(--rounded-full);
-      box-shadow: var(--shadow-subtle);
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+      gap: 12px;
+      padding: 10px 18px;
+      border-radius: var(--rounded-md);
+      font-size: 13.5px;
+      font-weight: 700;
+      border: 1px solid rgba(245, 236, 215, 0.8);
+      background-color: rgba(255, 255, 255, 0.4);
+      color: var(--color-on-surface);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(46, 28, 18, 0.02);
+
+      .social-icon {
+        font-size: 16px;
+      }
 
       &:hover {
         transform: translateY(-2px);
-        background-color: #5A3517;
-        box-shadow: var(--shadow-active);
+        box-shadow: 0 4px 12px rgba(46, 28, 18, 0.06);
       }
 
-      .repo-icon {
-        font-size: 16px;
+      /* Estilização individual dos botões sociais */
+      &.whatsapp:hover {
+        background-color: rgba(122, 158, 126, 0.1); /* Sabor sálvia verde */
+        border-color: var(--color-secondary);
+        color: #3b503e;
+      }
+
+      &.instagram:hover {
+        background-color: rgba(196, 103, 58, 0.08); /* Sabor terracota */
+        border-color: var(--color-primary);
+        color: #7a3512;
+      }
+
+      &.github:hover {
+        background-color: var(--color-on-surface);
+        border-color: var(--color-on-surface);
+        color: white;
       }
     }
   }
 
-  .copyright {
-    font-size: 11px;
-    color: var(--color-on-surface-variant);
-    opacity: 0.8;
+  /* Base do Footer: Desenvolvedores e Copyright */
+  .footer-base {
+    border-top: 1px solid rgba(245, 236, 215, 0.5);
+    padding-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+
+    .footer-devs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+
+      @media (min-width: 600px) {
+        flex-direction: row;
+        gap: 16px;
+      }
+
+      .dev-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-on-surface-variant);
+        font-weight: 700;
+      }
+
+      .dev-badges {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .dev-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(245, 236, 215, 0.8);
+        color: var(--color-on-surface);
+        font-weight: 700;
+        font-size: 13px;
+        padding: 6px 14px;
+        border-radius: var(--rounded-full);
+        box-shadow: 0 2px 4px rgba(46, 28, 18, 0.02);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .dev-avatar {
+          font-size: 12px;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          background-color: var(--color-secondary-container); /* Bege quente */
+          border-color: rgba(196, 103, 58, 0.2);
+          box-shadow: 0 4px 8px rgba(196, 103, 58, 0.08);
+        }
+      }
+    }
+
+    .copyright {
+      font-size: 11.5px;
+      color: var(--color-on-surface-variant);
+      text-align: center;
+      line-height: 1.5;
+    }
   }
 }
 
-/* Pulse Animation for Clinic Badge */
+/* ==========================================================================
+   Pulse Animation (Badge de Status)
+   ========================================================================== */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
   }
   50% {
-    opacity: 0.5;
-    transform: scale(1.15);
+    opacity: 0.45;
+    transform: scale(1.18);
   }
 }
 

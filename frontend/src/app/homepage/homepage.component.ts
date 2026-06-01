@@ -79,8 +79,13 @@ export class HomepageComponent {
 
   // Contador de sacola para interação
   protected readonly sacola = signal<number>(0);
+  protected readonly cartAnimating = signal<boolean>(false);
 
   protected adicionarAoCarrinho() {
     this.sacola.update(val => val + 1);
+    this.cartAnimating.set(true);
+    setTimeout(() => {
+      this.cartAnimating.set(false);
+    }, 500);
   }
 }

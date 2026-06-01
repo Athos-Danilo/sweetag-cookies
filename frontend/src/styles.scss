@@ -1,30 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Courier+Prime:wght@400;700&family=Epilogue:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 :root {
-  /* Tonal Cores do Stitch (Psycho-Bakery) */
-  --color-background: #FAF7F2;
-  --color-surface: #FAF7F2;
-  --color-surface-dim: #E7DFD5;
-  --color-surface-bright: #FAF7F2;
+  /* Tonal Cores do Stitch (Psycho-Bakery) - Paleta Oficial */
+  --color-background: #FAF8F5;
+  --color-surface: #FAF8F5;
+  --color-surface-dim: #EEDEC9;
+  --color-surface-bright: #FAF8F5;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #F5EDE3;
-  --color-surface-container: #F1C399;
-  --color-surface-container-high: #E3B386;
-  --color-surface-container-highest: #D2A172;
+  --color-surface-container-low: #F5ECD7;      /* Bege quente */
+  --color-surface-container: #E7D7C1;
+  --color-surface-container-high: #D4BEA3;
+  --color-surface-container-highest: #C4673A;   /* Terracota */
 
   /* Cores de Marca */
-  --color-primary: #7A4E27;              /* Marrom */
-  --color-primary-container: #CFCE8B;    /* Sage / Khaki */
+  --color-primary: #C4673A;              /* Terracota */
+  --color-primary-container: #7A9E7E;    /* Verde-sálvia */
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #2A1707;
+  --color-on-primary-container: #2A1308;
 
-  --color-secondary: #FF9000;            /* Laranja */
-  --color-secondary-container: #F1C399;  /* Creme / Tan */
+  --color-secondary: #7A9E7E;            /* Verde-sálvia */
+  --color-secondary-container: #F5ECD7;  /* Bege quente */
   --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #4D2600;
+  --color-on-secondary-container: #1C2E1E;
 
-  --color-tertiary: #CFCE8B;             /* Khaki */
-  --color-on-surface: #26160C;           /* Marrom muito escuro */
+  --color-tertiary: #5E4637;             /* Marrom de suporte */
+  --color-on-surface: #2E1C12;           /* Marrom profundo */
   --color-on-surface-variant: #5E4637;   /* Marrom médio */
 
   /* Tipografia */
