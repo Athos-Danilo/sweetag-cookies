@@ -1,5 +1,8 @@
-import { Component, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { Component, signal, OnInit } from '@angular/core';
+import { DecimalPipe, CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { CartService } from '../core/services/cart.service';
+import { Product } from '../core/models/product.model';
 
 interface CookieItem {
   id: string;
@@ -14,11 +17,11 @@ interface CookieItem {
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, CommonModule],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.scss'
 })
-export class HomepageComponent {
+export class HomepageComponent implements OnInit {
   // Lista dos cookies temáticos conforme os requisitos do usuário e a identidade do Stitch
   protected readonly cookies = signal<CookieItem[]>([
     {
@@ -77,15 +80,40 @@ export class HomepageComponent {
     }
   ]);
 
-  // Contador de sacola para interação
-  protected readonly sacola = signal<number>(0);
+  protected itemCount = 0;
   protected readonly cartAnimating = signal<boolean>(false);
 
-  protected adicionarAoCarrinho() {
-    this.sacola.update(val => val + 1);
+  constructor(private cartService: CartService, private router: Router) {}
+
+  ngOnInit() {
+    this.cartService.cartItems$.subscribe(() => {
+      this.itemCount = this.cartService.getItemCount();
+    });
+  }
+
+  protected adicionarAoCarrinho(cookie: CookieItem) {
+    const product: Product = {
+      id: cookie.id,
+      name: cookie.nome,
+      theme: cookie.categoria,
+      description: cookie.diagnostico,
+      price: cookie.valor,
+      imageUrl: cookie.imagem,
+      ingredients: ['Ingredientes Secretos'], // Mockado
+      nutritionalInfo: '300 kcal',
+      stock: 50,
+      availableToday: true
+    };
+    
+    this.cartService.addToCart(product);
+    
     this.cartAnimating.set(true);
     setTimeout(() => {
       this.cartAnimating.set(false);
     }, 500);
+  }
+
+  protected goToCart() {
+    this.router.navigate(['/cart']);
   }
 }

@@ -1,0 +1,98 @@
+<div class="cart-container">
+  <header class="cart-header">
+    <button class="back-button" (click)="goBack()">
+      <span class="icon">←</span> Voltar
+    </button>
+    <h1>Seu Carrinho</h1>
+    <p class="subtitle">Sua sessão terapêutica em forma de cookie está quase garantida!</p>
+  </header>
+
+  <div class="cart-content" *ngIf="cartItems.length > 0; else emptyCart">
+    <div class="items-section">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <div class="item-image-wrapper">
+          <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image">
+        </div>
+        
+        <div class="item-details">
+          <h3>{{ item.product.name }}</h3>
+          <p class="theme">{{ item.product.theme }}</p>
+          <span class="price">{{ item.product.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+
+        <div class="item-actions">
+          <div class="quantity-controls">
+            <button class="qty-btn" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">-</button>
+            <span class="qty">{{ item.quantity }}</span>
+            <button class="qty-btn" (click)="increaseQuantity(item)" [disabled]="item.quantity >= item.product.stock">+</button>
+          </div>
+          <button class="remove-btn" (click)="removeItem(item.product.id)">Remover</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-section">
+      <div class="summary-card">
+        <h2>Resumo do Pedido</h2>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="delivery-card">
+        <h2>Onde entregamos seu reforço positivo?</h2>
+        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitCheckout()" class="delivery-form">
+          <div class="form-group">
+            <label for="department">Departamento / Curso</label>
+            <input id="department" type="text" formControlName="department" placeholder="Ex: Psicologia">
+            <small class="error" *ngIf="checkoutForm.get('department')?.invalid && checkoutForm.get('department')?.touched">
+              Obrigatório.
+            </small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="block">Bloco/Prédio</label>
+              <input id="block" type="text" formControlName="block" placeholder="Ex: Bloco C">
+              <small class="error" *ngIf="checkoutForm.get('block')?.invalid && checkoutForm.get('block')?.touched">
+                Obrigatório.
+              </small>
+            </div>
+            
+            <div class="form-group">
+              <label for="room">Sala</label>
+              <input id="room" type="text" formControlName="room" placeholder="Ex: Sala 304">
+              <small class="error" *ngIf="checkoutForm.get('room')?.invalid && checkoutForm.get('room')?.touched">
+                Obrigatório.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reference">Ponto de Referência (Opcional)</label>
+            <input id="reference" type="text" formControlName="reference" placeholder="Ex: Perto do laboratório de neuro">
+          </div>
+
+          <button type="submit" class="checkout-btn" [disabled]="checkoutForm.invalid">
+            Confirmar Reserva (Pix)
+          </button>
+          <p class="timer-warning">⚠️ Você terá 30 minutos para pagar após confirmar.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyCart>
+    <div class="empty-state">
+      <div class="empty-icon">🍪</div>
+      <h2>Seu carrinho está vazio!</h2>
+      <p>Parece que o seu id ainda não fez as escolhas de hoje. Que tal adicionar alguns cookies?</p>
+      <button class="primary-btn" (click)="goBack()">Ver Catálogo</button>
+    </div>
+  </ng-template>
+</div>

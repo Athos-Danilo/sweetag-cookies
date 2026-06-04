@@ -9,6 +9,11 @@
           <p class="tagline">Cookies Artesanais: Sua dose perfeita de reforço positivo para a sua mente.</p>
         </div>
       </div>
+
+      <div class="cart-icon-container" (click)="goToCart()" [class.bump]="cartAnimating()">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
+      </div>
     </div>
   </header>
 
@@ -56,7 +61,7 @@
           <span class="price-value">R$ {{ cookie.valor | number:'1.2-2' }}</span>
         </div>
 
-        <button class="btn-prescribe" (click)="adicionarAoCarrinho()">
+        <button class="btn-prescribe" (click)="adicionarAoCarrinho(cookie)">
           <span>Prescrever</span>
           <span class="btn-icon">✚</span>
         </button>
