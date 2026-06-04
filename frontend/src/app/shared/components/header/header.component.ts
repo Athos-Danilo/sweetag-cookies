@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject, HostListener } from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../core/services/cart.service';
@@ -16,8 +16,19 @@ export class HeaderComponent implements OnInit {
   protected itemCount = 0;
   protected currentUrl = '';
   protected readonly cartAnimating = signal<boolean>(false);
+  protected readonly bgOpacity = signal<number>(1);
   
   private readonly destroyRef = inject(DestroyRef);
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scroll = window.scrollY || document.documentElement.scrollTop || 0;
+    const maxScroll = 120; // Rolagem limite onde atinge a opacidade mínima
+    const minOpacity = 0.3;
+    // Reduz opacidade linearmente de 1.0 até 0.3
+    const opacity = Math.max(minOpacity, 1 - (scroll / maxScroll) * (1 - minOpacity));
+    this.bgOpacity.set(opacity);
+  }
 
   constructor(private cartService: CartService, private router: Router) {
     this.currentUrl = this.router.url;
