@@ -1,0 +1,134 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 999;
+  
+  /* Escondido no desktop, visível no mobile */
+  display: block;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* Fundo off-white com textura arenosa de papel/cookie sutil */
+  background-color: #FDFBF7;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  border: 1px solid rgba(46, 28, 18, 0.08);
+  border-radius: 20px;
+  padding: 10px 8px;
+  box-shadow: 0 10px 30px rgba(46, 28, 18, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #8C7265; /* Marrom suave */
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  flex: 1;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  cursor: pointer;
+
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 4px 12px;
+    border-radius: 16px;
+    transition: all 0.25s ease;
+  }
+
+  .svg-icon {
+    width: 22px;
+    height: 22px;
+    color: #604A3F;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease;
+  }
+
+  &:active {
+    .svg-icon {
+      transform: scale(0.85);
+    }
+  }
+
+  /* Estado Ativo (Destaque do botão selecionado) */
+  &.active {
+    color: #C4673A; /* Terracota oficial */
+
+    .nav-icon {
+      background-color: rgba(196, 103, 58, 0.08); /* Fundo terracota bem suave */
+    }
+
+    .svg-icon {
+      color: #C4673A;
+      transform: scale(1.08);
+    }
+  }
+}
+
+/* Item desabilitado (Favoritos por enquanto) */
+.disabled-item {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none; /* Desativa interações */
+}
+
+/* Badge do Carrinho de Compras */
+.cart-icon-wrapper {
+  position: relative;
+
+  &.bump {
+    animation: bounceCartBottom 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #C4673A; /* Terracota */
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid #FDFBF7;
+}
+
+/* Animação Tridimensional do Carrinho na barra inferior */
+@keyframes bounceCartBottom {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.3) translateY(-6px) rotate(-8deg);
+  }
+  50% {
+    transform: scale(0.9) translateY(2px) rotate(4deg);
+  }
+  70% {
+    transform: scale(1.15) translateY(-2px) rotate(-2deg);
+  }
+  85% {
+    transform: scale(0.97) translateY(1px);
+  }
+}

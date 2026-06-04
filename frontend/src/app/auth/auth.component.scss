@@ -3,6 +3,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  @media (min-width: 768px) {
+    min-height: calc(100vh - 150px);
+  }
   background: linear-gradient(135deg, var(--color-surface-dim) 0%, var(--color-background) 100%);
   padding: 1.5rem;
   position: relative;

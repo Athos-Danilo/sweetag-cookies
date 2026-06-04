@@ -1,0 +1,205 @@
+.app-header {
+  width: calc(100% - 32px);
+  max-width: 1200px;
+  margin: 16px auto 32px auto;
+  /* Fundo off-white com textura arenosa de papel/cookie sutil */
+  background-color: #FDFBF7;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(46, 28, 18, 0.08);
+  border-radius: 24px;
+  padding: 18px 24px;
+  box-shadow: 0 8px 30px rgba(46, 28, 18, 0.05);
+  z-index: 10;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(46, 28, 18, 0.09);
+    border-color: rgba(46, 28, 18, 0.15);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+
+    .brand-logo-container {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .brand-logo-cookie {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      user-select: none;
+      filter: drop-shadow(0 4px 8px rgba(46, 28, 18, 0.12));
+    }
+
+    .brand-text {
+      h1 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 20px;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: #2E1C12; /* Marrom escuro */
+        font-weight: 800;
+
+        @media (min-width: 576px) {
+          font-size: 24px;
+        }
+      }
+      .tagline {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11px;
+        color: #604A3F; /* Marrom médio */
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.3;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  /* ==========================================================================
+     Navegação Desktop
+     ========================================================================== */
+  .desktop-nav {
+    display: none; /* Oculta no mobile */
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+
+    .nav-list {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #604A3F; /* Marrom médio */
+      padding: 8px 14px;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(245, 236, 215, 0.4);
+        color: #C4673A; /* Terracota */
+      }
+
+      &.active {
+        background-color: rgba(122, 158, 126, 0.12); /* Sálvia suave */
+        color: #4A5F4D; /* Verde sálvia escuro */
+      }
+    }
+
+    .disabled-link {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        background-color: transparent;
+        color: #604A3F;
+      }
+    }
+
+    /* Estilo do botão de carrinho no menu do cabeçalho desktop */
+    .cart-btn-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #F5ECD7; /* Bege quente */
+      padding: 6px 14px 6px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(46, 28, 18, 0.05);
+      transition: all 0.3s ease;
+
+      .cart-svg-icon {
+        width: 18px;
+        height: 18px;
+        color: #5B6F82;
+        transition: color 0.3s ease;
+        display: block;
+      }
+
+      &:hover {
+        background-color: #EFE5CE;
+        transform: scale(1.04);
+        
+        .cart-svg-icon {
+          color: #2E1C12;
+        }
+      }
+
+      &.bump {
+        animation: bounceCart 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .cart-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #C4673A; /* Terracota */
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 800;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 1.5px solid #FDFBF7;
+      }
+    }
+  }
+}
+
+/* Animação Tridimensional do Carrinho (Bounce) */
+@keyframes bounceCart {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.2) translateY(-6px) rotate(-8deg);
+  }
+  50% {
+    transform: scale(0.9) translateY(2px) rotate(4deg);
+  }
+  70% {
+    transform: scale(1.08) translateY(-2px) rotate(-2deg);
+  }
+  85% {
+    transform: scale(0.96) translateY(1px);
+  }
+}

@@ -1,0 +1,51 @@
+<header class="app-header">
+  <div class="header-content">
+    <!-- Lado Esquerdo: Branding -->
+    <div class="brand" [routerLink]="['/']" style="cursor: pointer;">
+      <div class="brand-logo-container">
+        <img src="assets/fotos/logo-cookie.png" alt="SweetAg Cookies" class="brand-logo-cookie">
+      </div>
+      <div class="brand-text">
+        <h1>SweetAg Cookies</h1>
+        <p class="tagline">Sua dose diária de reforço positivo.</p>
+      </div>
+    </div>
+
+    <!-- Lado Direito: Navegação Desktop (oculta no mobile via SCSS) -->
+    <nav class="desktop-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']" [class.active]="isActive('/')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled-link">
+            <span class="nav-icon">❤️</span>
+            <span class="nav-text">Favoritos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/cart']" [class.active]="isActive('/cart')">
+            <div class="cart-btn-wrapper" [class.bump]="cartAnimating()">
+              <span class="nav-icon">
+                <svg class="cart-svg-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+              </span>
+              <span class="nav-text">Carrinho</span>
+              <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/login']" [class.active]="isActive('/login')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">Perfil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

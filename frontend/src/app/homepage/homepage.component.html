@@ -1,22 +1,4 @@
 <div class="psycho-bakery-container">
-  <!-- Top Bar / Header -->
-  <header class="app-header fade-in-up">
-    <div class="header-content">
-      <div class="brand">
-        <span class="brand-logo-cookie">🍪</span>
-        <div class="brand-text">
-          <h1>SweetAg Cookies</h1>
-          <p class="tagline">Cookies Artesanais: Sua dose perfeita de reforço positivo para a sua mente.</p>
-        </div>
-      </div>
-
-      <div class="cart-icon-container" (click)="goToCart()" [class.bump]="cartAnimating()">
-        <span class="cart-icon">🛒</span>
-        <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
-      </div>
-    </div>
-  </header>
-
   <!-- Hero / Introduction -->
   <section class="hero-section fade-in-up">
     <div class="hero-card">
