@@ -1,8 +1,8 @@
 .psycho-bakery-container {
   width: 100%;
   min-height: 100vh;
-  /* Fundo degradê suave e acolhedor que transiciona do bege pálido para o bege quente oficial */
-  background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
+  /* Fundo degradê suave herdado do app-layout-container */
+  background: transparent;
   padding: 24px 20px 48px;
   display: flex;
   flex-direction: column;

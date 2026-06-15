@@ -1,219 +1,512 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  width: 100%;
+  pointer-events: none; /* Permite rolar através das margens externas */
+  
+  @media (max-width: 767px) {
+    top: 8px;
+  }
+}
+
 .app-header {
   width: calc(100% - 32px);
-  max-width: 1200px;
-  margin: 16px auto 32px auto;
-  position: relative;
-  overflow: hidden; /* Mantém o pseudo-elemento contido */
-  background: transparent; /* Permite ver o pseudo-elemento com opacidade */
-  backdrop-filter: blur(8px);
-  /* Borda terrosa sutil */
-  border: 1px solid rgba(196, 103, 58, 0.08);
-  border-radius: 24px;
-  padding: 22px 24px;
-  /* Efeito de relevo interno e sombra profunda */
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.85), 0 8px 30px rgba(46, 28, 18, 0.045);
-  z-index: 10;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  max-width: 1100px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(-25px) scale(0.97);
 
-  @media (max-width: 576px) {
-    width: calc(100% - 56px); /* Card mais estreito no mobile para diminuir o vazio lateral */
-    padding: 18px 12px;
+  // Dispara a animação se a cortina for revelada ou se o preloader não estiver ativo
+  :host-context(.preloader-reveal) &,
+  :host-context(:not(.preloader-active)) & {
+    animation: headerEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  /* Pseudo-elemento contendo o fundo e a textura para opacidade dinâmica no scroll */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    background-color: #FDFBF7;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
-    opacity: var(--bg-opacity, 1);
-    transition: opacity 0.15s ease-out;
-    pointer-events: none;
+  @media (max-width: 767px) {
+    width: calc(100% - 16px); /* Diminui margens laterais externas (mais largo no celular) */
   }
+}
+
+.header-pill {
+  pointer-events: auto; /* Reativa cliques dentro da pílula */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 auto; /* Garante centralização perfeita mesmo ao encolher a largura */
+  padding: 10px 24px;
+  background: rgba(250, 248, 245, 0.90); /* Branco translúcido fosco no topo */
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(122, 78, 39, 0.08);
+  border-radius: 9999px;
+  box-shadow: 
+    0 1px 2px rgba(46, 28, 18, 0.02),
+    0 12px 30px -10px rgba(46, 28, 18, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: 
+    width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.4s ease,
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.85), 0 14px 35px rgba(46, 28, 18, 0.08);
-    border-color: rgba(196, 103, 58, 0.15);
+    box-shadow: 
+      0 1px 2px rgba(46, 28, 18, 0.02),
+      0 16px 36px -8px rgba(46, 28, 18, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-color: rgba(196, 103, 58, 0.18);
   }
 
-  .header-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 100%;
-    gap: 16px; /* Espaço entre o título e a navegação no desktop */
-  }
+  // Efeito de encolhimento dinâmico conforme o usuário rola a página
+  &.scrolled {
+    padding: 6px 20px;
+    background: rgba(250, 248, 245, 0.94); /* Mantém o branco creme fosco no scroll */
+    box-shadow: 
+      0 1px 3px rgba(46, 28, 18, 0.03),
+      0 16px 36px -12px rgba(46, 28, 18, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border-color: rgba(122, 78, 39, 0.14);
 
-  .brand {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    text-decoration: none;
-    width: 100%;
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+    }
 
-    .brand-text {
-      h1 {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 26px;
-        line-height: 1.15; /* Reduzido levemente para aproximar tagline */
-        padding-bottom: 2px; /* Reduzido para aproximar, mantendo proteção contra corte do 'g' */
-        letter-spacing: -0.04em;
-        font-weight: 900;
-        margin: 0;
-        color: #7A4E27; /* Marrom terroso médio */
+    .brand-title-group {
+      .brand-title,
+      .brand-subtitle {
+        font-size: 16.5px;
+      }
+    }
 
-        @media (min-width: 768px) {
-          font-size: 34px;
+    .brand-tagline {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+    }
+    
+    @media (max-width: 767px) {
+      padding: 13px 20px; /* Aumenta a altura interna no celular no scroll (notch style) */
+      width: 220px; /* Encolhe horizontalmente como o notch do iPhone */
+      justify-content: center;
+
+      .logo-icon {
+        width: 0px;
+        height: 0px;
+        opacity: 0;
+        overflow: hidden;
+        margin-right: 0px;
+      }
+
+      .brand-title-group {
+        .brand-title,
+        .brand-subtitle {
+          font-size: 14.5px;
         }
       }
-      .tagline {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 11.5px;
-        color: #55361B; /* Marrom escuro */
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        line-height: 1.2;
-        margin: 0; /* Margem zerada para maior proximidade */
-      }
     }
   }
 
-  /* ==========================================================================
-     Navegação Desktop
-     ========================================================================== */
-  .desktop-nav {
-    display: none; /* Oculta no mobile */
+  @media (max-width: 767px) {
+    padding: 14px 18px; /* Aumenta a altura interna no celular sem scroll (de 9px para 14px) */
+  }
+}
 
-    @media (min-width: 768px) {
-      display: block;
-    }
+// Elementos filhos para animação em cascata
+.brand, 
+.nav-item, 
+.header-actions {
+  opacity: 0;
+  transform: translateY(10px);
 
-    .nav-list {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+  :host-context(.preloader-reveal) &,
+  :host-context(:not(.preloader-active)) & {
+    animation: itemEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-    }
+// Delays da Cascata
+.brand {
+  animation-delay: 0.15s !important;
+}
 
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14.5px;
-      font-weight: 700;
-      color: #604A3F; /* Marrom médio */
-      padding: 8px 14px;
-      border-radius: 12px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
-
-      &:hover {
-        background-color: rgba(245, 236, 215, 0.4);
-        color: #C4673A; /* Terracota */
-      }
-
-      &.active {
-        background-color: rgba(122, 158, 126, 0.12); /* Sálvia suave */
-        color: #4A5F4D; /* Verde sálvia escuro */
-      }
-    }
-
-    .disabled-link {
-      opacity: 0.5;
-      cursor: not-allowed;
-      
-      &:hover {
-        background-color: transparent;
-        color: #604A3F;
-      }
-    }
-
-    /* Estilo do botão de carrinho no menu do cabeçalho desktop */
-    .cart-btn-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background-color: #F5ECD7; /* Bege quente */
-      padding: 6px 14px 6px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(46, 28, 18, 0.05);
-      transition: all 0.3s ease;
-
-      .cart-svg-icon {
-        width: 18px;
-        height: 18px;
-        color: #5B6F82;
-        transition: color 0.3s ease;
-        display: block;
-      }
-
-      &:hover {
-        background-color: #EFE5CE;
-        transform: scale(1.04);
-        
-        .cart-svg-icon {
-          color: #2E1C12;
-        }
-      }
-
-      &.bump {
-        animation: bounceCart 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-      }
-
-      .cart-badge {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: #C4673A; /* Terracota */
-        color: white;
-        font-size: 0.65rem;
-        font-weight: 800;
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        border: 1.5px solid #FDFBF7;
-      }
+.nav-item {
+  @for $i from 1 through 3 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{0.25s + ($i - 1) * 0.08s} !important;
     }
   }
 }
 
-/* Animação Tridimensional do Carrinho (Bounce) */
+.header-actions {
+  animation-delay: 0.5s !important;
+}
+
+
+/* ==========================================================================
+   Branding (Logo)
+   ========================================================================== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    .logo-icon {
+      transform: rotate(15deg) scale(1.06);
+    }
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 2px 5px rgba(46, 28, 18, 0.08));
+
+    .cookie-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .brand-title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    
+    .brand-title {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-on-surface);
+      letter-spacing: -0.03em;
+      transition: font-size 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-headline);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--color-primary); // Terracota
+      letter-spacing: -0.03em;
+      transition: font-size 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  }
+
+  .brand-tagline {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-on-surface-variant);
+    margin: 0;
+    margin-top: 1px;
+    line-height: 1.15;
+    max-height: 20px;
+    opacity: 0.85;
+    overflow: hidden;
+    transition: 
+      max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+      opacity 0.3s ease, 
+      margin-top 0.3s ease;
+  }
+}
+
+
+/* ==========================================================================
+   Navegação Desktop
+   ========================================================================== */
+.desktop-nav {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 9999px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-on-surface-variant);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+
+    // Efeito de fundo expansivo no hover
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(196, 103, 58, 0.05); // Terracota bem suave
+      border-radius: 9999px;
+      transform: scale(0.85);
+      opacity: 0;
+      z-index: -1;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &:hover:not(.disabled-link) {
+      color: var(--color-primary);
+      
+      &::before {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      color: var(--color-on-primary-container);
+      background: rgba(122, 158, 126, 0.12); // Sálvia suave ativa
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  .disabled-link {
+    opacity: 0.4;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: transparent;
+      color: var(--color-on-surface-variant);
+    }
+  }
+
+  /* Estilos específicos do item de carrinho */
+  .cart-link-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &.bump {
+      .cart-icon-wrapper {
+        animation: bounceCart 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+    }
+  }
+
+  .cart-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(122, 158, 126, 0.12); // Sálvia
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(122, 158, 126, 0.15);
+    transition: all 0.3s ease;
+
+    .cart-svg-icon {
+      width: 13px;
+      height: 13px;
+      color: var(--color-on-secondary-container);
+      display: block;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--color-primary); // Terracota
+      color: white;
+      font-size: 8px;
+      font-weight: 800;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-background);
+      box-shadow: 0 2px 4px rgba(46, 28, 18, 0.1);
+    }
+  }
+
+  .nav-link:hover .cart-icon-wrapper {
+    background: rgba(122, 158, 126, 0.22);
+    transform: scale(1.08);
+  }
+}
+
+
+/* ==========================================================================
+   Ações (Direita)
+   ========================================================================== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  // Botão de login principal (estilo pílula preenchida terracota)
+  .action-btn-login {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px 8px 20px;
+    background: var(--color-on-surface); // Marrom escuro quase preto
+    color: var(--color-background); // Creme
+    border-radius: 9999px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(46, 28, 18, 0.15);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    &:hover {
+      background: var(--color-primary); // Terracota no hover
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(196, 103, 58, 0.3);
+      transform: translateY(-1px);
+
+      .btn-icon {
+        transform: translateX(4px);
+      }
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(196, 103, 58, 0.2);
+    }
+
+    &.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(196, 103, 58, 0.25);
+    }
+  }
+
+  // Carrinho Mobile (Oculto no Desktop)
+  .mobile-cart-btn {
+    display: none;
+  }
+}
+
+
+/* ==========================================================================
+   Ajustes de Responsividade (Celular)
+   ========================================================================== */
+@media (max-width: 767px) {
+  // Oculta a navegação e as ações à direita no mobile, pois a navegação inferior gerencia isso
+  .desktop-nav,
+  .header-actions {
+    display: none !important;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    flex-direction: row; // Mantém imagem e textos lado a lado
+
+    .brand-text {
+      align-items: center; // Centraliza a tagline abaixo do título
+    }
+  }
+}
+
+
+/* ==========================================================================
+   Animações
+   ========================================================================== */
+
+// Entrada do Header completo
+@keyframes headerEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-25px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Entrada dos itens internos em cascata
+@keyframes itemEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animação 3D de pulo do Carrinho
 @keyframes bounceCart {
   0%, 100% {
     transform: scale(1);
   }
   30% {
-    transform: scale(1.2) translateY(-6px) rotate(-8deg);
+    transform: scale(1.25) translateY(-5px) rotate(-8deg);
   }
   50% {
-    transform: scale(0.9) translateY(2px) rotate(4deg);
+    transform: scale(0.88) translateY(1.5px) rotate(4deg);
   }
   70% {
-    transform: scale(1.08) translateY(-2px) rotate(-2deg);
+    transform: scale(1.1) translateY(-1.5px) rotate(-2deg);
   }
   85% {
-    transform: scale(0.96) translateY(1px);
+    transform: scale(0.97) translateY(0.5px);
   }
 }

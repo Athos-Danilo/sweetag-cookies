@@ -16,17 +16,21 @@ export class HeaderComponent implements OnInit {
   protected itemCount = 0;
   protected currentUrl = '';
   protected readonly cartAnimating = signal<boolean>(false);
-  protected readonly bgOpacity = signal<number>(1);
+  protected readonly bgOpacity = signal<number>(0.85);
+  protected readonly scrolled = signal<boolean>(false);
   
   private readonly destroyRef = inject(DestroyRef);
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const scroll = window.scrollY || document.documentElement.scrollTop || 0;
+    this.scrolled.set(scroll > 20);
+
     const maxScroll = 120; // Rolagem limite onde atinge a opacidade mínima
-    const minOpacity = 0.3;
-    // Reduz opacidade linearmente de 1.0 até 0.3
-    const opacity = Math.max(minOpacity, 1 - (scroll / maxScroll) * (1 - minOpacity));
+    const minOpacity = 0.55; // Mantém legibilidade excelente ao rolar
+    const maxOpacity = 0.85; // Leve transparência no topo
+    // Reduz opacidade linearmente de maxOpacity até minOpacity
+    const opacity = Math.max(minOpacity, maxOpacity - (scroll / maxScroll) * (maxOpacity - minOpacity));
     this.bgOpacity.set(opacity);
   }
 
@@ -64,5 +68,15 @@ export class HeaderComponent implements OnInit {
       return this.currentUrl === '/' || this.currentUrl === '/homepage' || this.currentUrl === '';
     }
     return this.currentUrl.startsWith(route);
+  }
+
+  protected scrollToTop(event: Event) {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const path = this.router.url.split('?')[0];
+    if (path !== '/' && path !== '/homepage' && path !== '') {
+      this.router.navigate(['/']);
+    }
   }
 }

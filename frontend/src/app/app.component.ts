@@ -43,6 +43,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
       transform: scale(1) !important;
     }
 
+    /* Fundo degradê oficial da homepage aplicado a todo o container da rota-home */
+    .app-layout-container.route-home {
+      background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
+    }
+
     .app-content {
       flex: 1;
       width: 100%;
@@ -97,11 +102,13 @@ export class App implements OnInit {
 
   protected onPreloaderSlideStart() {
     this.isRevealing = true;
+    window.scrollTo(0, 0);
   }
 
   protected onPreloaderFinished() {
     this.showPreloader = false;
     this.isRevealing = false;
+    window.scrollTo(0, 0);
   }
 
   private updateRouteClass(url: string) {
