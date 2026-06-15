@@ -12,14 +12,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [RouterOutlet, CommonModule, HeaderComponent, BottomNavComponent, PreloaderComponent],
   template: `
-    <div [class]="'app-layout-container ' + currentRouteClass">
+    <div [class]="'app-layout-container ' + currentRouteClass + (showPreloader ? ' preloader-active' : '') + (isRevealing ? ' preloader-reveal' : '')">
       <app-header></app-header>
       <main class="app-content">
         <router-outlet></router-outlet>
       </main>
       <app-bottom-nav></app-bottom-nav>
     </div>
-    <app-preloader *ngIf="showPreloader" (finished)="onPreloaderFinished()"></app-preloader>
+    <app-preloader *ngIf="showPreloader" (slideStart)="onPreloaderSlideStart()" (finished)="onPreloaderFinished()"></app-preloader>
   `,
   styles: [`
     .app-layout-container {
@@ -27,6 +27,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
       flex-direction: column;
       min-height: 100vh;
       width: 100%;
+      /* Transição de entrada suave sincronizada com o slide da cortina */
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease-out;
+    }
+
+    /* Esconde/reduz a home enquanto o preloader roda */
+    .app-layout-container.preloader-active {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
+    /* Efeito de revelação (zoom-in suave e fade-in) sincronizado com a cortina */
+    .app-layout-container.preloader-reveal {
+      opacity: 1 !important;
+      transform: scale(1) !important;
     }
 
     .app-content {
@@ -45,6 +59,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class App implements OnInit {
   protected currentRouteClass = 'route-home';
   protected showPreloader = false;
+  protected isRevealing = false; // Controla o efeito visual de revelação da homepage
   private lastUrl = '';
   private readonly destroyRef = inject(DestroyRef);
 
@@ -74,13 +89,19 @@ export class App implements OnInit {
     // Dispara o preloader se navega para a homepage vindo de outra página, ou no primeiro carregamento
     if (isHomepage && (!wasOnHomepage || this.lastUrl === '')) {
       this.showPreloader = true;
+      this.isRevealing = false;
     }
 
     this.lastUrl = path;
   }
 
+  protected onPreloaderSlideStart() {
+    this.isRevealing = true;
+  }
+
   protected onPreloaderFinished() {
     this.showPreloader = false;
+    this.isRevealing = false;
   }
 
   private updateRouteClass(url: string) {
