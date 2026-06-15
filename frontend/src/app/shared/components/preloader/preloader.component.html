@@ -1,0 +1,24 @@
+<!-- A cortina de fundo desliza para cima com a classe .slide-up -->
+<div class="preloader-overlay" [class.slide-up]="isFadingOut">
+  <!-- Container oculto para pré-carregamento dos PNGs (evita oscilação de tela) -->
+  <div style="display: none;">
+    <img src="assets/fotos/1.png" alt="preload" />
+    <img src="assets/fotos/2.png" alt="preload" />
+    <img src="assets/fotos/3.png" alt="preload" />
+    <img src="assets/fotos/4.png" alt="preload" />
+    <img src="assets/fotos/5.png" alt="preload" />
+  </div>
+
+  <!-- O conteúdo interno desaparece e desliza para cima com efeito de paralaxe -->
+  <div class="preloader-content">
+    <!-- Imagem do Cookie Animado (PNG) com efeito elástico de desaparecer -->
+    <div class="cookie-wrapper" 
+         [class.bite-pulse]="isBiting" 
+         [class.fully-eaten]="stage() === 6">
+      <img [src]="'assets/fotos/' + (stage() <= 5 ? stage() : 5) + '.png'" class="cookie-img" alt="Cookie" />
+    </div>
+
+    <!-- Título do Projeto -->
+    <h1 class="brand-title" [class.fully-eaten]="stage() === 6">SweetAg Cookies</h1>
+  </div>
+</div>
