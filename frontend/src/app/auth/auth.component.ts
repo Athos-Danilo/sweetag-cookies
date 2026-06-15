@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -16,6 +17,9 @@ export class AuthComponent {
   aceitaNotificacoes = signal<boolean>(false);
   isSubmitting = signal<boolean>(false);
 
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   // Lista divertida de nomes para preenchimento automático
   private readonly funNames = [
     'Paciente 404',
@@ -28,8 +32,6 @@ export class AuthComponent {
     'Superego na Dieta',
     'Pavlov Babando'
   ];
-
-  constructor(private router: Router) {}
 
   gerarNomeAutomatico() {
     const randomIndex = Math.floor(Math.random() * this.funNames.length);
@@ -48,10 +50,16 @@ export class AuthComponent {
 
     this.isSubmitting.set(true);
 
-    // Simulação de login/cadastro rápido (persistência e redirecionamento depois)
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      this.router.navigate(['/']); // redireciona pro catálogo
-    }, 1200);
+    this.authService.login(this.whatsapp(), this.nome(), this.aceitaNotificacoes()).subscribe({
+      next: (res) => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/']); // redireciona pro catálogo
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        console.error('Erro no login', err);
+        alert('Ocorreu um erro ao entrar no consultório. Tente novamente.');
+      }
+    });
   }
 }

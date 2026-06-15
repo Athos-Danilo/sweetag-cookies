@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.auth.routes import router as auth_router
+from app.core.database import engine, Base
 
 app = FastAPI(
     title="PsiCookie API",
@@ -15,6 +17,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include Routers
+app.include_router(auth_router)
+
+@app.on_event("startup")
+async def startup():
+    # Initialize DB tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 @app.get("/")
 def read_root():
