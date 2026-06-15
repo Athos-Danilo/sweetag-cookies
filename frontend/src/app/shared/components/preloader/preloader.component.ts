@@ -32,7 +32,7 @@ import { CommonModule } from '@angular/common';
     </div>
   `,
   styles: [`
-    /* Fundo degradê pêssego/laranja suave (35% opacidade) sobre fundo creme */
+    /* Fundo degradê original (bem quente: laranja/pêssego) */
     .preloader-overlay {
       position: fixed;
       top: 0;
@@ -42,9 +42,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       justify-content: center;
       align-items: center;
-      background: 
-        radial-gradient(circle, rgba(241, 195, 153, 0.35) 0%, rgba(255, 144, 0, 0.35) 100%), 
-        #FAF8F5;
+      background: radial-gradient(circle, rgba(241, 195, 153, 0.5) 0%, rgba(255, 144, 0, 0.5) 100%), #FAF8F5;
       z-index: 99999;
       overflow: hidden;
       transform: translateY(0);
@@ -52,6 +50,20 @@ import { CommonModule } from '@angular/common';
       box-shadow: 0 25px 70px rgba(46, 28, 18, 0.25);
       /* Transição de subida de cortina ultra-suave com bezier premium */
       transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1);
+    }
+
+    /* Transiciona para o degradê oficial da homepage no final da animação */
+    .preloader-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
+      z-index: -1;
+      opacity: 0;
+      animation: transitionToHomeGradient 3.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
  
     /* Animação da Cortina Deslizando para Cima (Opção A) */
@@ -65,6 +77,8 @@ import { CommonModule } from '@angular/common';
       flex-direction: column;
       align-items: center;
       text-align: center;
+      position: relative;
+      z-index: 1;
       transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease-out;
     }
  
@@ -76,14 +90,15 @@ import { CommonModule } from '@angular/common';
  
     /* Container do Cookie (Grande e centralizado) */
     .cookie-wrapper {
-      width: 220px;
-      height: 220px;
+      width: 150px;
+      height: 150px;
       margin-bottom: 2rem;
       display: flex;
       justify-content: center;
       align-items: center;
       transform: scale(1);
-      opacity: 1;
+      opacity: 0; /* Inicia invisível para a animação */
+      animation: cookieBounceIn 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
       /* Transição elástica premium para encolhimento do último pedaço */
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out;
     }
@@ -97,25 +112,25 @@ import { CommonModule } from '@angular/common';
  
     /* Micro-animação: leve encolhimento e rotação ao mudar a imagem (simulando a mordida) */
     .cookie-wrapper.bite-pulse {
-      transform: scale(0.92) rotate(-3deg);
+      transform: scale(0.92) rotate(-3deg) !important;
     }
  
     /* Animação do Último Pedaço sendo comido (Encolhe elasticamente até sumir) */
     .cookie-wrapper.fully-eaten {
-      transform: scale(0);
-      opacity: 0;
+      transform: scale(0) !important;
+      opacity: 0 !important;
     }
  
     /* Título do Projeto */
     .brand-title {
       font-family: 'Epilogue', 'Plus Jakarta Sans', sans-serif;
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: #2E1C12; /* marrom profundo oficial */
       letter-spacing: -0.03em;
       opacity: 0;
       transform: translateY(10px);
-      animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.1s forwards;
+      animation: fadeInUp 1s cubic-bezier(0.25, 1, 0.5, 1) 0.1s forwards;
       /* Transição elástica suave para a saída sincronizada */
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out;
     }
@@ -132,16 +147,53 @@ import { CommonModule } from '@angular/common';
         transform: translateY(0);
       }
     }
+
+    /* Animação de entrada do cookie (zoom e elasticidade suave) */
+    @keyframes cookieBounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.4) rotate(-10deg);
+      }
+      70% {
+        transform: scale(1.08) rotate(3deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    /* Animação para transicionar o degradê suavemente até o final da animação */
+    @keyframes transitionToHomeGradient {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
  
-    /* Ajustes para Celulares e Telas Menores */
-    @media (max-width: 576px) {
+    /* Tablet (Telas médias) */
+    @media (max-width: 1024px) {
       .brand-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
       .cookie-wrapper {
-        width: 160px;
-        height: 160px;
+        width: 120px;
+        height: 120px;
         margin-bottom: 1.5rem;
+      }
+    }
+
+    /* Mobile (Telas pequenas) */
+    @media (max-width: 768px) {
+      .brand-title {
+        font-size: 1.4rem;
+      }
+      .cookie-wrapper {
+        width: 95px;
+        height: 95px;
+        margin-bottom: 1.2rem;
       }
     }
   `]
@@ -160,9 +212,7 @@ export class PreloaderComponent implements OnInit {
   }
  
   private runAnimationSequence() {
-    const intervalTime = 400; // 400ms por estágio de mordida
- 
-    const timer = setInterval(() => {
+    const nextStep = () => {
       const currentStage = this.stage();
       if (currentStage < 5) {
         // Mordidas sequenciais (estágios 1 a 4)
@@ -172,17 +222,22 @@ export class PreloaderComponent implements OnInit {
         setTimeout(() => {
           this.isBiting = false;
         }, 120);
+
+        // Próximo estágio em 400ms
+        setTimeout(nextStep, 400);
       } else if (currentStage === 5) {
         // Transição do último pedaço (estágio 5 para 6: encolhimento elástico)
         this.stage.update(s => s + 1); // stage = 6 (ativa .fully-eaten)
-        clearInterval(timer);
         
         // Aguarda 100ms (imediato após sumir a imagem) para começar a deslizar a cortina
         setTimeout(() => {
           this.triggerSlideLeft();
         }, 100);
       }
-    }, intervalTime);
+    };
+
+    // A primeira imagem (cookie inteiro) fica na tela por 2000ms (1s de entrada + 1s estático)
+    setTimeout(nextStep, 2000);
   }
  
   private triggerSlideLeft() {
