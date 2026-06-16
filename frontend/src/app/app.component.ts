@@ -89,10 +89,9 @@ export class App implements OnInit {
   private checkPreloaderRoute(url: string) {
     const path = url.split('?')[0]; // Ignora query parameters para comparação
     const isHomepage = path === '/' || path === '/homepage' || path === '';
-    const wasOnHomepage = this.lastUrl === '/' || this.lastUrl === '/homepage' || this.lastUrl === '';
 
-    // Dispara o preloader se navega para a homepage vindo de outra página, ou no primeiro carregamento
-    if (isHomepage && (!wasOnHomepage || this.lastUrl === '')) {
+    // Dispara o preloader apenas no primeiro carregamento da aplicação se a rota inicial for a homepage
+    if (isHomepage && this.lastUrl === '') {
       this.showPreloader = true;
       this.isRevealing = false;
     }

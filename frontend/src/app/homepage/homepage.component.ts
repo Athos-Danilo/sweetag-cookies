@@ -3,6 +3,7 @@ import { DecimalPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../core/services/cart.service';
 import { Product } from '../core/models/product.model';
+import { FooterComponent } from '../shared/components/footer/footer.component';
 
 interface CookieItem {
   id: string;
@@ -17,7 +18,7 @@ interface CookieItem {
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [DecimalPipe, CommonModule],
+  imports: [DecimalPipe, CommonModule, FooterComponent],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.scss'
 })
