@@ -1,8 +1,8 @@
-# 🧠🍪 PsiCookie
+# 🧠🍪 SweetAg Cookies
 
 > *"Alimente sua mente. E sua fome."*
 
-O **PsiCookie** é uma plataforma web híbrida inovadora com foco mobile-first, projetada para a comercialização, gestão operacional e entrega de cookies artesanais temáticos no ambiente universitário de psicologia. Muito mais do que um delivery convencional, o PsiCookie integra uma narrativa divertida baseada em conceitos e teóricos da psicologia com uma experiência comunitária de apoio financeiro estudantil.
+O **SweetAg Cookies** é uma plataforma web híbrida inovadora com foco mobile-first, projetada para a comercialização, gestão operacional e entrega de cookies artesanais temáticos no ambiente universitário de psicologia. Muito mais do que um delivery convencional, o SweetAg Cookies integra uma narrativa divertida baseada em conceitos e teóricos da psicologia com uma experiência comunitária de apoio financeiro estudantil.
 
 ---
 
@@ -183,7 +183,7 @@ graph TD
 ## 📝 Licença e Informações Gerais
 *   **Criação do Projeto:** 20/05/2026
 *   **Status Atual:** 2.0 (Planejamento e Refinamento)
-*   **Contato:** Equipe de desenvolvimento PsiCookie.
+*   **Contato:** Equipe de desenvolvimento SweetAg Cookies.
 
 ---
-*PsiCookie: Onde cada mordida é um reforço positivo!* 🍪🧠
+*SweetAg Cookies: Onde cada mordida é um reforço positivo!* 🍪🧠

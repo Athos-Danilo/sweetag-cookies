@@ -4,8 +4,8 @@ from app.auth.routes import router as auth_router
 from app.core.database import engine, Base
 
 app = FastAPI(
-    title="PsiCookie API",
-    description="Backend API for PsiCookie platform - Theme: Psychology Cookies",
+    title="SweetAg Cookies API",
+    description="Backend API for SweetAg Cookies platform - Theme: Psychology Cookies",
     version="1.0.0"
 )
 
@@ -31,6 +31,6 @@ async def startup():
 def read_root():
     return {
         "status": "active",
-        "project": "PsiCookie",
+        "project": "SweetAg Cookies",
         "slogan": "Alimente sua mente. E sua fome. 🧠🍪"
     }

@@ -1,1 +1,1 @@
-# PsiCookie Backend Application Package
+# SweetAg Cookies Backend Application Package

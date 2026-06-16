@@ -8,7 +8,7 @@
 
 | Campo | Valor |
 |---|---|
-| Nome do Projeto | PsiCookie |
+| Nome do Projeto | SweetAg Cookies |
 | Categoria | Web App de Delivery e Gestão de Pedidos |
 | Status | Planejamento e Refinamento |
 | Versão do Documento | 2.0 |
@@ -134,7 +134,7 @@ Exemplos de uso:
 
 ## 5.3 Identidade Visual
 
-A marca está definida como **PsiCookie**.
+A marca está definida como **SweetAg Cookies**.
 Slogan: "Alimente sua mente. E sua fome."
 
 Paleta: Verde-sálvia #7A9E7E + Bege quente #F5ECD7 + Terracota #C4673A
