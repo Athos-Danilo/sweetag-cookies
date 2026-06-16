@@ -1,4 +1,4 @@
-/* Fundo degradê original (começa claro, igual à homepage) */
+/* Fundo base sólido para evitar oscilação */
 .preloader-overlay {
   position: fixed;
   top: 0;
@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
+  background-color: #FAF8F5;
   z-index: 99999;
   overflow: hidden;
   transform: translateY(0);
@@ -18,7 +18,7 @@
   transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1);
 }
 
-/* Transiciona para o degradê quente (laranja/pêssego) no final da animação */
+/* Primeiro degradê (claro) */
 .preloader-overlay::before {
   content: '';
   position: absolute;
@@ -26,10 +26,24 @@
   left: 0;
   width: 100%;
   height: 100%;
+  background: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #FAF2E6 40%, #F5ECD7 100%);
+  pointer-events: none;
+}
+
+/* Transiciona para o degradê quente (laranja/pêssego) no final da animação */
+.preloader-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: radial-gradient(circle, rgba(241, 195, 153, 0.5) 0%, rgba(255, 144, 0, 0.5) 100%), #FAF8F5;
-  z-index: -1;
   opacity: 0;
-  animation: transitionToHomeGradient 3.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: transitionToHomeGradient 3.1s cubic-bezier(0.85, 0, 0.3, 1) forwards;
+  pointer-events: none;
+  /* Força renderização via hardware e previne bugs de opacidade no Safari/iOS */
+  will-change: opacity;
 }
 
 /* Animação da Cortina Deslizando para Cima (Opção A) */
@@ -67,13 +81,17 @@
   animation: cookieBounceIn 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   /* Transição elástica premium para encolhimento do último pedaço */
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out;
+  /* Mover o drop-shadow para o wrapper resolve o bug do Safari (iOS) com troca de src */
+  filter: drop-shadow(0 12px 28px rgba(46, 28, 18, 0.12));
 }
 
 .cookie-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 12px 28px rgba(46, 28, 18, 0.12));
+  /* Força aceleração de hardware e evita flicker/bug de máscara no Safari/iOS */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Micro-animação: leve encolhimento e rotação ao mudar a imagem (simulando a mordida) */
