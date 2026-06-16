@@ -66,7 +66,7 @@
   margin-bottom: 44px;
 
   .hero-card {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(232, 231, 192, 0.8);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: var(--rounded-xl);
@@ -102,12 +102,16 @@
     }
 
     h2 {
-      font-size: 34px;
+      font-size: 26px;
       font-weight: 800;
       color: var(--color-on-surface);
       margin-bottom: 18px;
       letter-spacing: -0.03em;
       line-height: 1.15;
+
+      @media (max-width: 360px) {
+        font-size: 22px;
+      }
 
       @media (min-width: 768px) {
         font-size: 42px;
@@ -120,71 +124,8 @@
       max-width: 820px;
       line-height: 1.65;
       margin-bottom: 28px;
-    }
-
-    /* Barra de Reforço Positivo */
-    .reinforcement-bar {
-      margin-top: 20px;
-      background: rgba(245, 236, 215, 0.4);
-      padding: 14px 20px;
-      border-radius: var(--rounded-md);
-      border: 1px solid rgba(245, 236, 215, 0.6);
-      
-      .bar-track {
-        height: 6px;
-        width: 100%;
-        background-color: rgba(122, 158, 126, 0.15);
-        border-radius: var(--rounded-full);
-        overflow: hidden;
-        margin-bottom: 10px;
-        position: relative;
-      }
-
-      /* Animação de carregamento ao iniciar a página */
-      @keyframes fillBarAnimation {
-        from { width: 0%; }
-        to { width: 100%; }
-      }
-
-      .bar-fill {
-        height: 100%;
-        background: linear-gradient(to right, var(--color-secondary) 0%, #95BCA0 100%);
-        border-radius: var(--rounded-full);
-        animation: fillBarAnimation 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        animation-delay: 0.6s;
-        width: 0%; /* Inicia em zero para a animação */
-        position: relative;
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-          animation: barGlow 2.5s infinite linear;
-        }
-      }
-
-      @keyframes barGlow {
-        from { transform: translateX(-100%); }
-        to { transform: translateX(100%); }
-      }
-
-      .reinforcement-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #4A5F4D; /* Verde escuro */
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        
-        &::before {
-          content: '💡';
-          font-size: 14px;
-        }
-      }
+      text-align: justify;
+      text-align-last: left;
     }
   }
 }

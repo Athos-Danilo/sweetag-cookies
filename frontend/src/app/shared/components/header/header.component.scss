@@ -4,17 +4,22 @@
   top: 16px;
   z-index: 100;
   width: 100%;
-  pointer-events: none; /* Permite rolar através das margens externas */
-  
+  pointer-events: none;
+  /* Permite rolar através das margens externas */
+
   @media (max-width: 767px) {
-    top: 8px;
+    top: 16px;
+  }
+
+  @media (max-width: 360px) {
+    top: 10px;
   }
 }
 
 .app-header {
   width: calc(100% - 32px);
   max-width: 1100px;
-  margin: 0 auto;
+  margin: 0 auto 32px; /* Margem inferior para espaçamento consistente no desktop */
   opacity: 0;
   transform: translateY(-25px) scale(0.97);
 
@@ -25,28 +30,38 @@
   }
 
   @media (max-width: 767px) {
-    width: calc(100% - 16px); /* Diminui margens laterais externas (mais largo no celular) */
+    width: calc(100% - 32px); /* Mesma margem lateral do bottom-nav */
+    margin-bottom: 24px; /* Espaçamento inferior consistente no celular */
+  }
+
+  @media (max-width: 360px) {
+    width: calc(100% - 16px); /* Mesma margem lateral do bottom-nav em telas pequenas */
+    margin-bottom: 18px; /* Ajuste para telas muito pequenas */
   }
 }
 
 .header-pill {
-  pointer-events: auto; /* Reativa cliques dentro da pílula */
+  pointer-events: auto;
+  /* Reativa cliques dentro da pílula */
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin: 0 auto; /* Garante centralização perfeita mesmo ao encolher a largura */
-  padding: 10px 24px;
-  background: rgba(250, 248, 245, 0.90); /* Branco translúcido fosco no topo */
+  margin: 0 auto;
+  /* Garante centralização perfeita mesmo ao encolher a largura */
+  padding: 16px 24px;
+  /* Aumentado de 10px para 16px vertical */
+  background: rgba(250, 248, 245, 0.90);
+  /* Branco translúcido fosco no topo */
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(122, 78, 39, 0.08);
   border-radius: 9999px;
-  box-shadow: 
+  box-shadow:
     0 1px 2px rgba(46, 28, 18, 0.02),
     0 12px 30px -10px rgba(46, 28, 18, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transition: 
+  transition:
     width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.4s ease,
@@ -55,7 +70,7 @@
     transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    box-shadow: 
+    box-shadow:
       0 1px 2px rgba(46, 28, 18, 0.02),
       0 16px 36px -8px rgba(46, 28, 18, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -64,23 +79,22 @@
 
   // Efeito de encolhimento dinâmico conforme o usuário rola a página
   &.scrolled {
-    padding: 6px 20px;
-    background: rgba(250, 248, 245, 0.94); /* Mantém o branco creme fosco no scroll */
-    box-shadow: 
+    padding: 10px 20px;
+    /* Aumentado de 6px para 10px vertical */
+    background: rgba(250, 248, 245, 0.94);
+    /* Mantém o branco creme fosco no scroll */
+    box-shadow:
       0 1px 3px rgba(46, 28, 18, 0.03),
       0 16px 36px -12px rgba(46, 28, 18, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.6);
     border-color: rgba(122, 78, 39, 0.14);
 
-    .logo-icon {
-      width: 30px;
-      height: 30px;
-    }
-
     .brand-title-group {
+
       .brand-title,
       .brand-subtitle {
-        font-size: 16.5px;
+        font-size: 20px;
+        /* Aumentado no scroll de 16.5px para 20px */
       }
     }
 
@@ -88,38 +102,54 @@
       max-height: 0;
       opacity: 0;
       margin-top: 0;
+      padding: 0;
+      line-height: 0;
+      font-size: 0px !important;
+      overflow: hidden;
     }
-    
+
     @media (max-width: 767px) {
-      padding: 13px 20px; /* Aumenta a altura interna no celular no scroll (notch style) */
-      width: 220px; /* Encolhe horizontalmente como o notch do iPhone */
+      padding: 13px 20px;
+      /* Aumenta a altura interna no celular no scroll (notch style) */
+      width: 220px;
+      /* Encolhe horizontalmente como o notch do iPhone */
       justify-content: center;
 
-      .logo-icon {
-        width: 0px;
-        height: 0px;
-        opacity: 0;
-        overflow: hidden;
-        margin-right: 0px;
+      .brand {
+        width: auto;
+        /* Deixa o flex do pai centralizar perfeitamente */
+        justify-content: center;
       }
 
       .brand-title-group {
+
         .brand-title,
         .brand-subtitle {
-          font-size: 14.5px;
+          font-size: 18px;
+          /* Aumentado no scroll para celular */
         }
       }
     }
   }
 
   @media (max-width: 767px) {
-    padding: 14px 18px; /* Aumenta a altura interna no celular sem scroll (de 9px para 14px) */
+    border-radius: 20px;
+    /* Mesmo do bottom-nav */
+    padding: 10px 4px;
+    /* Mesmo do bottom-nav */
+  }
+
+  @media (max-width: 360px) {
+    border-radius: 16px;
+    /* Mesmo do bottom-nav para telas pequenas */
+    padding: 8px 2px;
+    /* Mesmo do bottom-nav para telas pequenas */
   }
 }
 
 // Elementos filhos para animação em cascata
-.brand, 
-.nav-item, 
+.brand,
+.nav-item,
 .header-actions {
   opacity: 0;
   transform: translateY(10px);
@@ -160,28 +190,7 @@
   user-select: none;
   transition: transform 0.3s ease;
 
-  &:hover {
-    .logo-icon {
-      transform: rotate(15deg) scale(1.06);
-    }
-  }
 
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    filter: drop-shadow(0 2px 5px rgba(46, 28, 18, 0.08));
-
-    .cookie-logo-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 50%;
-    }
-  }
 
   .brand-text {
     display: flex;
@@ -194,11 +203,12 @@
   .brand-title-group {
     display: flex;
     align-items: baseline;
-    gap: 4px;
-    
+    gap: 0px;
+
     .brand-title {
       font-family: var(--font-headline);
-      font-size: 18px;
+      font-size: 28px;
+      /* Aumentado de 18px para 28px */
       font-weight: 800;
       color: var(--color-on-surface);
       letter-spacing: -0.03em;
@@ -207,7 +217,8 @@
 
     .brand-subtitle {
       font-family: var(--font-headline);
-      font-size: 18px;
+      font-size: 28px;
+      /* Aumentado de 18px para 28px */
       font-weight: 400;
       color: var(--color-primary); // Terracota
       letter-spacing: -0.03em;
@@ -217,7 +228,7 @@
 
   .brand-tagline {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--color-on-surface-variant);
     margin: 0;
@@ -226,9 +237,9 @@
     max-height: 20px;
     opacity: 0.85;
     overflow: hidden;
-    transition: 
-      max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-      opacity 0.3s ease, 
+    transition:
+      max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s ease,
       margin-top 0.3s ease;
   }
 }
@@ -285,7 +296,7 @@
 
     &:hover:not(.disabled-link) {
       color: var(--color-primary);
-      
+
       &::before {
         transform: scale(1);
         opacity: 1;
@@ -306,7 +317,7 @@
   .disabled-link {
     opacity: 0.4;
     cursor: not-allowed;
-    
+
     &:hover {
       background: transparent;
       color: var(--color-on-surface-variant);
@@ -445,6 +456,7 @@
    Ajustes de Responsividade (Celular)
    ========================================================================== */
 @media (max-width: 767px) {
+
   // Oculta a navegação e as ações à direita no mobile, pois a navegação inferior gerencia isso
   .desktop-nav,
   .header-actions {
@@ -455,10 +467,24 @@
     width: 100%;
     justify-content: center;
     text-align: center;
-    flex-direction: row; // Mantém imagem e textos lado a lado
+    flex-direction: row;
 
     .brand-text {
       align-items: center; // Centraliza a tagline abaixo do título
+    }
+
+    .brand-title-group {
+
+      .brand-title,
+      .brand-subtitle {
+        font-size: 24px;
+        /* Aumentado no celular */
+      }
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      /* Aumentado no celular */
     }
   }
 }
@@ -474,6 +500,7 @@
     opacity: 0;
     transform: translateY(-25px) scale(0.97);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -486,6 +513,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -494,18 +522,24 @@
 
 // Animação 3D de pulo do Carrinho
 @keyframes bounceCart {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   30% {
     transform: scale(1.25) translateY(-5px) rotate(-8deg);
   }
+
   50% {
     transform: scale(0.88) translateY(1.5px) rotate(4deg);
   }
+
   70% {
     transform: scale(1.1) translateY(-1.5px) rotate(-2deg);
   }
+
   85% {
     transform: scale(0.97) translateY(0.5px);
   }
