@@ -19,7 +19,8 @@
 .app-header {
   width: calc(100% - 32px);
   max-width: 1100px;
-  margin: 0 auto 32px; /* Margem inferior para espaçamento consistente no desktop */
+  margin: 0 auto 32px;
+  /* Margem inferior para espaçamento consistente no desktop */
   opacity: 0;
   transform: translateY(-25px) scale(0.97);
 
@@ -30,13 +31,17 @@
   }
 
   @media (max-width: 767px) {
-    width: calc(100% - 32px); /* Mesma margem lateral do bottom-nav */
-    margin-bottom: 24px; /* Espaçamento inferior consistente no celular */
+    width: calc(100% - 32px);
+    /* Mesma margem lateral do bottom-nav */
+    margin-bottom: 24px;
+    /* Espaçamento inferior consistente no celular */
   }
 
   @media (max-width: 360px) {
-    width: calc(100% - 16px); /* Mesma margem lateral do bottom-nav em telas pequenas */
-    margin-bottom: 18px; /* Ajuste para telas muito pequenas */
+    width: calc(100% - 16px);
+    /* Mesma margem lateral do bottom-nav em telas pequenas */
+    margin-bottom: 18px;
+    /* Ajuste para telas muito pequenas */
   }
 }
 
@@ -107,10 +112,9 @@
     }
 
     @media (max-width: 767px) {
-      padding: 13px 20px;
-      /* Aumenta a altura interna no celular no scroll (notch style) */
       width: 220px;
-      /* Encolhe horizontalmente como o notch do iPhone */
+      height: 46px;
+      padding: 0 20px;
 
       .brand-title-group {
 
@@ -126,16 +130,21 @@
   @media (max-width: 767px) {
     border-radius: 20px;
     /* Mesmo do bottom-nav */
-    padding: 10px 4px;
-    /* Mesmo do bottom-nav */
+    height: 64px;
+    /* Mesma altura do bottom-nav */
+    padding: 0 16px;
+    /* Ajustado para centralizar horizontalmente com padding interno confortável */
     justify-content: center;
+    box-sizing: border-box;
   }
 
   @media (max-width: 360px) {
     border-radius: 16px;
     /* Mesmo do bottom-nav para telas pequenas */
-    padding: 8px 2px;
-    /* Mesmo do bottom-nav para telas pequenas */
+    height: 56px;
+    /* Mesma altura do bottom-nav para telas pequenas */
+    padding: 0 12px;
+    /* Ajustado */
   }
 }
 
@@ -226,7 +235,7 @@
     font-weight: 500;
     color: var(--color-on-surface-variant);
     margin: 0;
-    margin-top: -1px;
+    margin-top: 5px;
     line-height: 1.15;
     max-height: 20px;
     opacity: 0.85;
