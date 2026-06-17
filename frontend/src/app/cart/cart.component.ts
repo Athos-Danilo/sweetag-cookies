@@ -16,6 +16,7 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   checkoutForm: FormGroup;
   total: number = 0;
+  currentStep: 'cart' | 'delivery' = 'cart';
 
   constructor(
     public cartService: CartService,
@@ -49,6 +50,18 @@ export class CartComponent implements OnInit {
     this.cartService.removeFromCart(productId);
   }
 
+  goToDelivery() {
+    if (this.cartItems.length > 0) {
+      this.currentStep = 'delivery';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  goToCart() {
+    this.currentStep = 'cart';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   onSubmitCheckout() {
     if (this.checkoutForm.valid && this.cartItems.length > 0) {
       console.log('Dados do pedido:', {
@@ -61,6 +74,7 @@ export class CartComponent implements OnInit {
       
       // Limpa formulário
       this.checkoutForm.reset();
+      this.currentStep = 'cart';
       
       // Na V1: direcionaria para tela de PIX e acionaria temporizador
       // this.router.navigate(['/payment']);
@@ -70,6 +84,10 @@ export class CartComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    if (this.currentStep === 'delivery') {
+      this.goToCart();
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

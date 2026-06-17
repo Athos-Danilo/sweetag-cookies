@@ -10,84 +10,117 @@
     <p class="subtitle">Sua sessão terapêutica em forma de cookie está quase garantida!</p>
   </header>
 
-  <div class="cart-content" *ngIf="cartItems.length > 0; else emptyCart">
-    <div class="items-section">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <div class="item-image-wrapper">
-          <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image">
-        </div>
-        
-        <div class="item-details">
-          <h3>{{ item.product.name }}</h3>
-          <p class="theme">{{ item.product.theme }}</p>
-          <span class="price">{{ item.product.price | currency:'BRL':'symbol':'1.2-2' }}</span>
-        </div>
-
-        <div class="item-actions">
-          <div class="quantity-controls">
-            <button class="qty-btn" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">-</button>
-            <span class="qty">{{ item.quantity }}</span>
-            <button class="qty-btn" (click)="increaseQuantity(item)" [disabled]="item.quantity >= item.product.stock">+</button>
-          </div>
-          <button class="remove-btn" (click)="removeItem(item.product.id)">Remover</button>
-        </div>
-      </div>
+  <!-- Indicador visual de etapas (Steps Indicator) -->
+  <div class="steps-indicator" *ngIf="cartItems.length > 0">
+    <div class="step" [class.active]="currentStep === 'cart'" (click)="goToCart()">
+      <span class="step-number">1</span>
+      <span class="step-label">Revisão</span>
     </div>
+    <div class="step-connector" [class.active]="currentStep === 'delivery'"></div>
+    <div class="step" [class.active]="currentStep === 'delivery'" (click)="goToDelivery()">
+      <span class="step-number">2</span>
+      <span class="step-label">Entrega</span>
+    </div>
+  </div>
 
-    <div class="checkout-section">
-      <div class="summary-card">
-        <h2>Resumo do Pedido</h2>
-        <div class="summary-row">
-          <span>Subtotal</span>
-          <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
-        </div>
-        <div class="summary-total">
-          <span>Total</span>
-          <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+  <div class="cart-content" [class.delivery-step]="currentStep === 'delivery'" *ngIf="cartItems.length > 0; else emptyCart">
+    <!-- ETAPA 1: REVISÃO DE ITENS -->
+    <ng-container *ngIf="currentStep === 'cart'">
+      <div class="items-section animate-fade">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-image-wrapper">
+            <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image">
+          </div>
+          
+          <div class="item-details">
+            <h3>{{ item.product.name }}</h3>
+            <p class="theme">{{ item.product.theme }}</p>
+            <span class="price">{{ item.product.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="item-actions">
+            <div class="quantity-controls">
+              <button class="qty-btn" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">-</button>
+              <span class="qty">{{ item.quantity }}</span>
+              <button class="qty-btn" (click)="increaseQuantity(item)" [disabled]="item.quantity >= item.product.stock">+</button>
+            </div>
+            <button class="remove-btn" (click)="removeItem(item.product.id)">Remover</button>
+          </div>
         </div>
       </div>
 
-      <div class="delivery-card">
-        <h2>Onde entregamos seu reforço positivo?</h2>
-        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitCheckout()" class="delivery-form">
-          <div class="form-group">
-            <label for="department">Departamento / Curso</label>
-            <input id="department" type="text" formControlName="department" placeholder="Ex: Psicologia">
-            <small class="error" *ngIf="checkoutForm.get('department')?.invalid && checkoutForm.get('department')?.touched">
-              Obrigatório.
-            </small>
+      <div class="checkout-section animate-fade">
+        <div class="summary-card">
+          <h2>Resumo do Pedido</h2>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="block">Bloco/Prédio</label>
-              <input id="block" type="text" formControlName="block" placeholder="Ex: Bloco C">
-              <small class="error" *ngIf="checkoutForm.get('block')?.invalid && checkoutForm.get('block')?.touched">
-                Obrigatório.
-              </small>
-            </div>
-            
-            <div class="form-group">
-              <label for="room">Sala</label>
-              <input id="room" type="text" formControlName="room" placeholder="Ex: Sala 304">
-              <small class="error" *ngIf="checkoutForm.get('room')?.invalid && checkoutForm.get('room')?.touched">
-                Obrigatório.
-              </small>
-            </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
           </div>
-
-          <div class="form-group">
-            <label for="reference">Ponto de Referência (Opcional)</label>
-            <input id="reference" type="text" formControlName="reference" placeholder="Ex: Perto do laboratório de neuro">
-          </div>
-
-          <button type="submit" class="checkout-btn" [disabled]="checkoutForm.invalid">
-            Confirmar Reserva (Pix)
+          
+          <button class="primary-btn advance-btn" (click)="goToDelivery()">
+            Avançar para Entrega
+            <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
           </button>
-          <p class="timer-warning">⚠️ Você terá 30 minutos para pagar após confirmar.</p>
-        </form>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <!-- ETAPA 2: ENDEREÇO DE ENTREGA -->
+    <ng-container *ngIf="currentStep === 'delivery'">
+      <div class="delivery-section animate-fade">
+        <div class="delivery-card">
+          <h2>Onde entregamos seu reforço positivo?</h2>
+          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitCheckout()" class="delivery-form">
+            <div class="form-group">
+              <label for="department">Departamento / Curso</label>
+              <input id="department" type="text" formControlName="department" placeholder="Ex: Psicologia">
+              <small class="error" *ngIf="checkoutForm.get('department')?.invalid && checkoutForm.get('department')?.touched">
+                Obrigatório.
+              </small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="block">Bloco/Prédio</label>
+                <input id="block" type="text" formControlName="block" placeholder="Ex: Bloco C">
+                <small class="error" *ngIf="checkoutForm.get('block')?.invalid && checkoutForm.get('block')?.touched">
+                  Obrigatório.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="room">Sala</label>
+                <input id="room" type="text" formControlName="room" placeholder="Ex: Sala 304">
+                <small class="error" *ngIf="checkoutForm.get('room')?.invalid && checkoutForm.get('room')?.touched">
+                  Obrigatório.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reference">Ponto de Referência (Opcional)</label>
+              <input id="reference" type="text" formControlName="reference" placeholder="Ex: Perto do laboratório de neuro">
+            </div>
+
+            <div class="delivery-actions">
+              <button type="button" class="back-step-btn" (click)="goToCart()">
+                Voltar ao Carrinho
+              </button>
+              <button type="submit" class="checkout-btn" [disabled]="checkoutForm.invalid">
+                Confirmar Reserva (Pix)
+              </button>
+            </div>
+            <p class="timer-warning">⚠️ Você terá 30 minutos para pagar após confirmar.</p>
+          </form>
+        </div>
+      </div>
+    </ng-container>
   </div>
 
   <ng-template #emptyCart>
