@@ -1,51 +1,86 @@
-<div class="psycho-bakery-container">
-  <!-- Hero / Introduction -->
-  <section class="hero-section fade-in-up">
-    <div class="hero-card">
-      <div class="hero-clinical-id">CLINICAL DIRECTORY // VOL. 01</div>
-      <h2>Prescrições do Dia</h2>
-      <p>
-        Explore nosso menu de cookies temáticos inspirados nas maiores mentes da psicologia.
-        Cada cookie foi formulado com dosagens precisas de ingredientes selecionados para promover a sua satisfação
-        cognitiva imediata.
-      </p>
+<div class="app-home-container">
+  <!-- Top App Header -->
+  <header class="home-header fade-in-up">
+    <div class="greeting">
+      <p class="subtitle">Olá, paciente!</p>
+      <h1 class="title">Qual a sua prescrição de hoje?</h1>
+    </div>
+  </header>
+
+  <!-- Promotional Banner -->
+  <section class="promo-banner fade-in-up">
+    <div class="promo-content">
+      <span class="promo-tag">Aproveite</span>
+      <h2>Entrega Grátis</h2>
+      <p>Todas as prescrições chegam até você sem taxa de entrega!</p>
+    </div>
+    <div class="promo-image">
+      <!-- Using Piaget as placeholder since the image exists -->
+      <img src="assets/fotos/piaget.jpeg" alt="Cookie Promocional">
     </div>
   </section>
 
+  <!-- Categories Filter -->
+  <section class="categories-carousel fade-in-up">
+    <div class="carousel-track">
+      @for (cat of categories; track cat) {
+        <button 
+          class="category-pill" 
+          [class.active]="selectedCategory() === cat"
+          (click)="selectCategory(cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Title for list -->
+  <div class="section-title fade-in-up">
+    <h3>Mais receitados</h3>
+  </div>
+
   <!-- Cookies Grid -->
   <main class="menu-grid fade-in-up">
-    @for (cookie of cookies(); track cookie.id) {
-    <div class="cookie-card">
-      <div class="card-header">
-        <span class="cookie-id">{{ cookie.id }}</span>
-        <span class="cookie-category">{{ cookie.categoria }}</span>
-      </div>
-
+    @for (cookie of filteredCookies(); track cookie.id) {
+    <div class="product-card" (click)="openCookieModal(cookie)" style="cursor: pointer;">
       <div class="image-wrapper">
-        <img [src]="cookie.imagem" [alt]="cookie.nome" class="cookie-image">
+        <img [src]="cookie.imagem" [alt]="cookie.nome" class="product-image">
       </div>
-
-      <div class="card-body">
-        <h3 class="cookie-name">{{ cookie.nome }}</h3>
-        <p class="cookie-flavor"><strong>Sabor:</strong> {{ cookie.sabor }}</p>
-        <p class="cookie-desc">"{{ cookie.diagnostico }}"</p>
-      </div>
-
-      <div class="card-footer">
-        <div class="price-container">
-          <span class="price-label">Preço da sessão</span>
-          <span class="price-value">R$ {{ cookie.valor | number:'1.2-2' }}</span>
+      
+      <div class="product-info">
+        <div class="product-header">
+          <h3 class="product-name">{{ cookie.nome }}</h3>
         </div>
-
-        <button class="btn-prescribe" (click)="adicionarAoCarrinho(cookie)">
-          <span>Prescrever</span>
-          <span class="btn-icon">✚</span>
-        </button>
+        
+        <p class="product-flavor">{{ cookie.sabor }}</p>
+        <p class="product-desc">{{ cookie.diagnostico }}</p>
+        
+        <div class="product-footer">
+          <span class="product-price">R$ {{ cookie.valor | number:'1.2-2' }}</span>
+          <button class="btn-add" (click)="adicionarAoCarrinho(cookie); $event.stopPropagation()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+        </div>
       </div>
     </div>
+    }
+    
+    @if (filteredCookies().length === 0) {
+      <div class="empty-state">
+        <p>Nenhuma prescrição encontrada para esta abordagem.</p>
+      </div>
     }
   </main>
 
   <!-- Footer -->
   <app-footer class="app-footer fade-in-up"></app-footer>
+
+  <!-- Product Detail Modal (Bottom Sheet) -->
+  @if (selectedCookieDetail()) {
+    <app-product-modal 
+      [cookie]="selectedCookieDetail()" 
+      (close)="closeCookieModal()" 
+      (addToCart)="adicionarAoCarrinho($event.cookie, $event.quantity)">
+    </app-product-modal>
+  }
 </div>
