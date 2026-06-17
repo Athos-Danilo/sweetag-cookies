@@ -1,234 +1,134 @@
 .app-footer {
   width: 100%;
-  max-width: 1200px;
-  margin-top: 80px;
-  padding-bottom: 30px;
+  padding: 32px 16px 40px; /* Padding for bottom spacing so it doesn't get covered by BottomNav */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
   position: relative;
-  z-index: 5;
-
-  .footer-divider {
-    height: 2px;
-    /* Linha gradiente sofisticada */
-    background: linear-gradient(to right, rgba(196, 103, 58, 0) 0%, rgba(196, 103, 58, 0.3) 25%, rgba(122, 158, 126, 0.3) 75%, rgba(122, 158, 126, 0) 100%);
-    margin-bottom: 48px;
-    border-radius: var(--rounded-full);
+  
+  /* Subtle top border */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 200px;
+    height: 1px;
+    background: linear-gradient(to right, rgba(196, 103, 58, 0) 0%, rgba(196, 103, 58, 0.2) 50%, rgba(196, 103, 58, 0) 100%);
   }
 
-  /* Grid Principal do Footer */
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-    margin-bottom: 48px;
-    text-align: left;
-
-    @media (min-width: 768px) {
-      grid-template-columns: 2fr 1fr 1.5fr;
-      gap: 60px;
-    }
-  }
-
-  .footer-col {
-    display: flex;
-    flex-direction: column;
-    
-    h4 {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--color-on-surface);
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      position: relative;
-      padding-bottom: 8px;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 32px;
-        height: 2px;
-        background-color: var(--color-primary); /* Terracota */
-      }
-    }
-  }
-
-  /* Coluna 1: Branding e Descrição */
-  .branding-col {
-    .footer-logo {
-      font-family: var(--font-headline);
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--color-primary);
-      letter-spacing: -0.02em;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .footer-tagline {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--color-on-surface);
-      margin-bottom: 14px;
-    }
-
-    .footer-about {
-      font-size: 13.5px;
-      color: var(--color-on-surface-variant);
-      line-height: 1.6;
-    }
-  }
-
-  /* Coluna 2: Links Clínicos */
-  .links-col {
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-
-      a {
-        font-size: 14px;
-        color: var(--color-on-surface-variant);
-        font-weight: 600;
-        transition: all 0.2s ease;
-        display: inline-block;
-        
-        &:hover {
-          color: var(--color-primary);
-          transform: translateX(4px);
-        }
-      }
-    }
-  }
-
-  /* Coluna 3: Conexões e Redes (Botões Sociais Premium) */
-  .social-col {
-    .social-intro {
-      font-size: 13.5px;
-      color: var(--color-on-surface-variant);
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .social-links {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .social-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 18px;
-      border-radius: var(--rounded-md);
-      font-size: 13.5px;
-      font-weight: 700;
-      border: 1px solid rgba(245, 236, 215, 0.8);
-      background-color: rgba(255, 255, 255, 0.4);
-      color: var(--color-on-surface);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 2px 6px rgba(46, 28, 18, 0.02);
-
-      .social-icon {
-        font-size: 16px;
-      }
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(46, 28, 18, 0.06);
-      }
-
-      /* Estilização individual dos botões sociais */
-      &.whatsapp:hover {
-        background-color: rgba(122, 158, 126, 0.1);
-        border-color: var(--color-secondary);
-        color: #3b503e;
-      }
-
-      &.instagram:hover {
-        background-color: rgba(196, 103, 58, 0.08);
-        border-color: var(--color-primary);
-        color: #7a3512;
-      }
-
-      &.github:hover {
-        background-color: var(--color-on-surface);
-        border-color: var(--color-on-surface);
-        color: white;
-      }
-    }
-  }
-
-  /* Base do Footer: Desenvolvedores e Copyright */
-  .footer-base {
-    border-top: 1px solid rgba(245, 236, 215, 0.5);
-    padding-top: 36px;
+  .footer-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 22px;
+    text-align: center;
+    background-color: var(--color-surface-container-lowest, #fff);
+    border: 1px solid rgba(245, 236, 215, 0.6);
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 12px rgba(46, 28, 18, 0.03);
+    max-width: 320px;
+    width: 100%;
+    transition: all 0.3s ease;
 
-    .footer-devs {
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      max-width: 900px; /* Wide, elegant strip */
+      padding: 16px 32px;
+      text-align: left;
+      border-radius: 100px; /* Pill shape */
+    }
+  }
+
+  .footer-text-block {
+    @media (min-width: 768px) {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+    }
+  }
 
-      @media (min-width: 600px) {
-        flex-direction: row;
-        gap: 16px;
+  .footer-tagline {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--color-on-surface);
+    margin-bottom: 4px;
+    
+    @media (min-width: 768px) {
+      margin-bottom: 0;
+      font-size: 15px;
+    }
+  }
+
+  .footer-subtext {
+    font-size: 12px;
+    color: var(--color-on-surface-variant);
+    margin-bottom: 16px;
+    
+    @media (min-width: 768px) {
+      margin-bottom: 0;
+      font-size: 14px;
+      &::before {
+        content: '- ';
+        color: rgba(196, 103, 58, 0.4);
+      }
+    }
+  }
+
+  .social-links {
+    display: flex;
+    gap: 16px;
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #FBF9F6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-on-surface-variant);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(245, 236, 215, 0.8);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       }
 
-      .dev-label {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--color-on-surface-variant);
-        font-weight: 700;
-      }
-
-      .dev-badges {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .dev-badge {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background-color: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(245, 236, 215, 0.8);
-        color: var(--color-on-surface);
-        font-weight: 700;
-        font-size: 13px;
-        padding: 6px 14px;
-        border-radius: var(--rounded-full);
-        box-shadow: 0 2px 4px rgba(46, 28, 18, 0.02);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        text-decoration: none;
-
+      &.whatsapp {
         &:hover {
-          transform: translateY(-2px);
-          background-color: var(--color-secondary-container);
-          border-color: rgba(196, 103, 58, 0.2);
-          box-shadow: 0 4px 8px rgba(196, 103, 58, 0.08);
+          color: #25D366;
+          border-color: #25D366;
+          background-color: rgba(37, 211, 102, 0.05);
+        }
+      }
+
+      &.instagram {
+        &:hover {
+          color: #E1306C;
+          border-color: #E1306C;
+          background-color: rgba(225, 48, 108, 0.05);
         }
       }
     }
+  }
+}
 
-    .copyright {
-      font-size: 11.5px;
-      color: var(--color-on-surface-variant);
-      text-align: center;
-      line-height: 1.5;
-    }
+.footer-copyright {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  opacity: 0.7;
+  text-align: center;
+  
+  @media (min-width: 768px) {
+    font-size: 12px;
+    margin-top: 24px;
   }
 }
