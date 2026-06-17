@@ -1,22 +1,22 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })
-export class AuthComponent {
-  whatsapp = signal<string>('');
-  nome = signal<string>('');
-  aceitaNotificacoes = signal<boolean>(false);
+export class AuthComponent implements OnInit {
+  authForm!: FormGroup;
   isSubmitting = signal<boolean>(false);
+  isSpinning = signal<boolean>(false);
 
+  private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
 
@@ -33,24 +33,61 @@ export class AuthComponent {
     'Pavlov Babando'
   ];
 
+  ngOnInit(): void {
+    this.authForm = this.fb.group({
+      whatsapp: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{5}-\d{4}$/)]],
+      nome: ['', [Validators.required, Validators.minLength(2)]],
+      aceitaNotificacoes: [false]
+    });
+  }
+
+  // Máscara dinâmica para formatar em tempo de digitação (XX) XXXXX-XXXX
+  onWhatsappInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    
+    if (value.length > 11) {
+      value = value.substring(0, 11);
+    }
+    
+    let formatted = '';
+    if (value.length > 0) {
+      formatted = `(${value.substring(0, 2)}`;
+      if (value.length > 2) {
+        formatted += `) ${value.substring(2, 7)}`;
+        if (value.length > 7) {
+          formatted += `-${value.substring(7, 11)}`;
+        }
+      }
+    }
+    
+    this.authForm.get('whatsapp')?.setValue(formatted, { emitEvent: false });
+  }
+
   gerarNomeAutomatico() {
+    this.isSpinning.set(true);
     const randomIndex = Math.floor(Math.random() * this.funNames.length);
-    this.nome.set(this.funNames[randomIndex]);
+    const randomName = this.funNames[randomIndex];
+    
+    this.authForm.get('nome')?.setValue(randomName);
+    this.authForm.get('nome')?.markAsTouched();
+    
+    // Mantém a animação de rotação ativa por 500ms para feedback visual
+    setTimeout(() => {
+      this.isSpinning.set(false);
+    }, 500);
   }
 
   fazerLogin() {
-    if (!this.whatsapp().trim() || !this.nome().trim()) {
-      alert('Por favor, preencha seu WhatsApp e Nome.');
-      return;
-    }
-    if (!this.aceitaNotificacoes()) {
-      alert('Precisamos que você aceite receber notificações sobre o status do seu cookie!');
+    if (this.authForm.invalid) {
+      this.authForm.markAllAsTouched();
       return;
     }
 
     this.isSubmitting.set(true);
+    const { whatsapp, nome, aceitaNotificacoes } = this.authForm.value;
 
-    this.authService.login(this.whatsapp(), this.nome(), this.aceitaNotificacoes()).subscribe({
+    this.authService.login(whatsapp, nome, aceitaNotificacoes).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         this.router.navigate(['/']); // redireciona pro catálogo
@@ -58,7 +95,8 @@ export class AuthComponent {
       error: (err) => {
         this.isSubmitting.set(false);
         console.error('Erro no login', err);
-        alert('Ocorreu um erro ao entrar no consultório. Tente novamente.');
+        // Adiciona um erro customizado ao formulário para exibição na UI
+        this.authForm.setErrors({ loginError: true });
       }
     });
   }
