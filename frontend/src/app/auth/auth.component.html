@@ -34,15 +34,36 @@
 
   <div class="auth-card">
     <div class="auth-header">
-      <h1>Sessão Inicial</h1>
-      <p>Alimente sua mente. E sua fome.</p>
+      <h1>{{ activeTab === 'login' ? 'Sessão Inicial' : 'Nova Ficha Clínica' }}</h1>
+      <p>{{ activeTab === 'login' ? 'Alimente sua mente. E sua fome.' : 'Comece sua terapia com cookies agora mesmo!' }}</p>
+    </div>
+
+    <!-- Seletores de Abas (Tabs) -->
+    <div class="auth-tabs">
+      <button 
+        type="button" 
+        [class.active]="activeTab === 'login'" 
+        (click)="setTab('login')"
+        aria-label="Mudar para aba de login"
+      >
+        Entrar
+      </button>
+      <button 
+        type="button" 
+        [class.active]="activeTab === 'register'" 
+        (click)="setTab('register')"
+        aria-label="Mudar para aba de cadastro"
+      >
+        Criar Ficha
+      </button>
     </div>
 
     <form class="auth-form" [formGroup]="authForm" (ngSubmit)="fazerLogin()">
       
       <!-- Erro geral de login se houver -->
       <div class="general-error-message animate-fade" *ngIf="authForm.hasError('loginError')">
-        ⚠️ Ocorreu um erro ao entrar no consultório. Por favor, tente novamente.
+        <span *ngIf="activeTab === 'login'">⚠️ WhatsApp não cadastrado ou erro de rede. Tente novamente ou crie uma ficha.</span>
+        <span *ngIf="activeTab === 'register'">⚠️ Ocorreu um erro ao criar a ficha. Tente novamente.</span>
       </div>
 
       <!-- Campo WhatsApp -->
@@ -66,12 +87,12 @@
         <small id="whatsapp-hint" class="hint-text">Seu prontuário digital seguro. Usaremos só para atualizar o pedido.</small>
         <div id="whatsapp-error" class="error-message" *ngIf="authForm.get('whatsapp')?.invalid && authForm.get('whatsapp')?.touched">
           <span *ngIf="authForm.get('whatsapp')?.errors?.['required']">O WhatsApp é obrigatório.</span>
-          <span *ngIf="authForm.get('whatsapp')?.errors?.['pattern']">Digite no formato (DDD) 99999-9999.</span>
+          <span *ngIf="authForm.get('whatsapp')?.errors?.['pattern']">Digite no formato (DD) 99999-9999.</span>
         </div>
       </div>
 
-      <!-- Campo Nome -->
-      <div class="input-group">
+      <!-- Campo Nome (Exibido apenas na Aba de Cadastro) -->
+      <div class="input-group animate-fade" *ngIf="activeTab === 'register'">
         <label for="nome">Como devemos te chamar?</label>
         <div class="input-wrapper" [class.has-error]="authForm.get('nome')?.invalid && authForm.get('nome')?.touched">
           <i class="icon-user">
@@ -102,8 +123,8 @@
         </div>
       </div>
 
-      <!-- Consentimento Notificações -->
-      <div class="checkbox-group">
+      <!-- Consentimento Notificações (Exibido apenas na Aba de Cadastro) -->
+      <div class="checkbox-group animate-fade" *ngIf="activeTab === 'register'">
         <label class="custom-checkbox">
           <input 
             type="checkbox" 
@@ -119,7 +140,7 @@
       </div>
 
       <button type="submit" class="btn-primary" [disabled]="authForm.invalid || isSubmitting()">
-        <span *ngIf="!isSubmitting()">Entrar no Consultório</span>
+        <span *ngIf="!isSubmitting()">{{ activeTab === 'login' ? 'Entrar no Consultório' : 'Criar minha Ficha' }}</span>
         <span *ngIf="isSubmitting()" class="loader">Analisando...</span>
       </button>
 

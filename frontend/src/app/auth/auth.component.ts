@@ -15,6 +15,7 @@ export class AuthComponent implements OnInit {
   authForm!: FormGroup;
   isSubmitting = signal<boolean>(false);
   isSpinning = signal<boolean>(false);
+  activeTab: 'login' | 'register' = 'login';
 
   private fb = inject(FormBuilder);
   private router = inject(Router);
@@ -36,9 +37,31 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.authForm = this.fb.group({
       whatsapp: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{5}-\d{4}$/)]],
-      nome: ['', [Validators.required, Validators.minLength(2)]],
+      nome: [''], // Inicialmente opcional (aba login)
       aceitaNotificacoes: [false]
     });
+  }
+
+  setTab(tab: 'login' | 'register') {
+    this.activeTab = tab;
+    
+    // Limpa os valores e estados do formulário
+    this.authForm.reset({
+      whatsapp: '',
+      nome: '',
+      aceitaNotificacoes: false
+    });
+
+    const nomeControl = this.authForm.get('nome');
+    if (tab === 'login') {
+      nomeControl?.clearValidators();
+    } else {
+      nomeControl?.setValidators([Validators.required, Validators.minLength(2)]);
+    }
+    nomeControl?.updateValueAndValidity();
+
+    // Limpa qualquer erro geral
+    this.authForm.setErrors(null);
   }
 
   // Máscara dinâmica para formatar em tempo de digitação (XX) XXXXX-XXXX
@@ -87,7 +110,11 @@ export class AuthComponent implements OnInit {
     this.isSubmitting.set(true);
     const { whatsapp, nome, aceitaNotificacoes } = this.authForm.value;
 
-    this.authService.login(whatsapp, nome, aceitaNotificacoes).subscribe({
+    // Se for apenas login, enviamos dados vazios/default para o nome e notificações para compatibilidade com o backend
+    const nomeEnvio = this.activeTab === 'login' ? '' : nome;
+    const aceitaNotifEnvio = this.activeTab === 'login' ? false : aceitaNotificacoes;
+
+    this.authService.login(whatsapp, nomeEnvio, aceitaNotifEnvio).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         this.router.navigate(['/']); // redireciona pro catálogo
