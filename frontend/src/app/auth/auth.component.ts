@@ -17,40 +17,39 @@ export class AuthComponent implements OnInit {
   isSpinning = signal<boolean>(false);
   activeTab: 'login' | 'register' = 'login';
 
+  isLoggedIn = signal<boolean>(false);
+  userName = signal<string>('');
+
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
 
-  // Lista divertida de nomes para preenchimento automático
   private readonly funNames = [
-    'Paciente 404',
-    'Freud Anônimo',
-    'Jung Misterioso',
-    'Lacan Ansioso',
-    'Skinner Com Fome',
-    'Id Descontrolado',
-    'Ego Faminto',
-    'Superego na Dieta',
-    'Pavlov Babando'
+    'Paciente 404', 'Freud Anônimo', 'Jung Misterioso', 'Lacan Ansioso',
+    'Skinner Com Fome', 'Id Descontrolado', 'Ego Faminto', 'Superego na Dieta', 'Pavlov Babando'
   ];
 
   ngOnInit(): void {
+    this.checkLoginState();
+
     this.authForm = this.fb.group({
       whatsapp: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{5}-\d{4}$/)]],
-      nome: [''], // Inicialmente opcional (aba login)
+      nome: [''],
       aceitaNotificacoes: [false]
     });
   }
 
+  checkLoginState() {
+    this.isLoggedIn.set(this.authService.isLoggedIn());
+    if (this.isLoggedIn()) {
+      const user = this.authService.getUser();
+      this.userName.set(user?.nome || 'Paciente');
+    }
+  }
+
   setTab(tab: 'login' | 'register') {
     this.activeTab = tab;
-    
-    // Limpa os valores e estados do formulário
-    this.authForm.reset({
-      whatsapp: '',
-      nome: '',
-      aceitaNotificacoes: false
-    });
+    this.authForm.reset({ whatsapp: '', nome: '', aceitaNotificacoes: false });
 
     const nomeControl = this.authForm.get('nome');
     if (tab === 'login') {
@@ -59,19 +58,14 @@ export class AuthComponent implements OnInit {
       nomeControl?.setValidators([Validators.required, Validators.minLength(2)]);
     }
     nomeControl?.updateValueAndValidity();
-
-    // Limpa qualquer erro geral
     this.authForm.setErrors(null);
   }
 
-  // Máscara dinâmica para formatar em tempo de digitação (XX) XXXXX-XXXX
   onWhatsappInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    let value = input.value.replace(/\D/g, ''); 
     
-    if (value.length > 11) {
-      value = value.substring(0, 11);
-    }
+    if (value.length > 11) value = value.substring(0, 11);
     
     let formatted = '';
     if (value.length > 0) {
@@ -83,22 +77,15 @@ export class AuthComponent implements OnInit {
         }
       }
     }
-    
     this.authForm.get('whatsapp')?.setValue(formatted, { emitEvent: false });
   }
 
   gerarNomeAutomatico() {
     this.isSpinning.set(true);
     const randomIndex = Math.floor(Math.random() * this.funNames.length);
-    const randomName = this.funNames[randomIndex];
-    
-    this.authForm.get('nome')?.setValue(randomName);
+    this.authForm.get('nome')?.setValue(this.funNames[randomIndex]);
     this.authForm.get('nome')?.markAsTouched();
-    
-    // Mantém a animação de rotação ativa por 500ms para feedback visual
-    setTimeout(() => {
-      this.isSpinning.set(false);
-    }, 500);
+    setTimeout(() => this.isSpinning.set(false), 500);
   }
 
   fazerLogin() {
@@ -110,21 +97,23 @@ export class AuthComponent implements OnInit {
     this.isSubmitting.set(true);
     const { whatsapp, nome, aceitaNotificacoes } = this.authForm.value;
 
-    // Se for apenas login, enviamos dados vazios/default para o nome e notificações para compatibilidade com o backend
     const nomeEnvio = this.activeTab === 'login' ? '' : nome;
     const aceitaNotifEnvio = this.activeTab === 'login' ? false : aceitaNotificacoes;
 
     this.authService.login(whatsapp, nomeEnvio, aceitaNotifEnvio).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/']); // redireciona pro catálogo
+        this.checkLoginState(); // Fica na tela de perfil
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        console.error('Erro no login', err);
-        // Adiciona um erro customizado ao formulário para exibição na UI
         this.authForm.setErrors({ loginError: true });
       }
     });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.checkLoginState();
   }
 }

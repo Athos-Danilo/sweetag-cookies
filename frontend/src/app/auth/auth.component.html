@@ -1,5 +1,6 @@
 <main class="auth-container">
-  <div class="animated-background">
+  <!-- Background Animado (Apenas se deslogado, para dar ênfase ao formulário) -->
+  <div class="animated-background" *ngIf="!isLoggedIn()">
     <div class="cookie-anim cookie-1">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#E7D7C1" stroke="#C4673A" stroke-width="4"/><circle cx="30" cy="40" r="6" fill="#5E4637"/><circle cx="70" cy="45" r="5" fill="#5E4637"/><circle cx="45" cy="70" r="7" fill="#5E4637"/><circle cx="65" cy="25" r="4" fill="#5E4637"/><circle cx="35" cy="65" r="5" fill="#5E4637"/></svg>
     </div>
@@ -15,139 +16,134 @@
     <div class="cookie-anim cookie-5">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="25" fill="#E7D7C1" stroke="#5E4637" stroke-width="2"/><circle cx="45" cy="45" r="4" fill="#5E4637"/><circle cx="55" cy="55" r="3" fill="#5E4637"/></svg>
     </div>
-    <div class="cookie-anim cookie-6">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="30" fill="#D4BEA3" stroke="#5E4637" stroke-width="3"/><circle cx="40" cy="40" r="4" fill="#5E4637"/><circle cx="60" cy="50" r="5" fill="#5E4637"/><circle cx="45" cy="60" r="3" fill="#5E4637"/></svg>
-    </div>
-    <div class="cookie-anim cookie-7">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 5 C74.8 5 95 25.2 95 50 C95 74.8 74.8 95 50 95 C25.2 95 5 74.8 5 50 C5 39 8.7 28.7 15 20 C20 30 35 30 40 20 C45 10 35 -2 50 5 Z" fill="#F5ECD7" stroke="#C4673A" stroke-width="4" stroke-linejoin="round"/><circle cx="45" cy="45" r="5" fill="#C4673A"/><circle cx="65" cy="65" r="6" fill="#C4673A"/><circle cx="40" cy="70" r="4" fill="#C4673A"/></svg>
-    </div>
-    <div class="cookie-anim cookie-8">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="42" fill="#E7D7C1" stroke="#7A9E7E" stroke-width="3"/><circle cx="35" cy="35" r="5" fill="#7A9E7E"/><circle cx="65" cy="45" r="6" fill="#7A9E7E"/><circle cx="50" cy="65" r="5" fill="#7A9E7E"/><circle cx="30" cy="60" r="4" fill="#7A9E7E"/></svg>
-    </div>
-    <div class="cookie-anim cookie-9">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="28" fill="#D4BEA3" stroke="#C4673A" stroke-width="2"/><circle cx="45" cy="45" r="3" fill="#2E1C12"/><circle cx="55" cy="55" r="4" fill="#2E1C12"/></svg>
-    </div>
-    <div class="cookie-anim cookie-10">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="38" fill="#E7D7C1" stroke="#5E4637" stroke-width="3"/><circle cx="35" cy="45" r="6" fill="#5E4637"/><circle cx="60" cy="35" r="5" fill="#5E4637"/><circle cx="65" cy="60" r="4" fill="#5E4637"/><circle cx="45" cy="65" r="5" fill="#5E4637"/></svg>
-    </div>
   </div>
 
-  <div class="auth-card">
-    <div class="auth-header">
-      <h1>{{ activeTab === 'login' ? 'Sessão Inicial' : 'Nova Ficha Clínica' }}</h1>
-      <p>{{ activeTab === 'login' ? 'Alimente sua mente. E sua fome.' : 'Comece sua terapia com cookies agora mesmo!' }}</p>
-    </div>
-
-    <!-- Seletores de Abas (Tabs) -->
-    <div class="auth-tabs">
-      <button 
-        type="button" 
-        [class.active]="activeTab === 'login'" 
-        (click)="setTab('login')"
-        aria-label="Mudar para aba de login"
-      >
-        Entrar
-      </button>
-      <button 
-        type="button" 
-        [class.active]="activeTab === 'register'" 
-        (click)="setTab('register')"
-        aria-label="Mudar para aba de cadastro"
-      >
-        Criar Ficha
-      </button>
-    </div>
-
-    <form class="auth-form" [formGroup]="authForm" (ngSubmit)="fazerLogin()">
-      
-      <!-- Erro geral de login se houver -->
-      <div class="general-error-message animate-fade" *ngIf="authForm.hasError('loginError')">
-        <span *ngIf="activeTab === 'login'">⚠️ WhatsApp não cadastrado ou erro de rede. Tente novamente ou crie uma ficha.</span>
-        <span *ngIf="activeTab === 'register'">⚠️ Ocorreu um erro ao criar a ficha. Tente novamente.</span>
-      </div>
-
-      <!-- Campo WhatsApp -->
-      <div class="input-group">
-        <label for="whatsapp">Seu WhatsApp</label>
-        <div class="input-wrapper" [class.has-error]="authForm.get('whatsapp')?.invalid && authForm.get('whatsapp')?.touched">
-          <i class="icon-whatsapp">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-          </i>
-          <input 
-            type="tel" 
-            id="whatsapp" 
-            formControlName="whatsapp"
-            placeholder="(DD) 99999-9999" 
-            (input)="onWhatsappInput($event)"
-            autocomplete="tel"
-            [attr.aria-invalid]="authForm.get('whatsapp')?.invalid && authForm.get('whatsapp')?.touched"
-            aria-describedby="whatsapp-hint whatsapp-error"
-          >
-        </div>
-        <small id="whatsapp-hint" class="hint-text">Seu prontuário digital seguro. Usaremos só para atualizar o pedido.</small>
-        <div id="whatsapp-error" class="error-message" *ngIf="authForm.get('whatsapp')?.invalid && authForm.get('whatsapp')?.touched">
-          <span *ngIf="authForm.get('whatsapp')?.errors?.['required']">O WhatsApp é obrigatório.</span>
-          <span *ngIf="authForm.get('whatsapp')?.errors?.['pattern']">Digite no formato (DD) 99999-9999.</span>
-        </div>
-      </div>
-
-      <!-- Campo Nome (Exibido apenas na Aba de Cadastro) -->
-      <div class="input-group animate-fade" *ngIf="activeTab === 'register'">
-        <label for="nome">Como devemos te chamar?</label>
-        <div class="input-wrapper" [class.has-error]="authForm.get('nome')?.invalid && authForm.get('nome')?.touched">
-          <i class="icon-user">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </i>
-          <input 
-            type="text" 
-            id="nome" 
-            formControlName="nome"
-            placeholder="Digite seu nome social" 
-            [attr.aria-invalid]="authForm.get('nome')?.invalid && authForm.get('nome')?.touched"
-            aria-describedby="nome-error"
-          >
-        </div>
-        <button 
-          type="button" 
-          class="btn-generate-name" 
-          (click)="gerarNomeAutomatico()"
-          aria-label="Gerar um nome clínico divertido e aleatório para preencher o campo nome"
-          title="Gerar nome divertido"
-        >
-          <svg [class.spinning]="isSpinning()" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.26l5.37-3.25"/></svg>
-          Gerar nome clínico (divertido)
-        </button>
-        <div id="nome-error" class="error-message" *ngIf="authForm.get('nome')?.invalid && authForm.get('nome')?.touched">
-          <span *ngIf="authForm.get('nome')?.errors?.['required']">O nome é obrigatório.</span>
-          <span *ngIf="authForm.get('nome')?.errors?.['minlength']">O nome deve conter pelo menos 2 caracteres.</span>
-        </div>
-      </div>
-
-      <!-- Consentimento Notificações (Exibido apenas na Aba de Cadastro) -->
-      <div class="checkbox-group animate-fade" *ngIf="activeTab === 'register'">
-        <label class="custom-checkbox">
-          <input 
-            type="checkbox" 
-            formControlName="aceitaNotificacoes"
-          >
-          <span class="checkmark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </span>
-          <span class="label-text">
-            Aceito receber notificações importantes sobre a terapia do meu cookie via WhatsApp e Push.
-          </span>
-        </label>
-      </div>
-
-      <button type="submit" class="btn-primary" [disabled]="authForm.invalid || isSubmitting()">
-        <span *ngIf="!isSubmitting()">{{ activeTab === 'login' ? 'Entrar no Consultório' : 'Criar minha Ficha' }}</span>
-        <span *ngIf="isSubmitting()" class="loader">Analisando...</span>
-      </button>
-
-    </form>
+  <div class="profile-layout">
     
-    <div class="auth-footer">
-      <p>Total sigilo paciente-cookie. Seus dados estão seguros.</p>
+    <!-- HEADER 1: DESLOGADO (Formulário) -->
+    <div class="auth-card" *ngIf="!isLoggedIn()">
+      <div class="auth-header">
+        <h1>{{ activeTab === 'login' ? 'Sessão Inicial' : 'Nova Ficha Clínica' }}</h1>
+        <p>{{ activeTab === 'login' ? 'Alimente sua mente. E sua fome.' : 'Comece sua terapia com cookies agora mesmo!' }}</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" [class.active]="activeTab === 'login'" (click)="setTab('login')">Entrar</button>
+        <button type="button" [class.active]="activeTab === 'register'" (click)="setTab('register')">Criar Ficha</button>
+      </div>
+
+      <form class="auth-form" [formGroup]="authForm" (ngSubmit)="fazerLogin()">
+        <div class="general-error-message animate-fade" *ngIf="authForm.hasError('loginError')">
+          <span>⚠️ Erro ao acessar. Tente novamente.</span>
+        </div>
+
+        <div class="input-group">
+          <label for="whatsapp">Seu WhatsApp</label>
+          <div class="input-wrapper" [class.has-error]="authForm.get('whatsapp')?.invalid && authForm.get('whatsapp')?.touched">
+            <i class="icon-whatsapp">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </i>
+            <input type="tel" id="whatsapp" formControlName="whatsapp" placeholder="(DD) 99999-9999" (input)="onWhatsappInput($event)">
+          </div>
+        </div>
+
+        <div class="input-group animate-fade" *ngIf="activeTab === 'register'">
+          <label for="nome">Como devemos te chamar?</label>
+          <div class="input-wrapper" [class.has-error]="authForm.get('nome')?.invalid && authForm.get('nome')?.touched">
+            <i class="icon-user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </i>
+            <input type="text" id="nome" formControlName="nome" placeholder="Digite seu nome">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="authForm.invalid || isSubmitting()">
+          <span *ngIf="!isSubmitting()">{{ activeTab === 'login' ? 'Entrar no Consultório' : 'Criar minha Ficha' }}</span>
+          <span *ngIf="isSubmitting()" class="loader">Analisando...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- HEADER 2: LOGADO (Usuário Info) -->
+    <div class="user-header-card animate-fade" *ngIf="isLoggedIn()">
+      <div class="user-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <div class="user-info">
+        <h1>Olá, {{ userName() }}!</h1>
+        <p>Pronto para a sua sessão de hoje?</p>
+      </div>
+    </div>
+
+    <!-- LISTA INSTITUCIONAL (App Style Settings) -->
+    <div class="profile-menu-section">
+      
+      <!-- Seção: Conta -->
+      <div class="menu-group" *ngIf="isLoggedIn()">
+        <button class="menu-item">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></i>
+            <span>Meus Pedidos</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </button>
+        <button class="menu-item">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></i>
+            <span>Endereços de Entrega</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </button>
+      </div>
+
+      <!-- Seção: Clínica -->
+      <div class="menu-group">
+        <h3 class="menu-group-title">A Clínica</h3>
+        <button class="menu-item">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></i>
+            <span>Formas de Pagamento</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </button>
+        <button class="menu-item">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></i>
+            <span>Nossa Abordagem (Sobre)</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </button>
+        <button class="menu-item">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></i>
+            <span>Termos e Privacidade</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </button>
+      </div>
+
+      <!-- Seção: Ajuda -->
+      <div class="menu-group">
+        <h3 class="menu-group-title">Atendimento</h3>
+        <a href="https://wa.me/5587996335634" target="_blank" class="menu-item whatsapp">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></i>
+            <span>Suporte ao Paciente</span>
+          </div>
+          <i class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+        </a>
+      </div>
+
+      <!-- Sair -->
+      <div class="menu-group" *ngIf="isLoggedIn()">
+        <button class="menu-item logout" (click)="logout()">
+          <div class="menu-item-left">
+            <i class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></i>
+            <span>Sair do Consultório</span>
+          </div>
+        </button>
+      </div>
+
     </div>
   </div>
 </main>
