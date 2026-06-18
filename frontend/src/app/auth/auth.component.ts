@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
+import { retry } from 'rxjs/operators';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
@@ -14,6 +16,7 @@ import { AuthService } from '../core/services/auth.service';
 export class AuthComponent implements OnInit {
   authForm!: FormGroup;
   isSubmitting = signal<boolean>(false);
+  loadingMessage = signal<string>('Analisando...');
   isSpinning = signal<boolean>(false);
   activeTab: 'login' | 'register' = 'login';
 
@@ -26,7 +29,13 @@ export class AuthComponent implements OnInit {
 
   private readonly funNames = [
     'Paciente 404', 'Freud Anônimo', 'Jung Misterioso', 'Lacan Ansioso',
-    'Skinner Com Fome', 'Id Descontrolado', 'Ego Faminto', 'Superego na Dieta', 'Pavlov Babando'
+    'Skinner Com Fome', 'Id Descontrolado', 'Ego Faminto', 'Superego na Dieta',
+    'Pavlov Babando', 'Piaget Analítico', 'Vygotsky Social', 'Rogers Empático',
+    'Maslow Realizado', 'Bandura Observador', 'Bowlby Apegado', 'Winnicott Brincalhão',
+    'Klein Invejosa', 'Adler Inferior', 'Erikson Crítico', 'Wundt Experimental',
+    'Watson Behaviorista', 'Gestalt Completa', 'Anna Freud Defensiva', 'Chomsky Linguista',
+    'Rorschach Borrado', 'Milgram Obediente', 'Beck Cognitivo', 'Ato Falho Doce',
+    'Libido Açucarada', 'Inconsciente Guloso', 'Complexo de Édipo', 'Terapia do Açúcar'
   ];
 
   ngOnInit(): void {
@@ -95,13 +104,23 @@ export class AuthComponent implements OnInit {
     }
 
     this.isSubmitting.set(true);
+    this.loadingMessage.set('Acessando...'); // Reseta a mensagem
     const { whatsapp, nome, aceitaNotificacoes } = this.authForm.value;
 
     const authObservable = this.activeTab === 'login'
       ? this.authService.login(whatsapp)
       : this.authService.register(whatsapp, nome, aceitaNotificacoes);
 
-    authObservable.subscribe({
+    authObservable.pipe(
+      retry({
+        count: 1, // Tenta novamente mais 1 vez
+        delay: (error, retryCount) => {
+          console.warn(`Tentativa ${retryCount} falhou (Neon cold start). Tentando novamente em 2.5s...`);
+          // Mantém a mensagem original "Acessando..."
+          return timer(2500); // Aguarda o banco de dados ligar
+        }
+      })
+    ).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         this.checkLoginState(); // Fica na tela de perfil

@@ -55,6 +55,13 @@
             </i>
             <input type="text" id="nome" formControlName="nome" placeholder="Digite seu nome">
           </div>
+          <button type="button" class="btn-generate-name" (click)="gerarNomeAutomatico()" title="Gerar um nome com tema de psicologia">
+            <svg [class.spinning]="isSpinning()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Gerar nome divertido
+          </button>
         </div>
 
         <div class="checkbox-group animate-fade" *ngIf="activeTab === 'register'" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #5e4637;">
@@ -64,7 +71,12 @@
 
         <button type="submit" class="btn-primary" [disabled]="authForm.invalid || isSubmitting()">
           <span *ngIf="!isSubmitting()">{{ activeTab === 'login' ? 'Entrar no Consultório' : 'Criar minha Ficha' }}</span>
-          <span *ngIf="isSubmitting()" class="loader">Analisando...</span>
+          <span *ngIf="isSubmitting()" class="loader-content">
+            <svg class="spinner" viewBox="0 0 50 50">
+              <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+            {{ loadingMessage() }}
+          </span>
         </button>
       </form>
     </div>
