@@ -1,0 +1,379 @@
+.app-favorites-container {
+  min-height: 100vh;
+  background-color: var(--bg-color, #FAFAFA);
+  padding-top: 20px; // Reduzido pois o header não aparece no mobile
+  padding-bottom: 150px; // Espaço extra para rolar além da action bar e bottom-nav
+  display: flex;
+  flex-direction: column;
+}
+
+// Animação de entrada
+.fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// --- ESTADO VAZIO (LOGADO) ---
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 2rem;
+
+  .empty-icon-wrapper {
+    background: linear-gradient(135deg, rgba(232, 187, 161, 0.2), rgba(232, 187, 161, 0.1));
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--primary-color, #E8BBA1);
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--text-dark, #2c1e16);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--text-light, #7a6b63);
+    margin-bottom: 2rem;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  .btn-explore {
+    background-color: var(--primary-color, #E8BBA1);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(232, 187, 161, 0.4);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232, 187, 161, 0.5);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// --- ESTADO UPSELL (NÃO LOGADO) ---
+.upsell-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .login-banner {
+    margin: 1rem;
+    background: linear-gradient(135deg, #2c1e16, #4a3326);
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(44, 30, 22, 0.15);
+
+    .banner-text {
+      color: white;
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+      p {
+        font-size: 0.85rem;
+        opacity: 0.85;
+      }
+    }
+
+    .btn-login {
+      background-color: var(--primary-color, #E8BBA1);
+      color: #2c1e16;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-left: 1rem;
+      transition: transform 0.2s;
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+
+  .best-seller-section {
+    padding: 1rem;
+    position: relative;
+
+    .spotlight-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 10;
+      display: inline-block;
+      background: linear-gradient(135deg, #FFD700, #FDB931);
+      color: #5a4000;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .product-spotlight {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+      .image-showcase {
+        position: relative;
+        width: 100%;
+        height: 280px;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+          
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      .product-details {
+        padding: 1.5rem;
+
+        .header-details {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 0.5rem;
+
+          h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark, #2c1e16);
+            line-height: 1.2;
+          }
+
+          .price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary-color, #E8BBA1);
+            white-space: nowrap;
+          }
+        }
+
+        .flavor-tag {
+          display: inline-block;
+          background-color: rgba(232, 187, 161, 0.15);
+          color: #c48a6a;
+          padding: 0.3rem 0.8rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .divider {
+          height: 1px;
+          background-color: rgba(0,0,0,0.05);
+          margin: 1.25rem 0;
+        }
+
+        .info-section {
+          h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark, #2c1e16);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            
+            svg {
+              color: var(--primary-color, #E8BBA1);
+            }
+          }
+
+          .fun-fact {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--text-light, #7a6b63);
+            line-height: 1.5;
+            background: rgba(232, 187, 161, 0.05);
+            padding: 1rem;
+            border-left: 3px solid var(--primary-color, #E8BBA1);
+            border-radius: 0 8px 8px 0;
+          }
+
+          .specs {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            
+            li {
+              font-size: 0.9rem;
+              color: var(--text-light, #7a6b63);
+              margin-bottom: 0.5rem;
+              display: flex;
+              justify-content: space-between;
+              border-bottom: 1px dashed rgba(0,0,0,0.05);
+              padding-bottom: 0.25rem;
+              
+              &:last-child {
+                border-bottom: none;
+              }
+
+              strong {
+                color: var(--text-dark, #2c1e16);
+              }
+            }
+          }
+
+          .ingredients {
+            font-size: 0.9rem;
+            color: var(--text-light, #7a6b63);
+            line-height: 1.6;
+          }
+        }
+      }
+    }
+  }
+
+  // Barra de ação grudada embaixo (Action Bar)
+  .action-bar {
+    position: sticky;
+    bottom: 85px; // Acima da bottom-nav
+    margin: 0 1.5rem; // Respeita as margens laterais da descrição
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    display: flex;
+    gap: 1rem;
+    z-index: 9999;
+    border-radius: 16px; // Bordas arredondadas em todos os cantos
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      background-color: #FBF9F6;
+      border-radius: 12px;
+      height: 52px;
+      border: 1px solid rgba(245, 236, 215, 0.8);
+      padding: 0 0.5rem;
+
+      .btn-qty {
+        width: 36px;
+        height: 100%;
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: var(--color-primary);
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &:disabled {
+          color: #ccc;
+          cursor: not-allowed;
+        }
+        &:active:not(:disabled) {
+          transform: scale(0.95);
+        }
+      }
+
+      .qty-value {
+        width: 30px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--color-on-surface);
+      }
+    }
+
+    .btn-add {
+      flex: 1;
+      height: 52px;
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.25rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #A35029;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+// Desktop adjustments
+@media (min-width: 768px) {
+  .app-favorites-container {
+    padding-bottom: 0; // No bottom nav on desktop
+  }
+  
+  .upsell-container {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+
+    .action-bar {
+      bottom: 0;
+      position: sticky;
+      margin-top: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    }
+  }
+}

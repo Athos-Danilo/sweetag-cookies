@@ -2,6 +2,7 @@ import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../core/services/cart.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -18,6 +19,7 @@ export class BottomNavComponent implements OnInit {
   protected readonly cartAnimating = signal<boolean>(false);
 
   private readonly destroyRef = inject(DestroyRef);
+  protected authService = inject(AuthService);
 
   constructor(private cartService: CartService, private router: Router) {
     this.currentUrl = this.router.url;
