@@ -7,6 +7,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { AddressesComponent } from './addresses/addresses.component';
 import { TermsPrivacy } from './terms-privacy/terms-privacy.component';
 import { SupportComponent } from './support/support.component';
+import { AboutComponent } from './about/about.component';
 
 export const routes: Routes = [
   { path: '', component: HomepageComponent },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'addresses', component: AddressesComponent },
   { path: 'terms-privacy', component: TermsPrivacy },
   { path: 'support', component: SupportComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'homepage', redirectTo: '', pathMatch: 'full' },
   { path: 'correta', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '' }

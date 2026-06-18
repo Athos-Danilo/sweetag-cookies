@@ -1,0 +1,279 @@
+.about-container {
+  min-height: 100vh;
+  background-color: #fcf9f5;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  padding-bottom: 120px; /* Espaço para o bottom-nav */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 24px 20px;
+  background-color: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    text-decoration: none;
+    transition: transform 0.2s;
+    
+    &:active {
+      transform: scale(0.95);
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  .page-title {
+    margin: 0;
+    margin-left: 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2b2b2b;
+  }
+}
+
+.content {
+  padding: 0 20px;
+}
+
+/* História da SweetAg */
+.story-section {
+  margin-top: 10px;
+  margin-bottom: 32px;
+}
+
+.story-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+}
+
+.story-hero {
+  width: 100%;
+  height: 180px;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .location-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #ff5b77;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+}
+
+.story-content {
+  padding: 24px;
+  
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #333;
+  }
+  
+  p {
+    margin: 0 0 12px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #666;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    strong {
+      font-weight: 700;
+      color: #444;
+    }
+  }
+}
+
+/* O Segredo da Receita */
+.features-section {
+  margin-top: 40px;
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+}
+
+.features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+  
+  .f-icon {
+    font-size: 2.2rem;
+    margin-right: 16px;
+    background-color: #fffafb;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px #ffe1e5;
+  }
+  
+  .f-text {
+    h4 {
+      margin: 0 0 6px 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #333;
+    }
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+}
+
+/* Seção dos Devs */
+.devs-section {
+  margin-top: 40px;
+  
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+    padding-left: 4px;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 20px;
+    padding-left: 4px;
+  }
+}
+
+.dev-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dev-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+
+  .dev-avatar {
+    width: 52px;
+    height: 52px;
+    background-color: #f0f4f8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-right: 14px;
+    flex-shrink: 0;
+  }
+
+  .dev-info {
+    flex: 1;
+    h3 {
+      margin: 0 0 4px 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    span {
+      font-size: 0.8rem;
+      color: #888;
+    }
+  }
+
+  .dev-actions-mini {
+    display: flex;
+    gap: 8px;
+
+    .btn-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-decoration: none;
+      transition: all 0.2s;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      &.github {
+        background-color: #f4f4f4;
+        color: #333;
+        
+        &:hover, &:active {
+          background-color: #e0e0e0;
+        }
+      }
+
+      &.linkedin {
+        background-color: #e1f0fe;
+        color: #0077b5;
+
+        &:hover, &:active {
+          background-color: #cce4fc;
+        }
+      }
+    }
+  }
+}
