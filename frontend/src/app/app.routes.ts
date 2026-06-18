@@ -5,6 +5,7 @@ import { CartComponent } from './cart/cart.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AddressesComponent } from './addresses/addresses.component';
+import { TermsPrivacy } from './terms-privacy/terms-privacy.component';
 
 export const routes: Routes = [
   { path: '', component: HomepageComponent },
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'favorites', component: FavoritesComponent },
   { path: 'orders', component: OrdersComponent },
   { path: 'addresses', component: AddressesComponent },
+  { path: 'terms-privacy', component: TermsPrivacy },
   { path: 'homepage', redirectTo: '', pathMatch: 'full' },
   { path: 'correta', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '' }
