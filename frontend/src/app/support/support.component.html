@@ -1,0 +1,137 @@
+<div class="support-container">
+  <!-- Header -->
+  <div class="header">
+    <a [routerLink]="['/login']" class="back-button">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+    </a>
+    <h1 class="page-title">Como podemos ajudar?</h1>
+  </div>
+
+  <div class="content">
+    <!-- Ilustração de topo (Cookie Headset) -->
+    <div class="hero-section">
+      <div class="hero-illustration">
+        <img src="support-illustration.png" alt="Pessoa feliz comendo cookie e falando ao celular" class="illustration-image" />
+      </div>
+      <p class="hero-subtitle">Nossa equipe de suporte está pronta para resolver seu problema rapidinho!</p>
+    </div>
+
+    <!-- Cards de Ação -->
+    <div class="action-cards">
+      <!-- WhatsApp Card -->
+      <button class="action-card whatsapp-card" (click)="openWhatsApp()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+        </div>
+        <div class="card-text">
+          <h3>Atendimento Rápido</h3>
+          <p>Fale direto no nosso WhatsApp</p>
+        </div>
+        <div class="card-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+      </button>
+
+      <!-- Formulário Card Toggle -->
+      <button class="action-card ticket-card" (click)="toggleForm()" [class.active]="showForm()">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <div class="card-text">
+          <h3>Deixar uma Mensagem</h3>
+          <p>Envie um chamado interno</p>
+        </div>
+        <div class="card-arrow" [class.rotate]="showForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </div>
+      </button>
+    </div>
+
+    <!-- Área do Formulário Expansível -->
+    <div class="form-container" [class.expanded]="showForm()">
+      
+      <!-- Mensagem de Sucesso -->
+      <div class="success-message" *ngIf="submitSuccess()">
+        <div class="success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <h3>Mensagem Enviada!</h3>
+        <p>Recebemos seu chamado. Nossa equipe retornará o mais breve possível.</p>
+      </div>
+
+      <!-- Formulário -->
+      <form [formGroup]="supportForm" (ngSubmit)="submitTicket()" *ngIf="!submitSuccess()">
+        <div class="input-group">
+          <label for="category">Assunto / Categoria</label>
+          <div class="select-wrapper">
+            <select id="category" formControlName="category">
+              <option value="" disabled selected>Selecione o motivo...</option>
+              <option value="pedido">Problema com um pedido</option>
+              <option value="dificuldade">Dificuldade de usar o app</option>
+              <option value="alergia">Dúvida sobre alergias/ingredientes</option>
+              <option value="sugestao">Sugestão ou Elogio</option>
+              <option value="outro">Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="orderId">Número do Pedido <span>(Opcional)</span></label>
+          <input type="text" id="orderId" formControlName="orderId" placeholder="Ex: #1234">
+        </div>
+
+        <div class="input-group">
+          <label for="message">Mensagem</label>
+          <textarea id="message" formControlName="message" rows="4" placeholder="Conte-nos com detalhes o que aconteceu..."></textarea>
+          <div class="error-msg" *ngIf="supportForm.get('message')?.touched && supportForm.get('message')?.invalid">
+            Mensagem precisa ter pelo menos 10 caracteres.
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="supportForm.invalid || isSubmitting()">
+          <span *ngIf="!isSubmitting()">Enviar Chamado</span>
+          <span *ngIf="isSubmitting()" class="loader-content">
+            <svg class="spinner" viewBox="0 0 50 50">
+              <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+            Enviando...
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2 class="section-title">Perguntas Frequentes</h2>
+      
+      <div class="accordion-list">
+        <div class="accordion-item" *ngFor="let faq of faqs; let i = index" [class.open]="faq.open">
+          <div class="accordion-header" (click)="toggleFaq(i)">
+            <h3>{{ faq.question }}</h3>
+            <div class="chevron">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
