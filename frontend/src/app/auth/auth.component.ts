@@ -109,8 +109,8 @@ export class AuthComponent implements OnInit {
       error: (err) => {
         this.isSubmitting.set(false);
         console.error('Erro na autenticação', err);
-        // Adiciona um erro customizado ao formulário para exibição na UI
-        this.authForm.setErrors({ loginError: true });
+        const errorMsg = err.error?.detail || 'Erro ao acessar. Tente novamente.';
+        this.authForm.setErrors({ loginError: errorMsg });
       }
     });
   }

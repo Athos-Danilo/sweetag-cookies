@@ -34,7 +34,7 @@
 
       <form class="auth-form" [formGroup]="authForm" (ngSubmit)="fazerLogin()">
         <div class="general-error-message animate-fade" *ngIf="authForm.hasError('loginError')">
-          <span>⚠️ Erro ao acessar. Tente novamente.</span>
+          <span>⚠️ {{ authForm.getError('loginError') }}</span>
         </div>
 
         <div class="input-group">
@@ -55,6 +55,11 @@
             </i>
             <input type="text" id="nome" formControlName="nome" placeholder="Digite seu nome">
           </div>
+        </div>
+
+        <div class="checkbox-group animate-fade" *ngIf="activeTab === 'register'" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #5e4637;">
+          <input type="checkbox" id="aceitaNotificacoes" formControlName="aceitaNotificacoes" style="accent-color: #c4673a; width: 16px; height: 16px;">
+          <label for="aceitaNotificacoes" style="margin: 0; cursor: pointer;">Aceito receber notificações das sessões</label>
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="authForm.invalid || isSubmitting()">
