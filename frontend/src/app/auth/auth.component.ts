@@ -97,16 +97,19 @@ export class AuthComponent implements OnInit {
     this.isSubmitting.set(true);
     const { whatsapp, nome, aceitaNotificacoes } = this.authForm.value;
 
-    const nomeEnvio = this.activeTab === 'login' ? '' : nome;
-    const aceitaNotifEnvio = this.activeTab === 'login' ? false : aceitaNotificacoes;
+    const authObservable = this.activeTab === 'login'
+      ? this.authService.login(whatsapp)
+      : this.authService.register(whatsapp, nome, aceitaNotificacoes);
 
-    this.authService.login(whatsapp, nomeEnvio, aceitaNotifEnvio).subscribe({
+    authObservable.subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         this.checkLoginState(); // Fica na tela de perfil
       },
       error: (err) => {
         this.isSubmitting.set(false);
+        console.error('Erro na autenticação', err);
+        // Adiciona um erro customizado ao formulário para exibição na UI
         this.authForm.setErrors({ loginError: true });
       }
     });

@@ -15,8 +15,19 @@ export class AuthService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8000/api/auth';
 
-  login(whatsapp: string, nome: string, aceitaNotificacoes: boolean): Observable<AuthResponse> {
+  login(whatsapp: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
+      whatsapp
+    }).pipe(
+      tap(response => {
+        this.setToken(response.access_token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+      })
+    );
+  }
+
+  register(whatsapp: string, nome: string, aceitaNotificacoes: boolean): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, {
       whatsapp,
       nome,
       aceitaNotificacoes

@@ -2,7 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-class AuthRequest(BaseModel):
+class LoginRequest(BaseModel):
+    whatsapp: str
+
+class RegisterRequest(BaseModel):
     whatsapp: str
     nome: str
     aceitaNotificacoes: bool = False
