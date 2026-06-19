@@ -9,30 +9,34 @@ Este documento funciona como um guia de acompanhamento (To-Do List) para a imple
 
 ## 🗺️ Mapa de Progresso Geral
 
-- [ ] **Fase 1: Modelagem e Banco de Dados (PostgreSQL + SQLAlchemy)**
+- [/] **Fase 1: Modelagem e Banco de Dados (PostgreSQL + SQLAlchemy)**
 - [/] **Fase 2: Backend e APIs REST / WebSockets (FastAPI)**
 - [/] **Fase 3: Frontend - Módulo do Cliente (Angular)**
 - [ ] **Fase 4: Frontend - Painel Administrativo (Angular)**
-- [ ] **Fase 5: Integrações, Segurança e Testes**
+- [/] **Fase 5: Integrações, Segurança e Testes**
 
 ---
 
 ## 🗄️ Fase 1: Modelagem e Banco de Dados
 Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
 
-- [ ] **M1.1: Modelo de Usuário (`User`)**
+- [x] **M1.1: Modelo de Usuário (`User`)**
   - [x] WhatsApp como identificador único (RN07) - *Já implementado*
   - [x] Nome e aceitação de notificações - *Já implementado*
 - [ ] **M1.2: Modelo de Produtos e Sabores (`Product`)**
   - [ ] Campos: ID, Nome temático, Descrição temática, História/Branding temático, Ingredientes, Tabela nutricional (JSON), Imagem URL, Preço, Quantidade em estoque, Disponibilidade diária (Boolean), Ativo (Boolean).
-- [ ] **M1.3: Modelo de Pedidos e Itens (`Order` & `OrderItem`)**
-  - [ ] Tabela `orders`: ID, ID Usuário, Código Pix gerado, Status do pedido (Enum), Sala, Bloco, Departamento, Referência (Local de entrega interna - RF09), Data de criação, Data de expiração da reserva (created_at + 30 min - RN03), Tipo de pedido (Imediato ou Agendado).
-  - [ ] Tabela `order_items`: ID, ID Pedido, ID Produto, Quantidade, Preço Unitário.
-  - [ ] Enum de status: `RECEBIDO`, `PAGAMENTO_ANALISE`, `CONFIRMADO`, `PREPARACAO`, `ROTA_ENTREGA`, `CONCLUIDO`, `CANCELADO`, `EXPIRADO`, `RESERVA_ANALISE` (RF13).
+- [/] **M1.3: Modelo de Pedidos e Itens (`Order` & `OrderItem`)**
+  - [/] Tabela `orders`: ID, ID Usuário, Status do pedido, Bloco, Sala, Departamento (Vinculados via ID de Endereço - RF09), Data de criação, Tipo de pagamento. *Falta implementar código Pix gerado na tabela e campo de data de expiração da reserva (created_at + 30 min - RN03).*
+  - [x] Tabela `order_items`: ID, ID Pedido, Nome (Produto), Quantidade, Preço.
+  - [/] Enum/Status de pedido: `Aguardando` (e outros a serem expandidos para a timeline dinâmica).
 - [ ] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
   - [ ] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
 - [ ] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
   - [ ] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente (Boolean) (RF15).
+- [x] **M1.6: Modelo de Endereço (`Address`)**
+  - [x] Tabela `addresses`: ID, ID Usuário, Título (ex: Clínica, Casa), Departamento, Bloco, Sala, Rua, Número, Bairro e indicador de Endereço Padrão (`is_default`).
+- [x] **M1.7: Modelo de Chamados de Suporte (`SupportTicket`)**
+  - [x] Tabela `support_tickets`: ID, Categoria, ID Pedido, Mensagem, ID Usuário, Status (Padrão: open), Data de criação.
 
 ---
 
@@ -43,7 +47,12 @@ Lógica de negócios e endpoints REST + WebSockets.
 - [x] Cadastro simplificado de cliente (WhatsApp e nome) (RF03)
 - [x] Login persistente com JWT (RF04)
 - [x] Implementação de gerador divertido de nomes automáticos de psicologia (ex: "Freud Anônimo", "Paciente 404", "Jung Misterioso") para registro (RF05).
+- [x] Dependência de autenticação de tokens para rotas (`get_current_user` em `backend/app/api/deps.py`).
 - [ ] Autenticação restrita para administradores (RF17) e permissões de acesso (RF18).
+
+### 2.x Módulo de Endereços (`addresses`)
+- [x] Endpoint `POST /api/addresses`: Permite ao usuário cadastrar um endereço interno de entrega (sala, bloco, etc.), definindo o primeiro como padrão.
+- [x] Endpoint `GET /api/addresses`: Retorna a lista de endereços do usuário autenticado.
 
 ### 2.2 Módulo de Produtos (`products`)
 - [ ] Endpoints públicos (Cliente):
@@ -56,10 +65,12 @@ Lógica de negócios e endpoints REST + WebSockets.
   - [ ] `PATCH /api/products/{id}/stock`: Ajuste manual e rápido de estoque diário (RF20).
 
 ### 2.3 Módulo de Pedidos (`orders`) e Regras de Estoque
-- [ ] Endpoint `POST /api/orders`: Criação de pedido imediato.
-  - [ ] Validação de estoque garantido antes de reservar (RN01).
+- [/] Endpoint `POST /api/orders`: Criação de pedido imediato.
+  - [x] Criação do pedido com os itens, valor total, forma de pagamento e ID do endereço no banco de dados.
+  - [ ] Validação de estoque garantido antes de reservar (RN01) (Pendente integração com catálogo de produtos/estoque).
   - [ ] Bloqueio ACID / Transação segura de concorrência para evitar venda dupla (RN01, RN02, Considerações 15.1).
   - [ ] Decremento do estoque físico e marcação do timestamp de expiração (30 min) (RF08, RN03).
+- [x] Endpoint `GET /api/orders`: Retorna o histórico de pedidos do usuário autenticado com seus itens e endereços detalhados.
 - [ ] Tarefa em segundo plano (Background Task / Worker):
   - [ ] Verificador periódico que expira pedidos com status `RECEBIDO` que passaram de 30 minutos sem confirmação de pagamento.
   - [ ] Lógica de expiração: Altera status para `EXPIRADO`, devolve a quantidade dos itens ao estoque e notifica o cliente (RN04).
@@ -88,6 +99,9 @@ Lógica de negócios e endpoints REST + WebSockets.
 - [ ] Gerenciador de Conexões WebSocket no backend:
   - [ ] Envio automático de atualizações de status para a conexão do cliente quando o admin alterar o status do pedido (Timeline Real-time - RF13, RNF03).
   - [ ] Canal WebSocket para o Painel Administrativo que envia alertas sonoros/visuais instantâneos quando um novo pedido ou comprovante Pix é enviado (RF23).
+
+### 2.8 Módulo de Suporte (`support`)
+- [x] Endpoint `POST /api/support/tickets`: Permite a criação de chamados de suporte, guardando no banco de dados a categoria, mensagem e id do pedido opcional.
 
 ---
 
@@ -118,7 +132,7 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 - [/] Visualização do Carrinho (`cart`):
   - [x] Listagem de itens, alteração de quantidades, exclusão e cálculo de subtotal.
 - [/] Formulário de Checkout / Local de Entrega:
-  - [x] Campos específicos de entrega interna: Bloco, Sala, Departamento, Ponto de Referência (RF09).
+  - [x] Campos específicos de entrega interna: Bloco, Sala, Departamento, Ponto de Referência (RF09) (Integrado ao novo fluxo de endereços no backend).
   - [ ] Escolha de agendamento (Calendário) vs. Entrega imediata (RF11).
   - [ ] Validação de estoque antes do fechamento do pedido.
 
@@ -130,6 +144,10 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 - [ ] Timeline Reativa (`timeline.component.ts`):
   - [ ] Exibição cronológica e temática dos status do pedido (ex: "Seu cookie entrou em análise", "Reforço positivo confirmado!").
   - [ ] Conectado ao `WebsocketService` para transição imediata de status sem necessidade de recarregar a tela (RF13, RNF03).
+
+### 3.5 Canal de Suporte (`support`)
+- [x] Integração da tela de suporte (`SupportComponent`) com o backend.
+- [x] Serviço `SupportService` para enviar requisições de chamado HTTP para `/api/support/tickets` e tratar respostas de sucesso ou falha.
 
 ---
 
@@ -176,8 +194,11 @@ Interface responsiva otimizada para desktop.
 - [ ] Teste de estresse simples de transação ACID no banco Neon para garantir que dois usuários não comprem o mesmo cookie esgotando o estoque (RN01, RN02).
 
 ### 5.3 Testes Automatizados (RNF07)
-- [ ] Testes unitários no backend (FastAPI com pytest):
-  - [ ] Testar fluxo de reserva de estoque e expiração após 30 minutos.
+- [/] Testes no backend (FastAPI):
+  - [x] Script de testes de banco de dados (`test_db.py`).
+  - [x] Script de integração da API (`test_api.py`).
+  - [x] Script de teste de integração do fluxo completo de pedidos (`test_orders.py`): Testa registro, login, criação de endereço, criação e listagem de pedidos.
+  - [ ] Testar fluxo de reserva de estoque e expiração após 30 minutos via pytest.
   - [ ] Testar barreira de estoque negativo.
 - [ ] Testes no frontend (Angular):
   - [ ] Testar conexão do WebSocket e resposta da timeline.
