@@ -82,13 +82,18 @@
     </div>
 
     <!-- HEADER 2: LOGADO (Usuário Info) -->
-    <div class="user-header-card animate-fade" *ngIf="isLoggedIn()">
+    <div class="user-header-card animate-fade" *ngIf="isLoggedIn()" [routerLink]="['/user-profile']" style="cursor: pointer; display: flex; align-items: center; position: relative;">
       <div class="user-avatar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
-      <div class="user-info">
+      <div class="user-info" style="flex: 1;">
         <h1>Olá, {{ userName() }}!</h1>
         <p>Pronto para a sua sessão de hoje?</p>
+      </div>
+      <div class="chevron" style="color: var(--color-primary); display: flex; align-items: center; margin-left: auto;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
       </div>
     </div>
 

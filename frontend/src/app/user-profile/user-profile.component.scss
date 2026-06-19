@@ -1,0 +1,268 @@
+.profile-container {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1.25rem;
+  background-color: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: -0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--rounded-full);
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: var(--color-surface-container);
+    }
+  }
+
+  h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-on-surface);
+    margin: 0;
+  }
+
+  .spacer {
+    width: 40px;
+  }
+}
+
+.content {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
+
+  .avatar-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    position: relative;
+    box-shadow: var(--shadow-subtle);
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  h2 {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    color: var(--color-on-surface);
+  }
+}
+
+.info-card, .settings-card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-subtle);
+  padding: 0 1.25rem;
+}
+
+.info-row {
+  padding: 1.25rem 0;
+  
+  .info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-on-surface-variant);
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: var(--color-on-surface);
+      font-weight: 500;
+      margin: 0;
+      
+      &.placeholder {
+        color: var(--color-on-surface-variant);
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-surface-container-low);
+  width: 100%;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface-container-low);
+  color: var(--color-primary);
+  border: none;
+  padding: 1rem;
+  border-radius: var(--rounded-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:active {
+    background-color: var(--color-surface-container);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-on-surface-variant);
+  margin: 0.5rem 0 0 0;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  cursor: pointer;
+  
+  .setting-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--rounded-md);
+      background-color: rgba(122, 158, 126, 0.15); /* Verde secundário claro */
+      color: var(--color-primary-container); /* Verde secundário */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-on-surface);
+    }
+  }
+
+  .toggle-switch {
+    width: 50px;
+    height: 28px;
+    background-color: var(--color-surface-container-high);
+    border-radius: 20px;
+    position: relative;
+    transition: background-color 0.3s ease;
+
+    .toggle-knob {
+      width: 24px;
+      height: 24px;
+      background-color: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    &.active {
+      background-color: var(--color-primary-container);
+      
+      .toggle-knob {
+        transform: translateX(22px);
+      }
+    }
+  }
+}
+
+.danger-zone {
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+  
+  .delete-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: transparent;
+    border: 1px solid #D32F2F;
+    color: #D32F2F;
+    border-radius: var(--rounded-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:active {
+      background-color: rgba(211, 47, 47, 0.05);
+    }
+  }
+}
