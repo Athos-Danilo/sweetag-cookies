@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SupportService } from '../core/services/support.service';
 
 @Component({
   selector: 'app-support',
@@ -41,7 +42,7 @@ export class SupportComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private supportService: SupportService) {
     this.supportForm = this.fb.group({
       category: ['', Validators.required],
       orderId: [''],
@@ -68,18 +69,24 @@ export class SupportComponent {
 
     this.isSubmitting.set(true);
 
-    // Simular o envio para o banco de dados (Firebase/API)
-    setTimeout(() => {
-      console.log('Ticket enviado:', this.supportForm.value);
-      this.isSubmitting.set(false);
-      this.submitSuccess.set(true);
-      this.supportForm.reset();
-      
-      // Esconder a mensagem de sucesso depois de um tempo
-      setTimeout(() => {
-        this.toggleForm();
-      }, 3000);
-      
-    }, 1500);
+    this.supportService.createTicket(this.supportForm.value).subscribe({
+      next: (response) => {
+        console.log('Ticket enviado:', response);
+        this.isSubmitting.set(false);
+        this.submitSuccess.set(true);
+        this.supportForm.reset();
+        
+        // Esconder a mensagem de sucesso depois de um tempo
+        setTimeout(() => {
+          this.toggleForm();
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Erro ao enviar ticket:', error);
+        this.isSubmitting.set(false);
+        // Em um app real, talvez mostrar um toast de erro
+        alert('Ocorreu um erro ao enviar o chamado. Tente novamente mais tarde.');
+      }
+    });
   }
 }
