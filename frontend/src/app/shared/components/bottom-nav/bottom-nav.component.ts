@@ -17,6 +17,7 @@ export class BottomNavComponent implements OnInit {
   protected itemCount = 0;
   protected currentUrl = '';
   protected readonly cartAnimating = signal<boolean>(false);
+  protected readonly hasActiveOrder = signal<boolean>(true); // MOCK: Simulando que há um pedido em andamento
 
   private readonly destroyRef = inject(DestroyRef);
   protected authService = inject(AuthService);
