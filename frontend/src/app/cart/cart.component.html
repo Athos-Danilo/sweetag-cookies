@@ -135,15 +135,66 @@
               <input id="reference" type="text" formControlName="reference" placeholder="Ex: Perto do laboratório de neuro">
             </div>
 
+            <!-- FORMA DE PAGAMENTO -->
+            <div class="form-group payment-section">
+              <label>Forma de Pagamento</label>
+              <div class="radio-group-horizontal">
+                <label class="radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'PIX'">
+                  <input type="radio" formControlName="paymentMethod" value="PIX">
+                  <div class="radio-content">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2zm0 15.5L6.5 12 12 6.5 17.5 12 12 17.5z"/></svg>
+                    <span>Pix</span>
+                  </div>
+                </label>
+                
+                <label class="radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+                  <input type="radio" formControlName="paymentMethod" value="DINHEIRO">
+                  <div class="radio-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                    <span>Dinheiro</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- OPÇÕES DE TROCO (Apenas se Dinheiro) -->
+            <div class="change-section animate-fade" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+              <div class="form-group">
+                <label>Vai precisar de troco?</label>
+                <div class="radio-group-horizontal">
+                  <label class="radio-card change-card" [class.selected]="checkoutForm.get('needsChange')?.value === false">
+                    <input type="radio" formControlName="needsChange" [value]="false">
+                    <span>Não, valor exato</span>
+                  </label>
+                  <label class="radio-card change-card" [class.selected]="checkoutForm.get('needsChange')?.value === true">
+                    <input type="radio" formControlName="needsChange" [value]="true">
+                    <span>Sim, preciso</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group animate-fade" *ngIf="checkoutForm.get('needsChange')?.value === true">
+                <label for="changeFor">Troco para quanto?</label>
+                <input id="changeFor" type="text" formControlName="changeFor" placeholder="Ex: R$ 50,00 ou 100">
+                <small style="color: var(--color-on-surface-variant); margin-top: 4px; display: block;">Facilita a vida do entregador! 🍪</small>
+              </div>
+            </div>
+
             <div class="delivery-actions">
               <button type="button" class="back-step-btn" (click)="goToCart()">
                 Voltar ao Carrinho
               </button>
               <button type="submit" class="checkout-btn" [disabled]="checkoutForm.invalid">
-                Confirmar Reserva (Pix)
+                Confirmar Pedido
               </button>
             </div>
-            <p class="timer-warning">⚠️ Você terá 30 minutos para pagar após confirmar.</p>
+            
+            <p class="timer-warning" *ngIf="checkoutForm.get('paymentMethod')?.value === 'PIX'">
+              ⚠️ O pagamento será feito no app após a confirmação.
+            </p>
+            <p class="timer-warning" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+              ⚠️ Separe o valor no momento da entrega.
+            </p>
           </form>
         </div>
       </div>

@@ -27,7 +27,10 @@ export class CartComponent implements OnInit {
       department: ['', Validators.required],
       block: ['', Validators.required],
       room: ['', Validators.required],
-      reference: ['']
+      reference: [''],
+      paymentMethod: ['PIX', Validators.required],
+      needsChange: [false],
+      changeFor: ['']
     });
   }
 
@@ -70,14 +73,19 @@ export class CartComponent implements OnInit {
         total: this.total
       });
       // TODO: Integrar com a API de Orders (Pedidos) no backend
-      alert('Reserva temporária iniciada! Redirecionando para pagamento Pix...');
+      const { paymentMethod } = this.checkoutForm.value;
+      if (paymentMethod === 'PIX') {
+        alert('Pedido criado! Redirecionando para acompanhamento...');
+      } else {
+        alert('Pedido confirmado! Prepare o dinheiro para o entregador.');
+      }
       
-      // Limpa formulário
-      this.checkoutForm.reset();
-      this.currentStep = 'cart';
+      // Limpar carrinho e formulário
+      this.cartService.clearCart();
+      this.checkoutForm.reset({ paymentMethod: 'PIX', needsChange: false });
       
-      // Na V1: direcionaria para tela de PIX e acionaria temporizador
-      // this.router.navigate(['/payment']);
+      // Direcionar para a tela de pedidos
+      this.router.navigate(['/orders']);
     } else {
       this.checkoutForm.markAllAsTouched();
     }
