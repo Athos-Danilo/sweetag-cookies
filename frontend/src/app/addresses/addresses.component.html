@@ -4,28 +4,28 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
     <h1 class="page-title">
-      {{ showForm ? (editingAddress ? 'Editar Endereço' : 'Adicionar Endereço') : 'Endereços de Entrega' }}
+      {{ showForm() ? (editingAddress() ? 'Editar Endereço' : 'Adicionar Endereço') : 'Endereços de Entrega' }}
     </h1>
     <div class="header-placeholder"></div>
   </header>
 
   <main class="addresses-content fade-in-up">
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="loading-state">
         <div class="spinner"></div>
         <p>Carregando...</p>
       </div>
-    } @else if (showForm) {
+    } @else if (showForm()) {
       <!-- Formulário de Endereço (Componente Filho) -->
       <app-address-form 
-        [address]="editingAddress" 
-        [errorMessage]="errorMessage"
+        [address]="editingAddress()" 
+        [errorMessage]="errorMessage()"
         (save)="onSave($event)" 
         (cancel)="toggleForm(false)">
       </app-address-form>
     } @else {
       <!-- Listagem de Endereços -->
-      @if (addresses.length > 0) {
+      @if (addresses().length > 0) {
         <div class="addresses-list-header">
           <p>Seus locais salvos para receber cookies:</p>
           <button class="btn-add-new" (click)="toggleForm(true)">
@@ -34,14 +34,14 @@
           </button>
         </div>
 
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="error-banner">
-            {{ errorMessage }}
+            {{ errorMessage() }}
           </div>
         }
 
         <div class="addresses-grid">
-          @for (address of addresses; track address.id) {
+          @for (address of addresses(); track address.id) {
             <!-- Card de Endereço (Componente Filho) -->
             <app-address-card
               [address]="address"

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
@@ -18,11 +18,11 @@ export class AddressesComponent implements OnInit {
   protected addressService = inject(AddressService);
   protected router = inject(Router);
 
-  protected addresses: Address[] = [];
-  protected showForm = false;
-  protected editingAddress: Address | null = null;
-  protected isLoading = false;
-  protected errorMessage = '';
+  protected addresses = signal<Address[]>([]);
+  protected showForm = signal<boolean>(false);
+  protected editingAddress = signal<Address | null>(null);
+  protected isLoading = signal<boolean>(false);
+  protected errorMessage = signal<string>('');
 
   constructor() {
     if (!this.authService.isLoggedIn()) {
@@ -35,41 +35,42 @@ export class AddressesComponent implements OnInit {
   }
 
   protected loadAddresses() {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
     this.addressService.getAddresses().subscribe({
       next: (data) => {
-        this.addresses = data;
-        this.isLoading = false;
+        this.addresses.set(data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Erro ao buscar endereços:', err);
-        this.errorMessage = 'Não foi possível carregar os endereços.';
-        this.isLoading = false;
+        this.errorMessage.set('Não foi possível carregar os endereços.');
+        this.isLoading.set(false);
       }
     });
   }
 
   protected toggleForm(show: boolean, address: Address | null = null) {
-    this.showForm = show;
-    this.editingAddress = address;
-    this.errorMessage = '';
+    this.showForm.set(show);
+    this.editingAddress.set(address);
+    this.errorMessage.set('');
   }
 
   protected onSave(addressData: Address) {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
-    if (this.editingAddress && this.editingAddress.id) {
-      this.addressService.updateAddress(this.editingAddress.id, addressData).subscribe({
+    const currentEditing = this.editingAddress();
+    if (currentEditing && currentEditing.id) {
+      this.addressService.updateAddress(currentEditing.id, addressData).subscribe({
         next: () => {
           this.loadAddresses();
           this.toggleForm(false);
         },
         error: (err) => {
           console.error('Erro ao atualizar endereço:', err);
-          this.errorMessage = 'Erro ao salvar as alterações. Tente novamente.';
-          this.isLoading = false;
+          this.errorMessage.set('Erro ao salvar as alterações. Tente novamente.');
+          this.isLoading.set(false);
         }
       });
     } else {
@@ -80,8 +81,8 @@ export class AddressesComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao cadastrar endereço:', err);
-          this.errorMessage = 'Erro ao criar o novo endereço. Tente novamente.';
-          this.isLoading = false;
+          this.errorMessage.set('Erro ao criar o novo endereço. Tente novamente.');
+          this.isLoading.set(false);
         }
       });
     }
@@ -89,39 +90,39 @@ export class AddressesComponent implements OnInit {
 
   protected onDelete(id: number) {
     if (confirm('Tem certeza que deseja excluir este endereço?')) {
-      this.isLoading = true;
+      this.isLoading.set(true);
       this.addressService.deleteAddress(id).subscribe({
         next: () => {
           this.loadAddresses();
         },
         error: (err) => {
           console.error('Erro ao excluir endereço:', err);
-          this.errorMessage = 'Erro ao excluir o endereço.';
-          this.isLoading = false;
+          this.errorMessage.set('Erro ao excluir o endereço.');
+          this.isLoading.set(false);
         }
       });
     }
   }
 
   protected onSetDefault(id: number) {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.addressService.setDefaultAddress(id).subscribe({
       next: () => {
         this.loadAddresses();
       },
       error: (err) => {
         console.error('Erro ao definir endereço padrão:', err);
-        this.errorMessage = 'Erro ao definir endereço padrão.';
-        this.isLoading = false;
+        this.errorMessage.set('Erro ao definir endereço padrão.');
+        this.isLoading.set(false);
       }
     });
   }
 
   protected goBack() {
-    if (this.showForm) {
+    if (this.showForm()) {
       this.toggleForm(false);
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/']);
     }
   }
 }
