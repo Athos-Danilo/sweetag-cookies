@@ -1,0 +1,58 @@
+<form [formGroup]="addressForm" (ngSubmit)="onSubmit()" class="address-form">
+  <div class="form-title-desc">
+    <h2>{{ address ? 'Ajuste sua rota 🧠' : 'Onde entregamos seu reforço positivo? 🍪' }}</h2>
+    <p>Insira os detalhes do local no campus para que o entregador te encontre com facilidade.</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error-banner">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <div class="form-group">
+    <label for="title">Identificação do Endereço *</label>
+    <input type="text" id="title" formControlName="title" placeholder="Ex: Minha Sala, Bloco de Psicologia, etc."
+      [class.is-invalid]="addressForm.get('title')?.touched && addressForm.get('title')?.invalid">
+    @if (addressForm.get('title')?.touched && addressForm.get('title')?.errors?.['required']) {
+      <span class="error-msg">A identificação é obrigatória.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="department">Departamento / Curso</label>
+    <input type="text" id="department" formControlName="department" placeholder="Ex: Psicologia, Filosofia, Biologia">
+  </div>
+
+  <div class="form-group">
+    <label for="block">Bloco/Prédio</label>
+    <input type="text" id="block" formControlName="block" placeholder="Ex: Bloco C, Prédio Principal">
+  </div>
+
+  <div class="form-group">
+    <label for="room">Sala</label>
+    <input type="text" id="room" formControlName="room" placeholder="Ex: Sala 304, Laboratório 2">
+  </div>
+
+  <div class="form-group">
+    <label for="neighborhood">Ponto de Referência (Opcional)</label>
+    <input type="text" id="neighborhood" formControlName="neighborhood" placeholder="Ex: Perto do laboratório de neuro">
+  </div>
+
+  <div class="form-group checkbox-group">
+    <label class="toggle-switch">
+      <input type="checkbox" formControlName="is_default">
+      <span class="slider"></span>
+    </label>
+    <span class="checkbox-label">Definir como endereço padrão de entrega</span>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-primary-form" [disabled]="addressForm.invalid">
+      {{ address ? 'Salvar Alterações' : 'Salvar Endereço' }}
+    </button>
+    <button type="button" class="btn-secondary-form" (click)="onCancel()">
+      Cancelar
+    </button>
+  </div>
+</form>

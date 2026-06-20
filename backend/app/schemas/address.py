@@ -14,9 +14,13 @@ class AddressBase(BaseModel):
 class AddressCreate(AddressBase):
     pass
 
+class AddressUpdate(AddressBase):
+    pass
+
 class AddressResponse(AddressBase):
     id: int
     user_id: int
 
     class Config:
         from_attributes = True
+

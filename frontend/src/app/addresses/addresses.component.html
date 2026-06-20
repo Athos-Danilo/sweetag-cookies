@@ -3,26 +3,70 @@
     <button class="btn-back" (click)="goBack()">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
-    <h1 class="page-title">Endereços de Entrega</h1>
+    <h1 class="page-title">
+      {{ showForm ? (editingAddress ? 'Editar Endereço' : 'Adicionar Endereço') : 'Endereços de Entrega' }}
+    </h1>
     <div class="header-placeholder"></div>
   </header>
 
   <main class="addresses-content fade-in-up">
-    @if (addresses.length > 0) {
-      <!-- A lista de endereços reais será construída aqui com os dados do backend -->
-    } @else {
-      <!-- Empty State Elegante (Estilo app) -->
-      <div class="empty-state">
-        <div class="empty-icon-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-          </svg>
-        </div>
-        <h2>Nenhum endereço salvo</h2>
-        <p>Você ainda não tem endereços de entrega cadastrados. Adicione um novo endereço para receber suas prescrições em casa!</p>
-        <button class="btn-primary" (click)="goBack()">Adicionar Endereço</button>
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Carregando...</p>
       </div>
+    } @else if (showForm) {
+      <!-- Formulário de Endereço (Componente Filho) -->
+      <app-address-form 
+        [address]="editingAddress" 
+        [errorMessage]="errorMessage"
+        (save)="onSave($event)" 
+        (cancel)="toggleForm(false)">
+      </app-address-form>
+    } @else {
+      <!-- Listagem de Endereços -->
+      @if (addresses.length > 0) {
+        <div class="addresses-list-header">
+          <p>Seus locais salvos para receber cookies:</p>
+          <button class="btn-add-new" (click)="toggleForm(true)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Local
+          </button>
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-banner">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <div class="addresses-grid">
+          @for (address of addresses; track address.id) {
+            <!-- Card de Endereço (Componente Filho) -->
+            <app-address-card
+              [address]="address"
+              (edit)="toggleForm(true, $event)"
+              (delete)="onDelete($event)"
+              (setDefault)="onSetDefault($event)">
+            </app-address-card>
+          }
+        </div>
+      } @else {
+        <!-- Empty State Elegante (Estilo app) -->
+        <div class="empty-state">
+          <div class="empty-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+            </svg>
+          </div>
+          <h2>Nenhum endereço salvo</h2>
+          <p>Você ainda não tem endereços de entrega cadastrados. Adicione um novo endereço para receber suas prescrições em casa!</p>
+          <button class="btn-primary" (click)="toggleForm(true)">Adicionar Endereço</button>
+        </div>
+      }
     }
   </main>
 </div>
+
+

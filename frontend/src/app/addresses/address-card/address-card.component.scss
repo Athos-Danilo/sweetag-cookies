@@ -1,0 +1,140 @@
+.address-card {
+  background: white;
+  border-radius: 18px;
+  padding: 1.25rem;
+  border: 1.5px solid #F0ECE9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  transition: all 0.2s ease;
+  
+  &.is-default-card {
+    border-color: rgba(196, 103, 58, 0.4);
+    box-shadow: 0 4px 16px rgba(196, 103, 58, 0.05);
+  }
+  
+  .address-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .address-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      .address-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--color-primary, #C4673A);
+      }
+      
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--color-on-surface, #2c1e16);
+        margin: 0;
+      }
+    }
+    
+    .badge-default {
+      background-color: #E8F5E9;
+      color: #2E7D32;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  .address-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-left: 1.75rem;
+    
+    p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--color-on-surface-variant, #7a6b63);
+      line-height: 1.4;
+      
+      strong {
+        color: #4a3c35;
+        font-weight: 600;
+      }
+    }
+    
+    .ref-text {
+      color: #8C6A5A;
+      font-style: italic;
+    }
+  }
+  
+  .address-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #FAF6F2;
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    
+    .placeholder-action {
+      flex: 1;
+    }
+    
+    .btn-action-text {
+      background: none;
+      border: none;
+      color: var(--color-primary, #C4673A);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0.4rem 0.6rem;
+      margin-left: 1.15rem;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(196, 103, 58, 0.05);
+      }
+      
+      &:active {
+        background-color: rgba(196, 103, 58, 0.1);
+      }
+    }
+    
+    .action-buttons-right {
+      display: flex;
+      gap: 0.5rem;
+      
+      .btn-icon-action {
+        background: #FAF8F6;
+        border: 1px solid #EAE5E0;
+        color: #7a6b63;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:active {
+          background-color: #EDE7E0;
+        }
+        
+        &.delete:active {
+          background-color: #FDE8E8;
+          color: #E53E3E;
+          border-color: #F8B4B4;
+        }
+      }
+    }
+  }
+}
