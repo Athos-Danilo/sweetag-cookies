@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
 
@@ -10,3 +11,5 @@ class User(Base):
     nome = Column(String, nullable=False)
     aceita_notificacoes = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    push_subscriptions = relationship("PushSubscription", back_populates="user", cascade="all, delete-orphan")

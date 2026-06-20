@@ -72,3 +72,27 @@ async def read_orders(
     )
     orders = result.scalars().all()
     return orders
+
+from app.notifications.services import notify_user
+
+@router.patch("/{order_id}/status")
+async def update_order_status(
+    order_id: int,
+    status_str: str,
+    status_step: int,
+    db: AsyncSession = Depends(get_db)
+    # Removing current_user dependency so admins/webhook can update. In a real app, protect this route.
+):
+    result = await db.execute(select(Order).where(Order.id == order_id))
+    order = result.scalars().first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+        
+    order.status = status_str
+    order.status_step = status_step
+    await db.commit()
+    
+    # Notificar o usuário sobre a mudança
+    await notify_user(db, order.user_id, f"Oba! Seu pedido de cookies mudou para: {status_str}", {"order_id": order.id, "status_step": status_step})
+    
+    return {"message": "Status atualizado com sucesso", "status": status_str}

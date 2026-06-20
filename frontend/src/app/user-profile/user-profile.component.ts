@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
+import { NotificationService } from '../core/services/notification.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -13,6 +14,7 @@ import { AuthService } from '../core/services/auth.service';
 export class UserProfileComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   userName = signal<string>('Paciente');
   userWhatsapp = signal<string>('');
@@ -38,7 +40,13 @@ export class UserProfileComponent implements OnInit {
   }
 
   toggleNotifications() {
-    this.notificationsEnabled.update(v => !v);
+    this.notificationsEnabled.update(v => {
+      const newValue = !v;
+      if (newValue) {
+        this.notificationService.requestPushSubscription();
+      }
+      return newValue;
+    });
   }
 
   editProfile() {

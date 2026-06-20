@@ -25,11 +25,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.websockets.routes import router as websockets_router
+from app.notifications.routes import router as notifications_router
+
 # Include Routers
 app.include_router(auth_router)
 app.include_router(support_router)
 app.include_router(addresses_router)
 app.include_router(orders_router)
+app.include_router(websockets_router)
+app.include_router(notifications_router)
 
 @app.on_event("startup")
 async def startup():

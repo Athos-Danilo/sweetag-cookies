@@ -6,6 +6,7 @@ import { BottomNavComponent } from './shared/components/bottom-nav/bottom-nav.co
 import { PreloaderComponent } from './shared/components/preloader/preloader.component';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotificationService } from './core/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -67,10 +68,12 @@ export class App implements OnInit {
   protected isRevealing = false; // Controla o efeito visual de revelação da homepage
   private lastUrl = '';
   private readonly destroyRef = inject(DestroyRef);
+  private notificationService = inject(NotificationService);
 
   constructor(private router: Router) {}
 
   ngOnInit() {
+    this.checkIosPwa();
     this.checkPreloaderRoute(this.router.url);
     this.updateRouteClass(this.router.url);
 
@@ -84,6 +87,33 @@ export class App implements OnInit {
         this.checkPreloaderRoute(url);
         this.updateRouteClass(url);
       });
+  }
+
+  private checkIosPwa() {
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(userAgent);
+    };
+    const isStandalone = () => {
+      return ('standalone' in window.navigator) && (window.navigator as any).standalone;
+    };
+    
+    if (isIos() && !isStandalone()) {
+      setTimeout(() => {
+        const pwaBanner = document.createElement('div');
+        pwaBanner.innerHTML = `
+          <div style="position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 9999; text-align: center; border-top-left-radius: 12px; border-top-right-radius: 12px; font-family: Outfit, sans-serif;">
+            <p style="margin: 0 0 10px; font-size: 14px; color: #333;">Para receber notificações de pedidos, adicione o SweetAg à sua Tela de Início!</p>
+            <p style="margin: 0; font-size: 12px; color: #666;">Toque em <b>Compartilhar</b> e depois em <b>"Adicionar à Tela de Início"</b>.</p>
+            <button id="close-pwa-banner" style="margin-top: 10px; padding: 6px 12px; background: transparent; border: 1px solid #ccc; border-radius: 6px; cursor: pointer;">Fechar</button>
+          </div>
+        `;
+        document.body.appendChild(pwaBanner);
+        document.getElementById('close-pwa-banner')?.addEventListener('click', () => {
+          pwaBanner.remove();
+        });
+      }, 3000);
+    }
   }
 
   private checkPreloaderRoute(url: string) {
