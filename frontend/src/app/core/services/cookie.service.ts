@@ -1,7 +1,23 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface CookieItem {
-  id: string;
+  id: number | string;
+  name?: string;
+  description?: string;
+  history_branding?: string;
+  ingredients?: string;
+  nutritional_table?: any;
+  image_url?: string;
+  price?: number;
+  stock_quantity?: number;
+  daily_availability?: boolean;
+  is_active?: boolean;
+
+  // Propriedades de compatibilidade legada para compatibilidade de templates
   nome: string;
   sabor: string;
   valor: number;
@@ -18,88 +34,43 @@ export interface CookieItem {
   providedIn: 'root'
 })
 export class CookieService {
-  public readonly cookies = signal<CookieItem[]>([
-    {
-      id: '#LC-1901',
-      nome: 'Cookie Lacan',
-      sabor: 'Kinder',
-      valor: 10.00,
-      imagem: 'assets/fotos/lacan.jpeg',
-      diagnostico: 'Desejo inconsciente estruturado como uma linguagem de chocolate.',
-      categoria: 'Psicanálise',
-      peso: '120g',
-      dimensoes: '9cm de diâmetro',
-      ingredientes: ['Farinha de trigo premium', 'Manteiga importada', 'Açúcar mascavo', 'Ovos caipiras', 'Gotas de chocolate ao leite', 'Recheio cremoso de Kinder Bueno', 'Toque de baunilha'],
-      valorEnergetico: '450 kcal'
-    },
-    {
-      id: '#SK-1904',
-      nome: 'Cookie Skinner',
-      sabor: 'Ninho Queimado',
-      valor: 10.00,
-      imagem: 'assets/fotos/Ninho queimado.png',
-      diagnostico: 'Reforço positivo imediato após a primeira mordida.',
-      categoria: 'Behaviorismo',
-      peso: '130g',
-      dimensoes: '9.5cm de diâmetro',
-      ingredientes: ['Farinha de trigo premium', 'Manteiga', 'Açúcar mascavo', 'Leite Ninho tostado na frigideira', 'Brigadeiro branco cremoso', 'Essência de caramelo'],
-      valorEnergetico: '480 kcal'
-    },
-    {
-      id: '#YG-1875',
-      nome: 'Cookie Jung',
-      sabor: 'Farinha Láctea',
-      valor: 9.00,
-      imagem: 'assets/fotos/Farinha láctea.png',
-      diagnostico: 'Uma jornada pelo inconsciente coletivo dos sabores da infância.',
-      categoria: 'Psicologia Analítica',
-      peso: '115g',
-      dimensoes: '9cm de diâmetro',
-      ingredientes: ['Farinha de trigo enriquecida', 'Manteiga sem sal', 'Farinha Láctea Nestlé', 'Açúcar demerara', 'Chocolate branco', 'Toque de mel'],
-      valorEnergetico: '420 kcal'
-    },
-    {
-      id: '#PG-1896',
-      nome: 'Cookie Piaget',
-      sabor: 'Nutella',
-      valor: 10.00,
-      imagem: 'assets/fotos/piaget.jpeg',
-      diagnostico: 'Assimilação e acomodação de avelã em perfeita harmonia cognitiva.',
-      categoria: 'Cognitivismo',
-      peso: '140g',
-      dimensoes: '10cm de diâmetro',
-      ingredientes: ['Farinha de trigo premium', 'Manteiga extra', 'Açúcar cristal', 'Cacau em pó 50%', 'Recheio abundante de Nutella original', 'Avelãs trituradas'],
-      valorEnergetico: '520 kcal'
-    },
-    {
-      id: '#FD-1856',
-      nome: 'Cookie Freud',
-      sabor: 'Speculoos',
-      valor: 9.00,
-      imagem: 'assets/fotos/freud.jpeg',
-      diagnostico: 'Onde o Id e o Superego concordam que a canela é irresistível.',
-      categoria: 'Psicanálise',
-      peso: '110g',
-      dimensoes: '8.5cm de diâmetro',
-      ingredientes: ['Farinha de trigo', 'Manteiga', 'Açúcar mascavo escuro', 'Canela em pó', 'Noz-moscada', 'Cravo moído', 'Pasta cremosa de biscoito Lotus Biscoff'],
-      valorEnergetico: '410 kcal'
-    },
-    {
-      id: '#CR-1902',
-      nome: 'Cookie Carl Rogers',
-      sabor: 'Tradicional',
-      valor: 9.00,
-      imagem: 'assets/fotos/tradicional.png',
-      diagnostico: 'Aceitação incondicional de um clássico com gotas de chocolate.',
-      categoria: 'Humanismo',
-      peso: '115g',
-      dimensoes: '9cm de diâmetro',
-      ingredientes: ['Farinha de trigo premium', 'Manteiga integral', 'Açúcar cristal e mascavo', 'Extrato de baunilha Bourbon', 'Gotas de chocolate meio amargo 54%', 'Pitada de sal marinho'],
-      valorEnergetico: '430 kcal'
-    }
-  ]);
+  private http = inject(HttpClient);
+  
+  // Sinal reativo que mantém o estado da listagem dos cookies
+  public readonly cookies = signal<CookieItem[]>([]);
 
-  getCookieById(id: string): CookieItem | undefined {
-    return this.cookies().find(c => c.id === id);
+  // Carrega cookies da API e popula o signal
+  fetchCookies(): Observable<CookieItem[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/products`).pipe(
+      map(products => products.map(p => this.mapToCookieItem(p))),
+      tap(mappedCookies => {
+        this.cookies.set(mappedCookies);
+      })
+    );
+  }
+
+  getCookieById(id: string | number): CookieItem | undefined {
+    return this.cookies().find(c => String(c.id) === String(id));
+  }
+
+  // Método auxiliar de mapeamento do backend para o frontend
+  private mapToCookieItem(product: any): CookieItem {
+    const nutrition = product.nutritional_table || {};
+    return {
+      ...product,
+      // Mapeamento legado
+      nome: product.name,
+      sabor: product.description ? product.description.split('.')[0] : product.name, // Sabor ou resumo
+      valor: product.price,
+      imagem: product.image_url || 'assets/fotos/default.png',
+      diagnostico: product.description || '',
+      categoria: product.history_branding || 'Psicologia',
+      peso: nutrition.peso || '120g',
+      dimensoes: nutrition.dimensoes || '9cm de diâmetro',
+      ingredientes: product.ingredients 
+        ? product.ingredients.split(',').map((i: string) => i.trim()) 
+        : [],
+      valorEnergetico: nutrition.valorEnergetico || '400 kcal'
+    };
   }
 }

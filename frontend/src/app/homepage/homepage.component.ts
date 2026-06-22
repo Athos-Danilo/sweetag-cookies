@@ -52,14 +52,21 @@ export class HomepageComponent implements OnInit {
   constructor(private cartService: CartService, private router: Router) {}
 
   ngOnInit() {
+    // Busca os produtos reais do backend
+    this.cookieService.fetchCookies().subscribe({
+      next: (data) => console.log('Cookies carregados:', data),
+      error: (err) => console.error('Erro ao carregar cookies:', err)
+    });
+
     this.cartService.cartItems$.subscribe(() => {
       this.itemCount = this.cartService.getItemCount();
     });
   }
 
+
   protected adicionarAoCarrinho(cookie: CookieItem, quantity: number = 1) {
     const product: Product = {
-      id: cookie.id,
+      id: String(cookie.id),
       name: cookie.nome,
       theme: cookie.categoria,
       description: cookie.diagnostico,

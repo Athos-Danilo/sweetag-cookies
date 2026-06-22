@@ -39,3 +39,7 @@ class OrderResponse(OrderBase):
 
     class Config:
         from_attributes = True
+
+class OrderAddressUpdate(BaseModel):
+    address_id: int
+

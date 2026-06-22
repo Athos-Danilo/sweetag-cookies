@@ -9,7 +9,8 @@ from app.api.deps import get_current_user
 from app.models.user import User
 from app.models.order import Order, OrderItem
 from app.models.address import Address
-from app.schemas.order import OrderCreate, OrderResponse
+from app.schemas.order import OrderCreate, OrderResponse, OrderAddressUpdate
+
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -145,3 +146,50 @@ async def update_order_status(
     await notify_user(db, order.user_id, f"Oba! Seu pedido de cookies mudou para: {status_str}", {"order_id": order.id, "status_step": status_step})
     
     return {"message": "Status atualizado com sucesso", "status": status_str}
+
+@router.patch("/{order_id}/address", response_model=OrderResponse)
+async def update_order_address(
+    order_id: int,
+    address_in: OrderAddressUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Fetch order and verify owner
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items), selectinload(Order.address))
+        .where(Order.id == order_id, Order.user_id == current_user.id)
+    )
+    order = result.scalars().first()
+    
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Pedido não encontrado ou não pertence ao usuário."
+        )
+        
+    # 2. Check if the address exists and belongs to the user
+    addr_result = await db.execute(
+        select(Address).where(Address.id == address_in.address_id, Address.user_id == current_user.id)
+    )
+    address = addr_result.scalars().first()
+    if not address:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Endereço não encontrado ou não pertence ao usuário."
+        )
+        
+    # 3. Validate status step (RN06): Only allow change if status_step <= 2 ("PREPARACAO")
+    if order.status_step > 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Não é possível alterar o endereço. O pedido já está com o status '{order.status}'."
+        )
+        
+    # 4. Update address
+    order.address_id = address.id
+    await db.commit()
+    await db.refresh(order)
+    
+    return order
+

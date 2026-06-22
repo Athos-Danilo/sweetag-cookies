@@ -66,7 +66,7 @@ export class FavoritesComponent {
 
   protected adicionarAoCarrinho(cookie: CookieItem, quantity: number = 1) {
     const product: Product = {
-      id: cookie.id,
+      id: String(cookie.id),
       name: cookie.nome,
       theme: cookie.categoria,
       description: cookie.diagnostico,
@@ -85,9 +85,9 @@ export class FavoritesComponent {
     this.router.navigate(['/cart']);
   }
 
-  protected desfavoritar(cookieId: string, event: Event) {
+  protected desfavoritar(cookieId: string | number, event: Event) {
     event.stopPropagation();
-    this.favoriteService.toggleFavorite(cookieId);
+    this.favoriteService.toggleFavorite(String(cookieId));
   }
 
   protected openCookieModal(cookie: CookieItem) {
