@@ -23,12 +23,12 @@ Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
 - [x] **M1.1: Modelo de Usuário (`User`)**
   - [x] WhatsApp como identificador único (RN07) - *Já implementado*
   - [x] Nome e aceitação de notificações - *Já implementado*
-- [ ] **M1.2: Modelo de Produtos e Sabores (`Product`)**
-  - [ ] Campos: ID, Nome temático, Descrição temática, História/Branding temático, Ingredientes, Tabela nutricional (JSON), Imagem URL, Preço, Quantidade em estoque, Disponibilidade diária (Boolean), Ativo (Boolean).
-- [/] **M1.3: Modelo de Pedidos e Itens (`Order` & `OrderItem`)**
-  - [/] Tabela `orders`: ID, ID Usuário, Status do pedido, Bloco, Sala, Departamento (Vinculados via ID de Endereço - RF09), Data de criação, Tipo de pagamento. *Falta implementar código Pix gerado na tabela e campo de data de expiração da reserva (created_at + 30 min - RN03).*
+- [x] **M1.2: Modelo de Produtos e Sabores (`Product`)**
+  - [x] Campos: ID, Nome temático, Descrição temática, História/Branding temático, Ingredientes, Tabela nutricional (JSON), Imagem URL, Preço, Quantidade em estoque, Disponibilidade diária (Boolean), Ativo (Boolean).
+- [x] **M1.3: Modelo de Pedidos e Itens (`Order` & `OrderItem`)**
+  - [x] Tabela `orders`: ID, ID Usuário, Status do pedido, Bloco, Sala, Departamento (Vinculados via ID de Endereço - RF09), Data de criação, Tipo de pagamento. *Implementado código Pix gerado na tabela e campo de data de expiração da reserva (created_at + 30 min - RN03).*
   - [x] Tabela `order_items`: ID, ID Pedido, Nome (Produto), Quantidade, Preço.
-  - [/] Enum/Status de pedido: `Aguardando` (e outros a serem expandidos para a timeline dinâmica).
+  - [x] Enum/Status de pedido: `Aguardando` (e outros a serem expandidos para a timeline dinâmica).
 - [ ] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
   - [ ] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
 - [ ] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
@@ -55,9 +55,9 @@ Lógica de negócios e endpoints REST + WebSockets.
 - [x] Endpoint `GET /api/addresses`: Retorna a lista de endereços do usuário autenticado.
 
 ### 2.2 Módulo de Produtos (`products`)
-- [ ] Endpoints públicos (Cliente):
-  - [ ] `GET /api/products`: Lista todos os cookies ativos com estoque e dados do catálogo (RF01).
-  - [ ] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico, história e tabela nutricional (RF02).
+- [/] Endpoints públicos (Cliente):
+  - [x] `GET /api/products`: Lista todos os cookies ativos com estoque e dados do catálogo (RF01).
+  - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico, história e tabela nutricional (RF02).
 - [ ] Endpoints protegidos (Admin - CRUD completo) (RF19):
   - [ ] `POST /api/products`: Criação de novo sabor temático.
   - [ ] `PUT /api/products/{id}`: Edição de dados do cookie.
@@ -65,16 +65,16 @@ Lógica de negócios e endpoints REST + WebSockets.
   - [ ] `PATCH /api/products/{id}/stock`: Ajuste manual e rápido de estoque diário (RF20).
 
 ### 2.3 Módulo de Pedidos (`orders`) e Regras de Estoque
-- [/] Endpoint `POST /api/orders`: Criação de pedido imediato.
+- [x] Endpoint `POST /api/orders`: Criação de pedido imediato.
   - [x] Criação do pedido com os itens, valor total, forma de pagamento e ID do endereço no banco de dados.
-  - [ ] Validação de estoque garantido antes de reservar (RN01) (Pendente integração com catálogo de produtos/estoque).
-  - [ ] Bloqueio ACID / Transação segura de concorrência para evitar venda dupla (RN01, RN02, Considerações 15.1).
-  - [ ] Decremento do estoque físico e marcação do timestamp de expiração (30 min) (RF08, RN03).
+  - [x] Validação de estoque garantido antes de reservar (RN01).
+  - [x] Bloqueio ACID / Transação segura de concorrência para evitar venda dupla (RN01, RN02).
+  - [x] Decremento do estoque físico e marcação do timestamp de expiração (30 min) (RF08, RN03).
 - [x] Endpoint `GET /api/orders`: Retorna o histórico de pedidos do usuário autenticado com seus itens e endereços detalhados.
-- [ ] Tarefa em segundo plano (Background Task / Worker):
-  - [ ] Verificador periódico que expira pedidos com status `RECEBIDO` que passaram de 30 minutos sem confirmação de pagamento.
-  - [ ] Lógica de expiração: Altera status para `EXPIRADO`, devolve a quantidade dos itens ao estoque e notifica o cliente (RN04).
-- [ ] Endpoint `PATCH /api/orders/{id}/address`: Permite ao cliente alterar bloco/sala se o status do pedido for menor ou igual a `PREPARACAO` (RN06).
+- [x] Tarefa em segundo plano (Background Task / Worker):
+  - [x] Verificador periódico que expira pedidos com status `Aguardando` que passaram de 30 minutos sem confirmação de pagamento.
+  - [x] Lógica de expiração: Altera status para `EXPIRADO`, devolve a quantidade dos itens ao estoque e notifica o cliente (RN04).
+- [x] Endpoint `PATCH /api/orders/{id}/address`: Permite ao cliente alterar bloco/sala se o status do pedido for menor ou igual a `PREPARACAO` (RN06).
 
 ### 2.4 Módulo de Pagamento manual via Pix (`payments`)
 - [ ] Endpoint `GET /api/orders/{id}/pix`: Retorna QR Code Pix estático (ou dinâmico gerado) e chave Copia e Cola.
@@ -118,8 +118,8 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
   - [x] Persistência da sessão do cliente no LocalStorage por 30 dias (RF04, RNF06).
 
 ### 3.2 Catálogo Dinâmico e Campanha (`homepage`)
-- [/] Vitrine de Cookies (`cookie-card`):
-  - [/] Layout fluido mostrando fotos dos cookies e o branding temático e bem-humorado de psicologia (Implementado temporariamente na homepage com mock).
+- [x] Vitrine de Cookies (`cookie-card`):
+  - [x] Layout fluido mostrando fotos dos cookies e o branding temático e bem-humorado de psicologia (Integrado à API real de produtos).
   - [ ] Badge visual se o produto estiver esgotado (RN02).
   - [x] Botão de adicionar rápido ao carrinho.
 - [ ] Barra de Progresso da Campanha (`progress-campaign`):
@@ -129,17 +129,17 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
   - [x] História completa com humor, ingredientes e informações nutricionais (RF02) (Implementado via ProductModalComponent).
 
 ### 3.3 Carrinho de Compras e Checkout (`cart` / `checkout`)
-- [/] Visualização do Carrinho (`cart`):
+- [x] Visualização do Carrinho (`cart`):
   - [x] Listagem de itens, alteração de quantidades, exclusão e cálculo de subtotal.
-- [/] Formulário de Checkout / Local de Entrega:
-  - [x] Campos específicos de entrega interna: Bloco, Sala, Departamento, Ponto de Referência (RF09) (Integrado ao novo fluxo de endereços no backend).
+- [x] Formulário de Checkout / Local de Entrega:
+  - [x] Campos específicos de entrega interna: Bloco, Sala, Departamento, Ponto de Referência (RF09) (Integrado ao fluxo de endereços e pedidos real).
   - [ ] Escolha de agendamento (Calendário) vs. Entrega imediata (RF11).
-  - [ ] Validação de estoque antes do fechamento do pedido.
+  - [x] Validação de estoque antes do fechamento do pedido (Realizada de forma segura e transacional no backend).
 
 ### 3.4 Pagamento e Timeline de Acompanhamento (`order-tracking`)
-- [ ] Tela de Pagamento Pix:
-  - [ ] Exibição do QR Code Pix e botão "Copiar Chave Pix".
-  - [ ] Temporizador visual de 30 minutos em contagem regressiva (RF08, RN03).
+- [/] Tela de Pagamento Pix:
+  - [x] Exibição do código Pix Copia e Cola (`pix_code`) e botão "Copiar".
+  - [x] Temporizador visual de 30 minutos em contagem regressiva reativa (RF08, RN03).
   - [ ] Botão "Já Realizei o Pagamento" para notificar o admin.
 - [ ] Timeline Reativa (`timeline.component.ts`):
   - [ ] Exibição cronológica e temática dos status do pedido (ex: "Seu cookie entrou em análise", "Reforço positivo confirmado!").

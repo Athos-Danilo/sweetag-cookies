@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { CartService } from '../core/services/cart.service';
 import { CartItem } from '../core/models/cart.model';
+import { AddressService } from '../core/services/address.service';
+import { OrderService } from '../core/services/order.service';
 
 @Component({
   selector: 'app-cart',
@@ -17,11 +19,15 @@ export class CartComponent implements OnInit {
   checkoutForm: FormGroup;
   total: number = 0;
   currentStep: 'cart' | 'delivery' = 'cart';
+  errorMessage: string = '';
+  isSubmitting: boolean = false;
 
   constructor(
     public cartService: CartService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private addressService: AddressService,
+    private orderService: OrderService
   ) {
     this.checkoutForm = this.fb.group({
       department: ['', Validators.required],
@@ -67,25 +73,61 @@ export class CartComponent implements OnInit {
 
   onSubmitCheckout() {
     if (this.checkoutForm.valid && this.cartItems.length > 0) {
-      console.log('Dados do pedido:', {
-        items: this.cartItems,
-        delivery: this.checkoutForm.value,
-        total: this.total
+      this.isSubmitting = true;
+      this.errorMessage = '';
+
+      const addressPayload = {
+        title: 'Entrega do Pedido',
+        department: this.checkoutForm.value.department,
+        block: this.checkoutForm.value.block,
+        room: this.checkoutForm.value.room,
+        street: this.checkoutForm.value.reference || '',
+        is_default: true
+      };
+
+      // 1. Cadastra o endereço no backend
+      this.addressService.createAddress(addressPayload).subscribe({
+        next: (address) => {
+          const orderItems = this.cartItems.map(item => {
+            const numId = Number(item.product.id);
+            return {
+              product_id: isNaN(numId) ? undefined : numId,
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.product.price
+            };
+          });
+
+          const orderPayload = {
+            address_id: address.id!,
+            total: this.total,
+            payment_method: this.checkoutForm.value.paymentMethod,
+            items: orderItems
+          };
+
+          // 2. Cria o pedido no backend
+          this.orderService.createOrder(orderPayload).subscribe({
+            next: (order) => {
+              this.isSubmitting = false;
+              this.cartService.clearCart();
+              this.checkoutForm.reset({ paymentMethod: 'PIX', needsChange: false });
+              
+              // Redireciona para listagem de pedidos
+              this.router.navigate(['/orders']);
+            },
+            error: (orderErr) => {
+              this.isSubmitting = false;
+              this.errorMessage = orderErr.error?.detail || 'Erro ao processar o pedido. Tente novamente.';
+              alert(this.errorMessage);
+            }
+          });
+        },
+        error: (addrErr) => {
+          this.isSubmitting = false;
+          this.errorMessage = 'Erro ao registrar o endereço de entrega.';
+          alert(this.errorMessage);
+        }
       });
-      // TODO: Integrar com a API de Orders (Pedidos) no backend
-      const { paymentMethod } = this.checkoutForm.value;
-      if (paymentMethod === 'PIX') {
-        alert('Pedido criado! Redirecionando para acompanhamento...');
-      } else {
-        alert('Pedido confirmado! Prepare o dinheiro para o entregador.');
-      }
-      
-      // Limpar carrinho e formulário
-      this.cartService.clearCart();
-      this.checkoutForm.reset({ paymentMethod: 'PIX', needsChange: false });
-      
-      // Direcionar para a tela de pedidos
-      this.router.navigate(['/orders']);
     } else {
       this.checkoutForm.markAllAsTouched();
     }
