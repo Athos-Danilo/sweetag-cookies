@@ -31,6 +31,7 @@ app.add_middleware(
 from app.websockets.routes import router as websockets_router
 from app.notifications.routes import router as notifications_router
 from app.favorites.routes import router as favorites_router
+from app.products.routes import router as products_router
 
 # Include Routers
 app.include_router(auth_router)
@@ -40,6 +41,8 @@ app.include_router(orders_router)
 app.include_router(websockets_router)
 app.include_router(notifications_router)
 app.include_router(favorites_router)
+app.include_router(products_router)
+
 
 @app.on_event("startup")
 async def startup():
