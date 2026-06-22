@@ -4,9 +4,11 @@ from datetime import datetime
 from app.schemas.address import AddressResponse
 
 class OrderItemBase(BaseModel):
+    product_id: Optional[int] = None
     name: str
     quantity: int
     price: float
+
 
 class OrderItemCreate(OrderItemBase):
     pass

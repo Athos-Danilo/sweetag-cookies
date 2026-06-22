@@ -44,11 +44,17 @@ app.include_router(favorites_router)
 app.include_router(products_router)
 
 
+from app.services.expiration_worker import start_expiration_worker
+
 @app.on_event("startup")
 async def startup():
     # Initialize DB tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    
+    # Start periodic worker to expire unpaid orders
+    start_expiration_worker()
+
 
 @app.get("/")
 def read_root():

@@ -13,6 +13,9 @@ from app.schemas.order import OrderCreate, OrderResponse
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
+from datetime import datetime, timedelta
+from app.models.product import Product
+
 @router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
 async def create_order(
     order_in: OrderCreate,
@@ -26,29 +29,74 @@ async def create_order(
     if not address:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endereço não encontrado ou não pertence ao usuário.")
         
-    db_order = Order(
-        user_id=current_user.id,
-        address_id=order_in.address_id,
-        total=order_in.total,
-        payment_method=order_in.payment_method,
-        status="Aguardando",
-        status_step=1
-    )
-    db.add(db_order)
-    await db.commit()
-    await db.refresh(db_order)
-    
-    for item in order_in.items:
-        db_item = OrderItem(
-            order_id=db_order.id,
-            name=item.name,
-            quantity=item.quantity,
-            price=item.price
-        )
-        db.add(db_item)
+    try:
+        # Calculate expiration time: current time + 30 minutes (RN03)
+        expires_at = datetime.utcnow() + timedelta(minutes=30)
         
-    await db.commit()
-    
+        db_order_items = []
+        
+        # Lock and validate each product (RN01, RN02)
+        for item in order_in.items:
+            if item.product_id:
+                stmt = select(Product).where(Product.id == item.product_id, Product.is_active == True).with_for_update()
+            else:
+                stmt = select(Product).where(Product.name == item.name, Product.is_active == True).with_for_update()
+                
+            prod_result = await db.execute(stmt)
+            product = prod_result.scalars().first()
+            
+            if not product:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, 
+                    detail=f"Sabor temático '{item.name}' não encontrado ou indisponível."
+                )
+                
+            if product.stock_quantity < item.quantity:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Estoque insuficiente para o sabor '{product.name}'. Disponível: {product.stock_quantity}, Solicitado: {item.quantity}."
+                )
+                
+            # Decrement inventory (RN01)
+            product.stock_quantity -= item.quantity
+            
+            # Prepare OrderItem
+            db_item = OrderItem(
+                product_id=product.id,
+                name=product.name,
+                quantity=item.quantity,
+                price=item.price
+            )
+            db_order_items.append(db_item)
+            
+        db_order = Order(
+            user_id=current_user.id,
+            address_id=order_in.address_id,
+            total=order_in.total,
+            payment_method=order_in.payment_method,
+            status="Aguardando",
+            status_step=1,
+            expires_at=expires_at
+        )
+        
+        db.add(db_order)
+        await db.flush() # Generate ID for db_order
+        
+        for db_item in db_order_items:
+            db_item.order_id = db_order.id
+            db.add(db_item)
+            
+        await db.commit()
+        
+    except Exception as e:
+        await db.rollback()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao processar o pedido: {str(e)}"
+        )
+        
     # Reload order with relationships
     result = await db.execute(
         select(Order)
@@ -58,6 +106,7 @@ async def create_order(
     full_order = result.scalars().first()
     
     return full_order
+
 
 @router.get("", response_model=List[OrderResponse])
 async def read_orders(
