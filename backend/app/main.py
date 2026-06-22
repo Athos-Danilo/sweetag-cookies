@@ -10,6 +10,8 @@ from app.models.support import SupportTicket
 from app.models.address import Address
 from app.models.order import Order, OrderItem
 from app.models.favorite import Favorite
+from app.models.product import Product
+
 
 app = FastAPI(
     title="SweetAg Cookies API",
