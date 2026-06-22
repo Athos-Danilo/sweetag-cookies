@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -16,6 +16,9 @@ export class AuthService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/auth`;
 
+  public readonly currentUser = signal<any>(this.getUser());
+  public readonly isLoggedIn = computed(() => !!this.currentUser());
+
   login(whatsapp: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
       whatsapp
@@ -23,6 +26,7 @@ export class AuthService {
       tap(response => {
         this.setToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(response.user));
+        this.currentUser.set(response.user);
       })
     );
   }
@@ -36,6 +40,7 @@ export class AuthService {
       tap(response => {
         this.setToken(response.access_token);
         localStorage.setItem('user', JSON.stringify(response.user));
+        this.currentUser.set(response.user);
       })
     );
   }
@@ -56,9 +61,6 @@ export class AuthService {
   logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+    this.currentUser.set(null);
   }
 }

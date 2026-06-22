@@ -1,17 +1,47 @@
 <div class="app-favorites-container">
   
-  @if (isLoggedIn) {
-    <!-- Estado Logado: Vazio -->
-    <div class="empty-state fade-in-up">
-      <div class="empty-icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-        </svg>
+  @if (isLoggedIn()) {
+    @if (favoriteCookies().length > 0) {
+      <!-- Estado Logado: Lista de Favoritos -->
+      <div class="favorites-list-container fade-in-up">
+        <h2 class="section-title">Seus Favoritos</h2>
+        <div class="favorites-grid">
+          @for (cookie of favoriteCookies(); track cookie.id) {
+            <div class="fav-card" (click)="openCookieModal(cookie)">
+              <div class="fav-card-image">
+                <img [src]="cookie.imagem" [alt]="cookie.nome">
+                <button class="btn-fav-remove" (click)="desfavoritar(cookie.id, $event)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FF3B30" stroke="#FF3B30" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </button>
+              </div>
+              <div class="fav-card-info">
+                <h3>{{ cookie.nome }}</h3>
+                <span class="category-tag">{{ cookie.categoria }}</span>
+                <p class="flavor-desc">{{ cookie.sabor }}</p>
+                <div class="fav-card-footer">
+                  <span class="price">R$ {{ cookie.valor | number:'1.2-2' }}</span>
+                  <button class="btn-add-fast" (click)="adicionarAoCarrinho(cookie); $event.stopPropagation()">
+                    Adicionar
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
       </div>
-      <h2>Sua lista está vazia</h2>
-      <p>Você ainda não favoritou nenhum cookie. Volte para a página principal e escolha as suas prescrições preferidas!</p>
-      <button class="btn-explore" [routerLink]="['/']">Explorar Cookies</button>
-    </div>
+    } @else {
+      <!-- Estado Logado: Vazio -->
+      <div class="empty-state fade-in-up">
+        <div class="empty-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+          </svg>
+        </div>
+        <h2>Sua lista está vazia</h2>
+        <p>Você ainda não favoritou nenhum cookie. Volte para a página principal e escolha as suas prescrições preferidas!</p>
+        <button class="btn-explore" [routerLink]="['/']">Explorar Cookies</button>
+      </div>
+    }
   } @else {
     <!-- Estado Não Logado: Destaque Premium -->
     <div class="upsell-container fade-in-up">
@@ -22,7 +52,7 @@
         </div>
         <button class="btn-login" [routerLink]="['/login']">Fazer Login</button>
       </div>
-
+ 
       <div class="best-seller-section">
         
         <div class="product-spotlight">
@@ -80,7 +110,16 @@
       </div>
     </div>
   }
-
+ 
   <!-- Footer para não ficar colado embaixo se for muito curto -->
   <app-footer></app-footer>
+
+  <!-- Product Detail Modal (Bottom Sheet) -->
+  @if (selectedCookieDetail()) {
+    <app-product-modal 
+      [cookie]="selectedCookieDetail()" 
+      (close)="closeCookieModal()" 
+      (addToCart)="adicionarAoCarrinho($event.cookie, $event.quantity)">
+    </app-product-modal>
+  }
 </div>

@@ -9,6 +9,7 @@ from app.models.user import User
 from app.models.support import SupportTicket
 from app.models.address import Address
 from app.models.order import Order, OrderItem
+from app.models.favorite import Favorite
 
 app = FastAPI(
     title="SweetAg Cookies API",
@@ -27,6 +28,7 @@ app.add_middleware(
 
 from app.websockets.routes import router as websockets_router
 from app.notifications.routes import router as notifications_router
+from app.favorites.routes import router as favorites_router
 
 # Include Routers
 app.include_router(auth_router)
@@ -35,6 +37,7 @@ app.include_router(addresses_router)
 app.include_router(orders_router)
 app.include_router(websockets_router)
 app.include_router(notifications_router)
+app.include_router(favorites_router)
 
 @app.on_event("startup")
 async def startup():
