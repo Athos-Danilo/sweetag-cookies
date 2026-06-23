@@ -38,8 +38,8 @@ Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
   - [x] Campos detalhados para entrega interna (Bloco, Sala, etc).
 - [x] **M1.7: Modelo de Chamados de Suporte (`SupportTicket`)**
   - [x] Campos de ticket, mensagem e relacionamento de usuário/pedido.
-- [ ] **M1.8: Otimização de Banco (Performance) 🚀**
-  - [ ] Criar Índices (Indexes) em campos muito buscados (ex: `orders.status`, `orders.created_at`, `user.whatsapp`).
+- [x] **M1.8: Otimização de Banco (Performance) 🚀**
+  - [x] Criar Índices (Indexes) em campos muito buscados (ex: `orders.status`, `orders.created_at`, `user.whatsapp`).
 
 ---
 

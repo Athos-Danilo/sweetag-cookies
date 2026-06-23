@@ -11,11 +11,11 @@ class Order(Base):
     address_id = Column(Integer, ForeignKey("addresses.id"), nullable=False)
     total = Column(Float, nullable=False)
     payment_method = Column(String, nullable=False)
-    status = Column(String, default="Aguardando")
+    status = Column(String, default="Aguardando", index=True)
     status_step = Column(Integer, default=1)
     pix_code = Column(Text, nullable=True)
-    expires_at = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
     # Relationships
     user = relationship("User", backref="orders")
