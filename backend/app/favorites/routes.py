@@ -9,7 +9,7 @@ from app.models.user import User
 from app.models.favorite import Favorite
 from app.favorites.schemas import FavoriteResponse, FavoriteCreate
 
-router = APIRouter(prefix="/favorites", tags=["favorites"])
+router = APIRouter(prefix="/api/favorites", tags=["favorites"])
 
 @router.post("", response_model=FavoriteResponse, status_code=status.HTTP_201_CREATED)
 async def add_favorite(

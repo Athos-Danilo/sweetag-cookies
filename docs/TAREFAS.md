@@ -12,7 +12,7 @@ Este documento funciona como um guia de acompanhamento (To-Do List) para a imple
 - [/] **Fase 1: Modelagem e Banco de Dados (PostgreSQL + SQLAlchemy)**
 - [/] **Fase 2: Backend e APIs REST / WebSockets (FastAPI)**
 - [/] **Fase 3: Frontend - Módulo do Cliente (Angular)**
-- [ ] **Fase 4: Frontend - Painel Administrativo (Angular)**
+- [/] **Fase 4: Frontend - Painel Administrativo (Angular)**
 - [/] **Fase 5: Integrações, Segurança, Testes e Performance**
 - [ ] **Fase 6: UI/UX & "Uau" Factor (Novo)**
 
@@ -51,7 +51,7 @@ Lógica de negócios, endpoints REST e otimizações.
 - [x] Login persistente com JWT (RF04)
 - [x] Gerador divertido de nomes automáticos de psicologia (RF05).
 - [x] Dependência de autenticação de tokens para rotas.
-- [ ] Autenticação restrita para administradores e RBAC (Permissões).
+- [x] Autenticação restrita para administradores e RBAC (Permissões).
 - [ ] Segurança Avançada: Implementar Rate Limiting (ex: `slowapi`) para evitar força bruta no login/cadastro.
 
 ### 2.2 Módulo de Endereços (`addresses`)
@@ -62,7 +62,7 @@ Lógica de negócios, endpoints REST e otimizações.
   - [x] `GET /api/products`: Lista todos os cookies ativos.
   - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico.
   - [ ] Performance: Implementar cache (ex: Redis ou cache em memória) na listagem de produtos para respostas super rápidas.
-- [x] Endpoints protegidos (Admin - CRUD completo) (RF19):
+- [/] Endpoints protegidos (Admin - CRUD completo) (RF19):
   - [x] Criar, editar, deletar logicamente cookies e ajuste de estoque rápido (RF20).
 
 ### 2.4 Módulo de Pedidos (`orders`) e Regras de Estoque
@@ -76,15 +76,18 @@ Lógica de negócios, endpoints REST e otimizações.
 - [x] Endpoint `PATCH /api/orders/{id}/address`: Alteração de bloco/sala pós-compra (se status < PREPARACAO).
 
 ### 2.5 Módulo de Pagamento manual via Pix (`payments`)
-- [x] Geração e vinculação de código Pix Copia e Cola ao pedido.
-- [ ] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
+- [/] Integração de pagamento manual:
+  - [x] Geração e vinculação de código Pix Copia e Cola ao pedido.
+  - [ ] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
 
 ### 2.6 Módulo de Agendamentos Futuros (`future-orders`)
 - [ ] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
 
 ### 2.7 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
 - [/] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
-- [x] Aprovação de comprovantes Pix e reservas.
+- [/] Aprovação de comprovantes Pix e reservas:
+  - [x] Aprovação manual de comprovantes Pix e integração com saldo da campanha (RN10).
+  - [ ] Aprovação de reservas futuras (agendamentos).
 
 ### 2.8 WebSockets e Comunicação em Tempo Real (`websockets`)
 - [x] Gerenciador de conexões no backend.
@@ -92,6 +95,9 @@ Lógica de negócios, endpoints REST e otimizações.
 
 ### 2.9 Módulo de Suporte (`support`)
 - [x] Endpoint `POST /api/support/tickets`.
+
+### 2.10 Módulo de Favoritos (`favorites`) (Novo)
+- [x] Endpoints para adicionar (`POST /api/favorites`), remover (`DELETE /api/favorites/{product_id}`) e listar (`GET /api/favorites`) cookies favoritos do usuário.
 
 ---
 
@@ -103,16 +109,17 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
   - [x] Campo WhatsApp com máscara.
   - [x] Campo Nome e Botão "Gerar Nome Psi Dinâmico".
   - [ ] Banner/Modal solicitando consentimento de notificações Push.
+  - [ ] Vinculação e aceite de termos de privacidade e política de notificações no formulário de cadastro (RN08).
 - [x] Guardas de rota e interceptadores JWT.
 - [ ] Segurança: Migrar o armazenamento do token de LocalStorage para Cookies HTTP-Only (maior proteção contra XSS).
 
 ### 3.2 Catálogo Dinâmico e Campanha (`homepage`)
-- [x] Vitrine de Cookies (`cookie-card`):
+- [/] Vitrine de Cookies (`cookie-card`):
   - [x] Layout integrado à API real.
   - [x] Botão rápido de adicionar ao carrinho.
   - [ ] Badge visual "Esgotado".
 - [ ] Barra de Progresso da Campanha (`progress-campaign`).
-- [x] Rota/Modal de Detalhes do Cookie (`product-details`).
+- [x] Rota/Modal de Detalhes do Cookie (`product-details`) - (Nota: exibe detalhes completos, mas falta mostrar quantidade restante em estoque e disponibilidade diária de acordo com o calendário).
 - [ ] Performance: Otimização e Lazy Loading de imagens dos cookies. Implementar esqueletos de carregamento (Skeletons).
 
 ### 3.3 Carrinho de Compras e Checkout (`cart` / `checkout`)
@@ -123,20 +130,28 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 ### 3.4 Pagamento e Timeline de Acompanhamento (`order-tracking`)
 - [/] Tela de Pagamento Pix:
   - [x] Exibição de Pix Copia e Cola e Temporizador de 30 minutos.
-  - [ ] Botão "Já Realizei o Pagamento".
+  - [ ] Botão "Já Realizei o Pagamento" (informando ao backend/admin).
 - [ ] Timeline Reativa via WebSockets.
+- [ ] Permitir ao cliente editar o local de entrega pós-compra (enquanto o status for < PREPARACAO) (RN06).
+- [ ] Alinhamento do Stepper de status do frontend com os status cronológicos e etapas reais do backend (RF13).
 
 ### 3.5 Canal de Suporte (`support`)
 - [x] Integração da tela de suporte (`SupportComponent`) com a API HTTP.
+
+### 3.6 Módulo de Favoritos (`favorites`) (Novo)
+- [x] Tela de favoritos integrada à API real (`FavoritesComponent`), permitindo visualizar e gerenciar cookies favoritos.
 
 ---
 
 ## 💻 Fase 4: Frontend - Painel Administrativo (Angular)
 Interface responsiva otimizada para desktop.
 
-### 4.1 a 4.4 Módulos Básicos do Painel
+### 4.1 a 4.4 Módulos do Painel
 - [x] Login e Guardas de Rota.
-- [/] Dashboard Executivo (Faturamento, Campanhas, Cookies mais vendidos).
+- [/] Dashboard Executivo (Faturamento, Campanhas, Cookies mais vendidos):
+  - [x] Visualização e gerenciamento da campanha financeira (progresso, metas e frases).
+  - [ ] Tabela ou gráfico dos cookies mais vendidos (integrando a rota `/api/admin/reports/top-cookies`).
+  - [ ] Relatórios e gráficos de faturamento financeiro diário/semanal/mensal (RF24).
 - [x] Gestão de Pedidos com alertas sonoros em tempo real para novos pedidos e pagamentos.
 - [ ] Gestão de Produtos (CRUD e Calendário).
 
