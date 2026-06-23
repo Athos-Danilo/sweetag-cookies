@@ -3,7 +3,7 @@
 Este documento funciona como um guia de acompanhamento (To-Do List) para a implementação completa da plataforma **SweetAg Cookies**. Ele foi construído com base nas especificações técnicas, regras de negócio e arquitetura estabelecidas no projeto.
 
 > [!IMPORTANT]
-> A implementação deve seguir a arquitetura definida (FastAPI no Backend + Angular no Frontend) e respeitar as restrições e regras de negócio de controle de estoque e tempo de reserva.
+> A implementação deve seguir a arquitetura definida (FastAPI no Backend + Angular no Frontend) e respeitar as restrições e regras de negócio de controle de estoque e tempo de reserva. Foco em performance, segurança e uma UI/UX deslumbrante.
 
 ---
 
@@ -13,7 +13,8 @@ Este documento funciona como um guia de acompanhamento (To-Do List) para a imple
 - [/] **Fase 2: Backend e APIs REST / WebSockets (FastAPI)**
 - [/] **Fase 3: Frontend - Módulo do Cliente (Angular)**
 - [ ] **Fase 4: Frontend - Painel Administrativo (Angular)**
-- [/] **Fase 5: Integrações, Segurança e Testes**
+- [/] **Fase 5: Integrações, Segurança, Testes e Performance**
+- [ ] **Fase 6: UI/UX & "Uau" Factor (Novo)**
 
 ---
 
@@ -21,87 +22,76 @@ Este documento funciona como um guia de acompanhamento (To-Do List) para a imple
 Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
 
 - [x] **M1.1: Modelo de Usuário (`User`)**
-  - [x] WhatsApp como identificador único (RN07) - *Já implementado*
-  - [x] Nome e aceitação de notificações - *Já implementado*
+  - [x] WhatsApp como identificador único (RN07)
+  - [x] Nome e aceitação de notificações
 - [x] **M1.2: Modelo de Produtos e Sabores (`Product`)**
-  - [x] Campos: ID, Nome temático, Descrição temática, História/Branding temático, Ingredientes, Tabela nutricional (JSON), Imagem URL, Preço, Quantidade em estoque, Disponibilidade diária (Boolean), Ativo (Boolean).
+  - [x] Campos: ID, Nome temático, Descrição, Ingredientes, Tabela nutricional, Imagem URL, Preço, Quantidade em estoque, Disponibilidade, Ativo.
 - [x] **M1.3: Modelo de Pedidos e Itens (`Order` & `OrderItem`)**
-  - [x] Tabela `orders`: ID, ID Usuário, Status do pedido, Bloco, Sala, Departamento (Vinculados via ID de Endereço - RF09), Data de criação, Tipo de pagamento. *Implementado código Pix gerado na tabela e campo de data de expiração da reserva (created_at + 30 min - RN03).*
-  - [x] Tabela `order_items`: ID, ID Pedido, Nome (Produto), Quantidade, Preço.
-  - [x] Enum/Status de pedido: `Aguardando` (e outros a serem expandidos para a timeline dinâmica).
+  - [x] Tabela `orders`: ID, ID Usuário, Status, Endereço, Data, Tipo de pagamento, Chave Pix, Expiração da reserva (30 min).
+  - [x] Tabela `order_items`: ID, ID Pedido, Nome, Quantidade, Preço.
+  - [x] Enum/Status de pedido dinâmicos.
 - [ ] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
   - [ ] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
 - [ ] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
-  - [ ] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente (Boolean) (RF15).
+  - [ ] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente.
 - [x] **M1.6: Modelo de Endereço (`Address`)**
-  - [x] Tabela `addresses`: ID, ID Usuário, Título (ex: Clínica, Casa), Departamento, Bloco, Sala, Rua, Número, Bairro e indicador de Endereço Padrão (`is_default`).
+  - [x] Campos detalhados para entrega interna (Bloco, Sala, etc).
 - [x] **M1.7: Modelo de Chamados de Suporte (`SupportTicket`)**
-  - [x] Tabela `support_tickets`: ID, Categoria, ID Pedido, Mensagem, ID Usuário, Status (Padrão: open), Data de criação.
+  - [x] Campos de ticket, mensagem e relacionamento de usuário/pedido.
+- [ ] **M1.8: Otimização de Banco (Performance) 🚀**
+  - [ ] Criar Índices (Indexes) em campos muito buscados (ex: `orders.status`, `orders.created_at`, `user.whatsapp`).
 
 ---
 
 ## ⚡ Fase 2: Backend & APIs (FastAPI)
-Lógica de negócios e endpoints REST + WebSockets.
+Lógica de negócios, endpoints REST e otimizações.
 
 ### 2.1 Módulo de Autenticação (`auth`)
 - [x] Cadastro simplificado de cliente (WhatsApp e nome) (RF03)
 - [x] Login persistente com JWT (RF04)
-- [x] Implementação de gerador divertido de nomes automáticos de psicologia (ex: "Freud Anônimo", "Paciente 404", "Jung Misterioso") para registro (RF05).
-- [x] Dependência de autenticação de tokens para rotas (`get_current_user` em `backend/app/api/deps.py`).
-- [ ] Autenticação restrita para administradores (RF17) e permissões de acesso (RF18).
+- [x] Gerador divertido de nomes automáticos de psicologia (RF05).
+- [x] Dependência de autenticação de tokens para rotas.
+- [ ] Autenticação restrita para administradores e RBAC (Permissões).
+- [ ] Segurança Avançada: Implementar Rate Limiting (ex: `slowapi`) para evitar força bruta no login/cadastro.
 
-### 2.x Módulo de Endereços (`addresses`)
-- [x] Endpoint `POST /api/addresses`: Permite ao usuário cadastrar um endereço interno de entrega (sala, bloco, etc.), definindo o primeiro como padrão.
-- [x] Endpoint `GET /api/addresses`: Retorna a lista de endereços do usuário autenticado.
+### 2.2 Módulo de Endereços (`addresses`)
+- [x] Endpoint `POST /api/addresses` e `GET /api/addresses`.
 
-### 2.2 Módulo de Produtos (`products`)
+### 2.3 Módulo de Produtos (`products`)
 - [/] Endpoints públicos (Cliente):
-  - [x] `GET /api/products`: Lista todos os cookies ativos com estoque e dados do catálogo (RF01).
-  - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico, história e tabela nutricional (RF02).
+  - [x] `GET /api/products`: Lista todos os cookies ativos.
+  - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico.
+  - [ ] Performance: Implementar cache (ex: Redis ou cache em memória) na listagem de produtos para respostas super rápidas.
 - [ ] Endpoints protegidos (Admin - CRUD completo) (RF19):
-  - [ ] `POST /api/products`: Criação de novo sabor temático.
-  - [ ] `PUT /api/products/{id}`: Edição de dados do cookie.
-  - [ ] `DELETE /api/products/{id}`: Desativação (soft delete) do cookie.
-  - [ ] `PATCH /api/products/{id}/stock`: Ajuste manual e rápido de estoque diário (RF20).
+  - [ ] Criar, editar, deletar logicamente cookies e ajuste de estoque rápido (RF20).
 
-### 2.3 Módulo de Pedidos (`orders`) e Regras de Estoque
+### 2.4 Módulo de Pedidos (`orders`) e Regras de Estoque
 - [x] Endpoint `POST /api/orders`: Criação de pedido imediato.
-  - [x] Criação do pedido com os itens, valor total, forma de pagamento e ID do endereço no banco de dados.
   - [x] Validação de estoque garantido antes de reservar (RN01).
-  - [x] Bloqueio ACID / Transação segura de concorrência para evitar venda dupla (RN01, RN02).
-  - [x] Decremento do estoque físico e marcação do timestamp de expiração (30 min) (RF08, RN03).
-- [x] Endpoint `GET /api/orders`: Retorna o histórico de pedidos do usuário autenticado com seus itens e endereços detalhados.
+  - [x] Transação ACID segura contra venda dupla.
+  - [x] Decremento do estoque físico e expiração de 30 min (RN03).
+- [x] Endpoint `GET /api/orders`: Histórico de pedidos.
 - [x] Tarefa em segundo plano (Background Task / Worker):
-  - [x] Verificador periódico que expira pedidos com status `Aguardando` que passaram de 30 minutos sem confirmação de pagamento.
-  - [x] Lógica de expiração: Altera status para `EXPIRADO`, devolve a quantidade dos itens ao estoque e notifica o cliente (RN04).
-- [x] Endpoint `PATCH /api/orders/{id}/address`: Permite ao cliente alterar bloco/sala se o status do pedido for menor ou igual a `PREPARACAO` (RN06).
+  - [x] Expiração automática de pedidos não pagos após 30 min, devolvendo estoque.
+- [x] Endpoint `PATCH /api/orders/{id}/address`: Alteração de bloco/sala pós-compra (se status < PREPARACAO).
 
-### 2.4 Módulo de Pagamento manual via Pix (`payments`)
-- [ ] Endpoint `GET /api/orders/{id}/pix`: Retorna QR Code Pix estático (ou dinâmico gerado) e chave Copia e Cola.
-- [ ] Endpoint `POST /api/orders/{id}/pay`: Envio de confirmação de pagamento manual pelo cliente (ex: indicação de que o Pix foi feito).
+### 2.5 Módulo de Pagamento manual via Pix (`payments`)
+- [x] Geração e vinculação de código Pix Copia e Cola ao pedido.
+- [ ] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
 
-### 2.5 Módulo de Agendamentos Futuros (`future-orders`)
-- [ ] Endpoint `POST /api/orders/schedule`: Cria pedido agendado para data futura.
-  - [ ] Criação do pedido com status `RESERVA_ANALISE` (RN09).
-  - [ ] Consulta ao calendário de disponibilidade para validar o agendamento (RF12).
-- [ ] Endpoint `GET /api/availability/calendar`: Retorna o calendário de disponibilidade dos sabores para os próximos dias.
+### 2.6 Módulo de Agendamentos Futuros (`future-orders`)
+- [ ] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
 
-### 2.6 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
-- [ ] Endpoints protegidos para o Admin:
-  - [ ] `GET /api/admin/orders`: Listagem de todos os pedidos ativos e históricos.
-  - [ ] `PATCH /api/admin/orders/{id}/status`: Alteração de status manual do pedido (RF21). Deve validar que os status não retrocedem (RN05).
-  - [ ] `POST /api/admin/orders/{id}/approve-pix`: Confirmação manual de pagamento (muda status para `CONFIRMADO` e atualiza a meta financeira) (RF21, RN10).
-  - [ ] `POST /api/admin/orders/{id}/approve-reserve`: Aprovação ou rejeição de reservas futuras (RF22).
-  - [ ] `GET /api/admin/dashboard`: Métricas de faturamento diário, semanal, mensal e cookies mais vendidos (RF24).
-  - [ ] `PUT /api/admin/campaign`: Edição dos valores e textos da campanha (metas).
+### 2.7 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
+- [ ] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
+- [ ] Aprovação de comprovantes Pix e reservas.
 
-### 2.7 WebSockets e Comunicação em Tempo Real (`websockets`)
-- [ ] Gerenciador de Conexões WebSocket no backend:
-  - [ ] Envio automático de atualizações de status para a conexão do cliente quando o admin alterar o status do pedido (Timeline Real-time - RF13, RNF03).
-  - [ ] Canal WebSocket para o Painel Administrativo que envia alertas sonoros/visuais instantâneos quando um novo pedido ou comprovante Pix é enviado (RF23).
+### 2.8 WebSockets e Comunicação em Tempo Real (`websockets`)
+- [ ] Gerenciador de conexões no backend.
+- [ ] Push de atualizações para o cliente (Timeline) e para o painel de admin (Alerta de novo pedido).
 
-### 2.8 Módulo de Suporte (`support`)
-- [x] Endpoint `POST /api/support/tickets`: Permite a criação de chamados de suporte, guardando no banco de dados a categoria, mensagem e id do pedido opcional.
+### 2.9 Módulo de Suporte (`support`)
+- [x] Endpoint `POST /api/support/tickets`.
 
 ---
 
@@ -110,95 +100,73 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 
 ### 3.1 Autenticação e Configuração Inicial (`auth` & `core`)
 - [/] Tela de Autenticação / Cadastro (`auth`):
-  - [x] Campo WhatsApp com máscara e validação.
-  - [x] Campo Nome do cliente.
-  - [x] Botão de "Gerar Nome Psi Dinâmico" (RF05).
-  - [ ] Banner/Modal solicitando consentimento de notificações Push e WhatsApp (RF06, RN08).
-- [x] Guardas de rota e interceptadores JWT (`core/services/auth.service.ts`):
-  - [x] Persistência da sessão do cliente no LocalStorage por 30 dias (RF04, RNF06).
+  - [x] Campo WhatsApp com máscara.
+  - [x] Campo Nome e Botão "Gerar Nome Psi Dinâmico".
+  - [ ] Banner/Modal solicitando consentimento de notificações Push.
+- [x] Guardas de rota e interceptadores JWT.
+- [ ] Segurança: Migrar o armazenamento do token de LocalStorage para Cookies HTTP-Only (maior proteção contra XSS).
 
 ### 3.2 Catálogo Dinâmico e Campanha (`homepage`)
 - [x] Vitrine de Cookies (`cookie-card`):
-  - [x] Layout fluido mostrando fotos dos cookies e o branding temático e bem-humorado de psicologia (Integrado à API real de produtos).
-  - [ ] Badge visual se o produto estiver esgotado (RN02).
-  - [x] Botão de adicionar rápido ao carrinho.
-- [ ] Barra de Progresso da Campanha (`progress-campaign`):
-  - [ ] Exibição visual do progresso financeiro do proprietário para congressos.
-  - [ ] Valores formatados e textos motivacionais baseados na API.
-- [x] Rota/Modal de Detalhes do Cookie (`product-details`):
-  - [x] História completa com humor, ingredientes e informações nutricionais (RF02) (Implementado via ProductModalComponent).
+  - [x] Layout integrado à API real.
+  - [x] Botão rápido de adicionar ao carrinho.
+  - [ ] Badge visual "Esgotado".
+- [ ] Barra de Progresso da Campanha (`progress-campaign`).
+- [x] Rota/Modal de Detalhes do Cookie (`product-details`).
+- [ ] Performance: Otimização e Lazy Loading de imagens dos cookies. Implementar esqueletos de carregamento (Skeletons).
 
 ### 3.3 Carrinho de Compras e Checkout (`cart` / `checkout`)
-- [x] Visualização do Carrinho (`cart`):
-  - [x] Listagem de itens, alteração de quantidades, exclusão e cálculo de subtotal.
-- [x] Formulário de Checkout / Local de Entrega:
-  - [x] Campos específicos de entrega interna: Bloco, Sala, Departamento, Ponto de Referência (RF09) (Integrado ao fluxo de endereços e pedidos real).
-  - [ ] Escolha de agendamento (Calendário) vs. Entrega imediata (RF11).
-  - [x] Validação de estoque antes do fechamento do pedido (Realizada de forma segura e transacional no backend).
+- [x] Visualização do Carrinho (`cart`) e formulário de Checkout.
+  - [x] Validação de estoque integrada ao backend.
+- [ ] Escolha de agendamento (Calendário) vs. Entrega imediata.
 
 ### 3.4 Pagamento e Timeline de Acompanhamento (`order-tracking`)
 - [/] Tela de Pagamento Pix:
-  - [x] Exibição do código Pix Copia e Cola (`pix_code`) e botão "Copiar".
-  - [x] Temporizador visual de 30 minutos em contagem regressiva reativa (RF08, RN03).
-  - [ ] Botão "Já Realizei o Pagamento" para notificar o admin.
-- [ ] Timeline Reativa (`timeline.component.ts`):
-  - [ ] Exibição cronológica e temática dos status do pedido (ex: "Seu cookie entrou em análise", "Reforço positivo confirmado!").
-  - [ ] Conectado ao `WebsocketService` para transição imediata de status sem necessidade de recarregar a tela (RF13, RNF03).
+  - [x] Exibição de Pix Copia e Cola e Temporizador de 30 minutos.
+  - [ ] Botão "Já Realizei o Pagamento".
+- [ ] Timeline Reativa via WebSockets.
 
 ### 3.5 Canal de Suporte (`support`)
-- [x] Integração da tela de suporte (`SupportComponent`) com o backend.
-- [x] Serviço `SupportService` para enviar requisições de chamado HTTP para `/api/support/tickets` e tratar respostas de sucesso ou falha.
+- [x] Integração da tela de suporte (`SupportComponent`) com a API HTTP.
 
 ---
 
 ## 💻 Fase 4: Frontend - Painel Administrativo (Angular)
 Interface responsiva otimizada para desktop.
 
-### 4.1 Login e Acesso Administrativo (`admin-panel/login`)
-- [ ] Tela de Login dedicada para admins com e-mail/usuário e senha (RF17).
-- [ ] Guarda de rotas `AdminGuard` para blindar o painel administrativo.
-
-### 4.2 Dashboard Executivo (`admin-panel/dashboard`)
-- [ ] Painel central:
-  - [ ] Gráficos simples ou indicadores de faturamento (diário, semanal, mensal) (RF24).
-  - [ ] Progresso atual da campanha de arrecadação.
-  - [ ] Cards com cookies campeões de venda.
-- [ ] Painel de Alertas Sonoros e Visuais:
-  - [ ] Notificação sonora (beep/alarme) ao receber novos pedidos ou solicitações de pagamento Pix (RF23).
-
-### 4.3 Gestão de Pedidos e Entregas (`admin-panel/orders`)
-- [ ] Listagem ativa de pedidos com filtro de status.
-- [ ] Ações rápidas:
-  - [ ] Botão para visualizar comprovante Pix e aprovar pagamento manual (RF21).
-  - [ ] Botão para avançar status do pedido (Preparação ➡️ Rota de Entrega ➡️ Concluído) (RN05).
-  - [ ] Botão para cancelar pedido.
-  - [ ] Visualização das informações de entrega interna (Bloco, Sala, etc.).
-
-### 4.4 Gestão de Produtos e Calendário (`admin-panel/products`)
-- [ ] Tabela com listagem de sabores temáticos.
-- [ ] Modais de Criação e Edição (CRUD) de Cookies (RF19).
-- [ ] Toggle rápido para ativar/desativar cookies e zerar/ajustar estoque diário (RF20).
-- [ ] Configuração do calendário de datas futuras e sabores disponíveis para encomendas agendadas (RF12, RF22).
+### 4.1 a 4.4 Módulos Básicos do Painel
+- [ ] Login e Guardas de Rota.
+- [ ] Dashboard Executivo (Faturamento, Campanhas, Cookies mais vendidos).
+- [ ] Gestão de Pedidos com alertas sonoros em tempo real para novos pedidos e pagamentos.
+- [ ] Gestão de Produtos (CRUD e Calendário).
 
 ---
 
-## 🔒 Fase 5: Integrações, Segurança e Testes
+## 🔒 Fase 5: Integrações, Segurança, Testes e Performance
 
 ### 5.1 Notificações e Canais
-- [ ] Implementação de Notificações Web Push via Service Worker para avisos de status do pedido quando a aba do app estiver fechada (RF14, RF06).
-- [ ] Mock de envio de notificações via WhatsApp (para simulação de futuras integrações oficiais) (Capítulo 11.1).
+- [ ] Notificações Web Push via Service Worker.
+- [ ] Mock de WhatsApp.
 
-### 5.2 Segurança e Concorrência
-- [ ] Proteção de rotas REST com autenticação Bearer JWT no FastAPI.
-- [ ] Configuração de HTTPS e cookies HTTP-only para armazenar tokens caso necessário.
-- [ ] Teste de estresse simples de transação ACID no banco Neon para garantir que dois usuários não comprem o mesmo cookie esgotando o estoque (RN01, RN02).
+### 5.2 Segurança e Infraestrutura Global
+- [ ] Configuração de CORS rigoroso e cabeçalhos de segurança (ex: Helmet equivalente no FastAPI).
+- [ ] Gzip/Brotli habilitados no FastAPI para redução de payload.
+- [ ] Sanitização robusta contra injeções de script no frontend e backend.
 
-### 5.3 Testes Automatizados (RNF07)
+### 5.3 Testes Automatizados
 - [/] Testes no backend (FastAPI):
-  - [x] Script de testes de banco de dados (`test_db.py`).
-  - [x] Script de integração da API (`test_api.py`).
-  - [x] Script de teste de integração do fluxo completo de pedidos (`test_orders.py`): Testa registro, login, criação de endereço, criação e listagem de pedidos.
-  - [ ] Testar fluxo de reserva de estoque e expiração após 30 minutos via pytest.
-  - [ ] Testar barreira de estoque negativo.
-- [ ] Testes no frontend (Angular):
-  - [ ] Testar conexão do WebSocket e resposta da timeline.
+  - [x] Scripts de banco, API e ordens (`test_db.py`, `test_api.py`, `test_orders.py`).
+  - [x] Expiração de pedidos implementada.
+  - [ ] Testar cenários limites de concorrência massiva.
+- [ ] Testes no frontend (Angular) (WebSockets e Componentes).
+
+---
+
+## ✨ Fase 6: UI/UX & "Uau" Factor (Estética e Experiência)
+Tarefas adicionadas para tornar a aplicação incrivelmente bonita, fluida e cativante.
+
+- [ ] **Microinterações e Animações 🎨**: Adicionar transições suaves de entrada de tela, fade-ins em imagens, e botões reativos ao toque/clique (ripple effect, scale-up no hover).
+- [ ] **Glassmorphism e Sombras Modernas 🪞**: Refinar o design visual com uso moderado de efeito vidro (blur) em modais e navbar, além de sombras super suaves e modernas.
+- [ ] **Feedback Visual Premium 💬**: Substituir os alertas padrões por Toast Notifications bonitos, não-intrusivos e animados (ex: ao adicionar no carrinho).
+- [ ] **Dark Mode (Tema Escuro) 🌙**: Oferecer chaveador de tema elegante com paleta noturna adaptada para a identidade da marca.
+- [ ] **State Feedback (Carregamento Mágico) ⏳**: Implementar *Skeleton loaders* (estruturas de carregamento animadas) no lugar de telas vazias e ilustrações atrativas para estados vazios ("Seu carrinho está vazio!").
