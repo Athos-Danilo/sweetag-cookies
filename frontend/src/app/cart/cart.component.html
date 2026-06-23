@@ -13,206 +13,541 @@
     <div class="header-spacer"></div>
   </header>
 
-  <!-- Indicador visual de etapas (Steps Indicator) -->
-  <div class="steps-indicator" *ngIf="cartItems.length > 0">
-    <div class="step" [class.active]="currentStep === 'cart'" (click)="goToCart()">
-      <span class="step-number">1</span>
-      <span class="step-label">Revisão</span>
+  <!-- Stepper de 4 Etapas Premium -->
+  <div class="steps-indicator-premium" *ngIf="cartItems.length > 0">
+    <!-- Passo 1: Sacola -->
+    <div class="step-item" [class.active]="currentStep === 'cart'" [class.completed]="currentStep !== 'cart'" (click)="goToCart()">
+      <div class="step-icon-wrapper">
+        <span class="step-num-text" *ngIf="currentStep === 'cart'">1</span>
+        <svg class="step-check-icon" *ngIf="currentStep !== 'cart'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <span class="step-label-text">Sacola</span>
     </div>
-    <div class="step-connector" [class.active]="currentStep === 'delivery'"></div>
-    <div class="step" [class.active]="currentStep === 'delivery'" (click)="goToDelivery()">
-      <span class="step-number">2</span>
-      <span class="step-label">Entrega</span>
+
+    <!-- Conector 1-2 -->
+    <div class="step-line-connector" [class.filled]="currentStep !== 'cart'"></div>
+
+    <!-- Passo 2: Agendamento -->
+    <div class="step-item" [class.active]="currentStep === 'schedule'" [class.completed]="currentStep === 'delivery' || currentStep === 'payment'" (click)="goToSchedule()">
+      <div class="step-icon-wrapper">
+        <span class="step-num-text" *ngIf="currentStep === 'cart' || currentStep === 'schedule'">2</span>
+        <svg class="step-check-icon" *ngIf="currentStep === 'delivery' || currentStep === 'payment'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <span class="step-label-text">Período</span>
+    </div>
+
+    <!-- Conector 2-3 -->
+    <div class="step-line-connector" [class.filled]="currentStep === 'delivery' || currentStep === 'payment'"></div>
+
+    <!-- Passo 3: Endereço -->
+    <div class="step-item" [class.active]="currentStep === 'delivery'" [class.completed]="currentStep === 'payment'" (click)="goToDelivery()">
+      <div class="step-icon-wrapper">
+        <span class="step-num-text" *ngIf="currentStep !== 'payment'">3</span>
+        <svg class="step-check-icon" *ngIf="currentStep === 'payment'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <span class="step-label-text">Local</span>
+    </div>
+
+    <!-- Conector 3-4 -->
+    <div class="step-line-connector" [class.filled]="currentStep === 'payment'"></div>
+
+    <!-- Passo 4: Pagamento -->
+    <div class="step-item" [class.active]="currentStep === 'payment'">
+      <div class="step-icon-wrapper">
+        <span class="step-num-text">4</span>
+      </div>
+      <span class="step-label-text">Pagamento</span>
     </div>
   </div>
 
-  <div class="cart-content" [class.delivery-step]="currentStep === 'delivery'" *ngIf="cartItems.length > 0; else emptyCart">
-    <!-- ETAPA 1: REVISÃO DE ITENS -->
-    <ng-container *ngIf="currentStep === 'cart'">
-      <div class="items-section animate-fade">
-        <div class="cart-item" *ngFor="let item of cartItems">
-          <!-- Imagem à Esquerda -->
-          <div class="item-image-wrapper">
-            <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-image">
-          </div>
-          
-          <!-- Detalhes no Centro -->
-          <div class="item-details">
-            <h3>{{ item.product.name }}</h3>
-            <p class="theme">{{ item.product.theme }}</p>
-            <span class="price">{{ item.product.price | currency:'BRL':'symbol':'1.2-2' }}</span>
-          </div>
-
-          <!-- Lixeira no Canto Superior Direito -->
-          <button class="btn-remove-item" (click)="removeItem(item.product.id)" aria-label="Remover item do carrinho" title="Remover item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
+  <div class="cart-content-wrapper" *ngIf="cartItems.length > 0; else emptyCart">
+    
+    <!-- ETAPA 1: REVISÃO DE ITENS (Sacola) -->
+    <div class="step-section animate-slide-fade" *ngIf="currentStep === 'cart'">
+      <div class="cart-grid-layout">
+        <!-- Lista de Itens (Esquerda) -->
+        <div class="items-list-container">
+          <div class="section-title-premium">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
-          </button>
+            <h2>Revisar Cookies Escolhidos</h2>
+          </div>
 
-          <!-- Seletor de Quantidade no Canto Inferior Direito -->
-          <div class="quantity-controls">
-            <button class="qty-btn" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1" aria-label="Diminuir quantidade">-</button>
-            <span class="qty">{{ item.quantity }}</span>
-            <button class="qty-btn" (click)="increaseQuantity(item)" [disabled]="item.quantity >= item.product.stock" aria-label="Aumentar quantidade">+</button>
+          <div class="items-cards-stack">
+            <div class="cart-item-card" *ngFor="let item of cartItems">
+              <!-- Imagem do Cookie -->
+              <div class="item-img-container">
+                <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cookie-img">
+              </div>
+              
+              <!-- Detalhes do Produto -->
+              <div class="item-info-block">
+                <h3 class="cookie-title">{{ item.product.name }}</h3>
+                <span class="cookie-tag">{{ item.product.theme }}</span>
+                <p class="cookie-price-display">{{ item.product.price | currency:'BRL':'symbol':'1.2-2' }}</p>
+              </div>
+
+              <!-- Lixeira (Exclusão) -->
+              <button class="remove-item-action-btn" (click)="removeItem(item.product.id)" aria-label="Remover do carrinho" title="Remover cookie">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+
+              <!-- Seletor de Quantidade -->
+              <div class="quantity-controller-premium">
+                <button class="quantity-adjust-btn" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1" aria-label="Diminuir">-</button>
+                <span class="quantity-current-val">{{ item.quantity }}</span>
+                <button class="quantity-adjust-btn" (click)="increaseQuantity(item)" [disabled]="item.quantity >= item.product.stock" aria-label="Aumentar">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo Financeiro e Cupom (Direita) -->
+        <div class="summary-aside-container">
+          <div class="summary-card-premium">
+            <h2>Resumo do Pedido</h2>
+            
+            <div class="summary-details-rows">
+              <div class="summary-detail-item">
+                <span>Subtotal</span>
+                <span class="val">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+              </div>
+              
+              <div class="summary-detail-item delivery-row">
+                <span>Entrega no Campus</span>
+                <span class="free-badge">Grátis</span>
+              </div>
+              
+              <!-- Campo de Cupom de Desconto Premium -->
+              <div class="coupon-section-box">
+                <label for="couponInput">Cupom de Desconto</label>
+                <div class="coupon-input-group">
+                  <input id="couponInput" type="text" [(ngModel)]="couponCode" placeholder="Ex: FREUD10" [disabled]="isApplyingCoupon">
+                  <button class="apply-coupon-btn" (click)="applyCoupon(couponCode)" [disabled]="isApplyingCoupon || !couponCode">
+                    <span *ngIf="!isApplyingCoupon">Aplicar</span>
+                    <span class="spinner" *ngIf="isApplyingCoupon"></span>
+                  </button>
+                </div>
+                <!-- Alertas de cupom -->
+                <div class="coupon-message error animate-fade" *ngIf="couponError">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-msg-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>{{ couponError }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-divider-line"></div>
+
+            <div class="summary-total-display">
+              <span>Total a Pagar</span>
+              <span class="total-val">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+            
+            <button class="premium-primary-btn" (click)="goToSchedule()">
+              Avançar para Agendamento
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-arrow-icon">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="checkout-section animate-fade">
-        <div class="summary-card">
-          <h2>Resumo do Pedido</h2>
-          
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+    <!-- ETAPA 2: AGENDAMENTO (PERÍODO) -->
+    <div class="step-section animate-slide-fade" *ngIf="currentStep === 'schedule'">
+      <div class="checkout-single-column-card">
+        
+        <!-- Seletor Tipo Entrega -->
+        <div class="delivery-type-selector-box">
+          <h2 class="form-title-with-desc">Como quer receber seu cookie?</h2>
+          <div class="delivery-options-grid">
+            <div class="delivery-option-card" [class.selected]="deliveryType === 'immediate'" (click)="selectDeliveryType('immediate')">
+              <div class="delivery-option-header">
+                <div class="delivery-option-icon flash-anim">⚡</div>
+                <div class="delivery-option-info">
+                  <span class="delivery-option-title">Reforço Imediato</span>
+                  <span class="delivery-option-desc">Entrega rápida na sua sala em minutos</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="delivery-option-card" [class.selected]="deliveryType === 'scheduled'" (click)="selectDeliveryType('scheduled')">
+              <div class="delivery-option-header">
+                <div class="delivery-option-icon">📅</div>
+                <div class="delivery-option-info">
+                  <span class="delivery-option-title">Reforço Programado</span>
+                  <span class="delivery-option-desc">Agende dia e horário para garantir cookies frescos</span>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <!-- Nova linha de cupom (estética) -->
-          <div class="summary-row coupon-row">
-            <span>Cupom de Desconto</span>
-            <span class="add-coupon">Adicionar cupom</span>
+        </div>
+
+        <!-- Seção de Calendário Customizado Premium -->
+        <div class="scheduled-calendar-box animate-slide-down" *ngIf="deliveryType === 'scheduled'">
+          <!-- Cabeçalho do Calendário -->
+          <div class="calendar-header-premium">
+            <span class="calendar-month-title">{{ currentMonthYear }}</span>
+            <span class="calendar-badge">Segunda a Sexta</span>
           </div>
 
-          <!-- Nova linha de entrega -->
-          <div class="summary-row delivery-row">
-            <span>Entrega</span>
-            <span class="delivery-free">Grátis</span>
-          </div>
+          <div class="calendar-card-body">
+            <span class="step-sub-heading">1. Escolha o dia do seu reforço adocicado</span>
+            
+            <!-- Dias de segunda a sexta -->
+            <div class="custom-days-row-grid">
+              <div class="custom-day-cell" *ngFor="let date of availableDates" [class.active]="scheduledDate === date" (click)="selectScheduledDate(date)">
+                <!-- Divide a string "seg, 24/06" para formatar visualmente -->
+                <span class="day-of-week">{{ date.split(',')[0] }}</span>
+                <span class="day-number">{{ date.split(',')[1].split('/')[0] }}</span>
+                <span class="day-month-short">{{ date.split(',')[1].split('/')[1] }}</span>
+              </div>
+            </div>
 
-          <div class="summary-total">
-            <span>Total</span>
-            <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+            <span class="step-sub-heading" style="margin-top: 1.5rem;">2. Escolha o melhor horário para sua sessão</span>
+            
+            <!-- Horários em grade -->
+            <div class="custom-time-grid">
+              <div class="custom-time-pill" *ngFor="let time of availableTimes" [class.active]="scheduledTime === time" (click)="selectScheduledTime(time)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="time-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>{{ time }}</span>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- Botões de Ação da Etapa de Agendamento -->
+        <div class="checkout-footer-actions-row">
+          <button type="button" class="back-link-btn" (click)="goToCart()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-back-icon">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Voltar ao carrinho
+          </button>
           
-          <button class="primary-btn advance-btn" (click)="goToDelivery()">
-            Avançar para Entrega
-            <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          <button type="button" class="premium-primary-btn next-step-btn" (click)="goToDelivery()">
+            Avançar para Local
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-next-icon">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
         </div>
       </div>
-    </ng-container>
+    </div>
 
-    <!-- ETAPA 2: ENDEREÇO DE ENTREGA -->
-    <ng-container *ngIf="currentStep === 'delivery'">
-      <div class="delivery-section animate-fade">
-        <div class="delivery-card">
-          <h2>Onde entregamos seu reforço positivo?</h2>
-          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitCheckout()" class="delivery-form">
-            <div class="form-group">
-              <label for="department">Departamento / Curso</label>
-              <input id="department" type="text" formControlName="department" placeholder="Ex: Psicologia">
-              <small class="error" *ngIf="checkoutForm.get('department')?.invalid && checkoutForm.get('department')?.touched">
-                Obrigatório.
+    <!-- ETAPA 3: LOCAL DE ENTREGA (Endereço) -->
+    <div class="step-section animate-slide-fade" *ngIf="currentStep === 'delivery'">
+      <div class="checkout-single-column-card">
+        <!-- Formulário de Endereço Interno -->
+        <div class="address-form-box">
+          <div class="section-title-premium form-section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <h2>Onde entregamos seu reforço positivo?</h2>
+          </div>
+
+          <form [formGroup]="checkoutForm" class="premium-delivery-form">
+            <div class="premium-form-group">
+              <label for="deptInput">Departamento / Curso</label>
+              <div class="input-with-icon-wrapper">
+                <input id="deptInput" type="text" formControlName="department" placeholder="Ex: Psicologia, Nutrição, Direito">
+              </div>
+              <small class="error-msg" *ngIf="checkoutForm.get('department')?.invalid && checkoutForm.get('department')?.touched">
+                Campo obrigatório. Por favor, preencha seu departamento/curso.
               </small>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="block">Bloco/Prédio</label>
-                <input id="block" type="text" formControlName="block" placeholder="Ex: Bloco C">
-                <small class="error" *ngIf="checkoutForm.get('block')?.invalid && checkoutForm.get('block')?.touched">
+            <div class="form-row-two-columns">
+              <div class="premium-form-group">
+                <label for="blockInput">Bloco / Prédio</label>
+                <input id="blockInput" type="text" formControlName="block" placeholder="Ex: Bloco C, Prédio 3">
+                <small class="error-msg" *ngIf="checkoutForm.get('block')?.invalid && checkoutForm.get('block')?.touched">
                   Obrigatório.
                 </small>
               </div>
-              
-              <div class="form-group">
-                <label for="room">Sala</label>
-                <input id="room" type="text" formControlName="room" placeholder="Ex: Sala 304">
-                <small class="error" *ngIf="checkoutForm.get('room')?.invalid && checkoutForm.get('room')?.touched">
+
+              <div class="premium-form-group">
+                <label for="roomInput">Sala / Localização Exata</label>
+                <input id="roomInput" type="text" formControlName="room" placeholder="Ex: Sala 302, Laboratório">
+                <small class="error-msg" *ngIf="checkoutForm.get('room')?.invalid && checkoutForm.get('room')?.touched">
                   Obrigatório.
                 </small>
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="reference">Ponto de Referência (Opcional)</label>
-              <input id="reference" type="text" formControlName="reference" placeholder="Ex: Perto do laboratório de neuro">
+            <div class="premium-form-group">
+              <label for="refInput">Ponto de Referência (Opcional)</label>
+              <textarea id="refInput" formControlName="reference" rows="2" placeholder="Ex: Próximo à cantina principal, banco de madeira no corredor"></textarea>
             </div>
-
-            <!-- FORMA DE PAGAMENTO -->
-            <div class="form-group payment-section">
-              <label>Forma de Pagamento</label>
-              <div class="radio-group-horizontal">
-                <label class="radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'PIX'">
-                  <input type="radio" formControlName="paymentMethod" value="PIX">
-                  <div class="radio-content">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2zm0 15.5L6.5 12 12 6.5 17.5 12 12 17.5z"/></svg>
-                    <span>Pix</span>
-                  </div>
-                </label>
-                
-                <label class="radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
-                  <input type="radio" formControlName="paymentMethod" value="DINHEIRO">
-                  <div class="radio-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
-                    <span>Dinheiro</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <!-- OPÇÕES DE TROCO (Apenas se Dinheiro) -->
-            <div class="change-section animate-fade" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
-              <div class="form-group">
-                <label>Vai precisar de troco?</label>
-                <div class="radio-group-horizontal">
-                  <label class="radio-card change-card" [class.selected]="checkoutForm.get('needsChange')?.value === false">
-                    <input type="radio" formControlName="needsChange" [value]="false">
-                    <span>Não, valor exato</span>
-                  </label>
-                  <label class="radio-card change-card" [class.selected]="checkoutForm.get('needsChange')?.value === true">
-                    <input type="radio" formControlName="needsChange" [value]="true">
-                    <span>Sim, preciso</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-group animate-fade" *ngIf="checkoutForm.get('needsChange')?.value === true">
-                <label for="changeFor">Troco para quanto?</label>
-                <input id="changeFor" type="text" formControlName="changeFor" placeholder="Ex: R$ 50,00 ou 100">
-                <small style="color: var(--color-on-surface-variant); margin-top: 4px; display: block;">Facilita a vida do entregador! 🍪</small>
-              </div>
-            </div>
-
-            <div class="delivery-actions">
-              <button type="button" class="back-step-btn" (click)="goToCart()">
-                Voltar ao Carrinho
-              </button>
-              <button type="submit" class="checkout-btn" [disabled]="checkoutForm.invalid">
-                Confirmar Pedido
-              </button>
-            </div>
-            
-            <p class="timer-warning" *ngIf="checkoutForm.get('paymentMethod')?.value === 'PIX'">
-              ⚠️ O pagamento será feito no app após a confirmação.
-            </p>
-            <p class="timer-warning" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
-              ⚠️ Separe o valor no momento da entrega.
-            </p>
           </form>
         </div>
+
+        <!-- Botões de Ação da Etapa de Entrega -->
+        <div class="checkout-footer-actions-row">
+          <button type="button" class="back-link-btn" (click)="goBack()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-back-icon">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Voltar ao Agendamento
+          </button>
+          
+          <button type="button" class="premium-primary-btn next-step-btn" (click)="goToPayment()">
+            Ir para Pagamento
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-next-icon">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
       </div>
-    </ng-container>
+    </div>
+
+    <!-- ETAPA 4: PAGAMENTO E REVISÃO FINAL -->
+    <div class="step-section animate-slide-fade" *ngIf="currentStep === 'payment'">
+      <div class="cart-grid-layout">
+        
+        <!-- Formas de Pagamento (Esquerda) -->
+        <div class="payment-selection-container">
+          <div class="section-title-premium">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+              <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            <h2>Como deseja pagar?</h2>
+          </div>
+
+          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitCheckout()">
+            <div class="payment-methods-radio-stack">
+              <!-- Pix Card -->
+              <label class="premium-payment-radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'PIX'">
+                <input type="radio" formControlName="paymentMethod" value="PIX">
+                <div class="payment-card-content">
+                  <!-- Ícone customizado do Pix -->
+                  <div class="payment-method-icon pix-icon-bg">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                      <path d="M12 2L2 12l10 10 10-10L12 2zm0 15.5L6.5 12 12 6.5 17.5 12 12 17.5z"/>
+                    </svg>
+                  </div>
+                  <div class="payment-method-text-group">
+                    <span class="payment-method-title-text">Pix</span>
+                    <span class="payment-method-desc-text">Código gerado na hora para pagamento manual rápido</span>
+                  </div>
+                  <div class="selection-indicator-circle">
+                    <div class="inner-dot"></div>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Dinheiro Card -->
+              <label class="premium-payment-radio-card" [class.selected]="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+                <input type="radio" formControlName="paymentMethod" value="DINHEIRO">
+                <div class="payment-card-content">
+                  <div class="payment-method-icon cash-icon-bg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                      <circle cx="12" cy="12" r="2"></circle>
+                      <path d="M6 12h.01M18 12h.01"></path>
+                    </svg>
+                  </div>
+                  <div class="payment-method-text-group">
+                    <span class="payment-method-title-text">Dinheiro</span>
+                    <span class="payment-method-desc-text">Pague diretamente na entrega do seu cookie</span>
+                  </div>
+                  <div class="selection-indicator-circle">
+                    <div class="inner-dot"></div>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Seção de Troco (Dinheiro apenas) -->
+            <div class="premium-change-box animate-slide-down" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+              <span class="change-box-label">Precisa de troco para a entrega?</span>
+              
+              <div class="change-radio-options-grid">
+                <label class="change-radio-pill" [class.selected]="checkoutForm.get('needsChange')?.value === false">
+                  <input type="radio" formControlName="needsChange" [value]="false">
+                  <span>Não, valor exato</span>
+                </label>
+                <label class="change-radio-pill" [class.selected]="checkoutForm.get('needsChange')?.value === true">
+                  <input type="radio" formControlName="needsChange" [value]="true">
+                  <span>Sim, preciso de troco</span>
+                </label>
+              </div>
+
+              <!-- Campo de entrada do valor do troco -->
+              <div class="change-input-wrapper animate-fade" *ngIf="checkoutForm.get('needsChange')?.value === true">
+                <label for="changeForVal">Troco para qual valor em dinheiro?</label>
+                <div class="currency-input-prefix-box">
+                  <span class="prefix">R$</span>
+                  <input id="changeForVal" type="text" formControlName="changeFor" placeholder="Ex: 50,00 ou 100">
+                </div>
+                <small class="helper-text-premium">Facilita a preparação do troco do entregador! 🍪</small>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Consolidação do Pedido e Botão Confirmar (Direita) -->
+        <div class="summary-aside-container">
+          <div class="summary-card-premium summary-payment-confirmation">
+            <h2>Revisão Final</h2>
+
+            <!-- Resumo Rápido da Entrega -->
+            <div class="delivery-review-summary-box">
+              <span class="review-label">Entregar em:</span>
+              <div class="review-value-location">
+                <strong>{{ checkoutForm.value.department }}</strong>, {{ checkoutForm.value.block }} - Sala {{ checkoutForm.value.room }}
+              </div>
+              <span class="review-delivery-type">
+                Tipo: <span *ngIf="deliveryType === 'immediate'">⚡ Imediata (Minutos)</span>
+                <span *ngIf="deliveryType === 'scheduled'">📅 Agendada ({{ scheduledDate }} às {{ scheduledTime }})</span>
+              </span>
+            </div>
+
+            <div class="summary-divider-line"></div>
+
+            <!-- Resumo dos Valores -->
+            <div class="summary-details-rows">
+              <div class="summary-detail-item">
+                <span>Subtotal</span>
+                <span class="val">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+              </div>
+              
+              <div class="summary-detail-item delivery-row">
+                <span>Entrega no Campus</span>
+                <span class="free-badge">Grátis</span>
+              </div>
+            </div>
+
+            <div class="summary-divider-line"></div>
+
+            <div class="summary-total-display">
+              <span>Total a Pagar</span>
+              <span class="total-val">{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+
+            <!-- Alertas e avisos específicos do pagamento -->
+            <div class="payment-alert-warning-banner" *ngIf="checkoutForm.get('paymentMethod')?.value === 'PIX'">
+              <span class="icon">⚠️</span>
+              <span>Ao confirmar, o Pix Copia e Cola será gerado e você terá 30 minutos para pagar.</span>
+            </div>
+            <div class="payment-alert-warning-banner" *ngIf="checkoutForm.get('paymentMethod')?.value === 'DINHEIRO'">
+              <span class="icon">ℹ️</span>
+              <span>Por favor, reserve o valor em dinheiro para efetuar o pagamento na entrega.</span>
+            </div>
+            
+            <!-- Botões de ação final -->
+            <button class="premium-primary-btn confirm-order-btn" (click)="onSubmitCheckout()" [disabled]="checkoutForm.invalid || isSubmitting">
+              <span *ngIf="!isSubmitting">Confirmar e Finalizar Pedido</span>
+              <span class="spinner" *ngIf="isSubmitting"></span>
+            </button>
+
+            <button type="button" class="back-link-btn center-btn" (click)="goBack()" [disabled]="isSubmitting">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-back-icon">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Alterar local de entrega
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Template para Carrinho Vazio -->
   <ng-template #emptyCart>
-    <div class="empty-state animate-fade">
-      <div class="empty-illustration-wrapper">
-        <img src="assets/empty_cart.png" alt="Ilustração de pessoa feliz comendo cookie" class="empty-illustration-img">
+    <div class="empty-state-premium animate-fade">
+      <!-- Ilustração Clínica de Cookie Triste e Partículas Orbitando -->
+      <div class="clinical-empty-illustration">
+        <!-- Partículas de energia/id flutuando desfocadas -->
+        <div class="orbiter-particle p1"></div>
+        <div class="orbiter-particle p2"></div>
+        <div class="orbiter-particle p3"></div>
+        
+        <!-- Prancheta de Análise / Fundo Clínico -->
+        <div class="clinical-sheet-bg">
+          <div class="sheet-line"></div>
+          <div class="sheet-line short"></div>
+          <div class="sheet-badge-stamp">ID_DEPLETADO</div>
+        </div>
+        
+        <!-- Cookie Central Triste com Design 3D Flat e Lágrima -->
+        <div class="floating-cookie-wrapper">
+          <svg viewBox="0 0 100 100" class="premium-sad-cookie-svg">
+            <defs>
+              <linearGradient id="cookieBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#D4BEA3" />
+                <stop offset="100%" stop-color="#A5835C" />
+              </linearGradient>
+              <linearGradient id="chipBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#5E4637" />
+                <stop offset="100%" stop-color="#2E1C12" />
+              </linearGradient>
+            </defs>
+            
+            <!-- Cookie Base -->
+            <circle cx="50" cy="50" r="42" fill="url(#cookieBg)" stroke="#8A653E" stroke-width="2" />
+            
+            <!-- Gotas de Chocolate -->
+            <circle cx="32" cy="35" r="5" fill="url(#chipBg)" />
+            <circle cx="68" cy="32" r="6" fill="url(#chipBg)" />
+            <circle cx="40" cy="68" r="4.5" fill="url(#chipBg)" />
+            <circle cx="62" cy="65" r="5" fill="url(#chipBg)" />
+            <circle cx="28" cy="55" r="4" fill="url(#chipBg)" />
+            
+            <!-- Olhos Tristes / Cansados -->
+            <path d="M38 46c0 0-1-4-5-4s-5 4-5 4" stroke="#2E1C12" stroke-width="3" stroke-linecap="round" fill="none" />
+            <path d="M62 46c0 0-1-4-5-4s-5 4-5 4" stroke="#2E1C12" stroke-width="3" stroke-linecap="round" fill="none" />
+            
+            <!-- Boca Triste -->
+            <path d="M42 58c3-3 13-3 16 0" stroke="#2E1C12" stroke-width="3" stroke-linecap="round" fill="none" />
+            
+            <!-- Lágrima Verde-Sálvia -->
+            <path d="M31 49c-1 3 0 5 2 5s3-2 2-5-3-3-4 0z" fill="#7A9E7E" />
+          </svg>
+        </div>
       </div>
 
-      <h2>Seu carrinho está vazio</h2>
-      <p>O seu Id está precisando de um reforço positivo hoje? Adicione alguns cookies do nosso consultório de sabores para começar.</p>
+      <!-- Texto Clínico e Diagnóstico -->
+      <div class="empty-text-clinical-report">
+        <span class="clinical-code">DIAGNÓSTICO: CASO_404_ID_SEM_DOCE</span>
+        <h2>Seu Id está sem energia?</h2>
+        <p>O seu inconsciente indica que você precisa urgentemente de uma dose de glicose e felicidade! Escolha um de nossos cookies terapêuticos e inicie seu tratamento.</p>
+      </div>
       
-      <button class="explore-btn" (click)="goBack()">
-        Explorar Menu de Cookies
-        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Botão Prescrever Reforço Positivo -->
+      <button class="explore-catalog-btn" (click)="goBack()">
+        Prescrever Reforço Positivo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-explore">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
