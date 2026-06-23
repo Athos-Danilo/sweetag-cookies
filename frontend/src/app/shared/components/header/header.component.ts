@@ -72,6 +72,27 @@ export class HeaderComponent implements OnInit {
     return this.currentUrl.startsWith(route);
   }
 
+  private logoClickCount = 0;
+  private logoClickTimeout: any = null;
+
+  protected onLogoClick(event: Event) {
+    this.scrollToTop(event);
+
+    this.logoClickCount++;
+    if (this.logoClickTimeout) {
+      clearTimeout(this.logoClickTimeout);
+    }
+
+    if (this.logoClickCount === 5) {
+      this.logoClickCount = 0;
+      this.router.navigate(['/admin/login']);
+    } else {
+      this.logoClickTimeout = setTimeout(() => {
+        this.logoClickCount = 0;
+      }, 2000); // Reseta se não clicar mais em 2 segundos
+    }
+  }
+
   protected scrollToTop(event: Event) {
     event.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
@@ -19,6 +19,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   private adminService = inject(AdminService);
   private authService = inject(AuthService);
+  private router = inject(Router);
   private ws: WebSocket | null = null;
 
   ngOnInit(): void {
@@ -157,5 +158,10 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
         alert(err.error?.detail || 'Erro ao avançar status.');
       }
     });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/admin/login']);
   }
 }
