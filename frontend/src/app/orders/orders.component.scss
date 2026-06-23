@@ -1,58 +1,107 @@
+// Cores e Variáveis Locais
+$color-primary: var(--color-primary, #C4673A);
+$color-primary-light: rgba(196, 103, 58, 0.1);
+$color-primary-hover: #b05427;
+$color-bg-dark: #1e110a;
+$color-surface-dim: #F0EDE9;
+$color-text-main: #2c1e16;
+$color-text-variant: #6b5c54;
+
+$status-pending: #d48c4e;
+$status-pending-light: rgba(212, 140, 78, 0.1);
+$status-success: #2ecc71;
+$status-success-light: rgba(46, 204, 113, 0.1);
+$status-danger: #e74c3c;
+$status-danger-light: rgba(231, 76, 60, 0.1);
+
 .orders-container {
   min-height: 100vh;
-  background-color: var(--bg-color, #FAFAFA);
+  // Gradiente suave e moderno de fundo, saindo do branco chapado
+  background: linear-gradient(135deg, #FDFBF8 0%, #F4ECE4 100%);
   display: flex;
   flex-direction: column;
+  font-family: 'Inter', 'Outfit', sans-serif;
+  color: $color-text-main;
 }
 
-// Animação de entrada
+// Animação de Entrada
 .fade-in-up {
-  animation: fadeInUp 0.4s ease-out forwards;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+// Header Moderno com Glassmorphism
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(44, 30, 22, 0.04);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  border-bottom: 1px solid rgba(196, 103, 58, 0.08);
 
   .btn-back {
-    background: none;
-    border: none;
-    color: var(--color-on-surface, #2c1e16);
+    background: white;
+    border: 1px solid rgba(196, 103, 58, 0.15);
+    color: $color-text-main;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
-    margin-left: -0.5rem;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    transition: background-color 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      background-color: #FFF9F5;
+      border-color: $color-primary;
+      transform: scale(1.05);
+
+      svg {
+        transform: translateX(-2px);
+        color: $color-primary;
+      }
+    }
 
     &:active {
-      background-color: rgba(0,0,0,0.05);
+      transform: scale(0.95);
     }
   }
 
   .page-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 800;
-    color: var(--color-on-surface, #2c1e16);
+    letter-spacing: -0.5px;
+    color: $color-text-main;
     margin: 0;
+    background: linear-gradient(135deg, $color-text-main 0%, #503323 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .header-placeholder {
-    width: 40px; // Mesmo espaço do botão de voltar para centralizar o título
+    width: 40px;
   }
 }
 
@@ -60,10 +109,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1.25rem 1rem 3rem 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-// EMPTY STATE
+// EMPTY STATE ELEGANTE
 .empty-state {
   flex: 1;
   display: flex;
@@ -71,97 +124,149 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2rem;
-  margin-top: 4rem;
+  padding: 2.5rem 1.5rem;
+  margin-top: 3rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(44, 30, 22, 0.05);
+  border: 1px solid rgba(196, 103, 58, 0.06);
 
   .empty-icon-wrapper {
-    background: linear-gradient(135deg, rgba(196, 103, 58, 0.15), rgba(196, 103, 58, 0.05));
-    width: 120px;
-    height: 120px;
+    background: linear-gradient(135deg, rgba(196, 103, 58, 0.12) 0%, rgba(196, 103, 58, 0.03) 100%);
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2rem;
-    box-shadow: inset 0 4px 10px rgba(196, 103, 58, 0.05);
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 2px 8px rgba(196, 103, 58, 0.05);
+    animation: float 4s ease-in-out infinite;
 
     .empty-icon {
-      width: 56px;
-      height: 56px;
-      color: var(--color-primary, #C4673A);
+      width: 48px;
+      height: 48px;
+      color: $color-primary;
     }
   }
 
   h2 {
-    font-size: 1.5rem;
-    color: var(--color-on-surface, #2c1e16);
-    margin-bottom: 0.75rem;
-    font-weight: 800;
+    font-size: 1.4rem;
+    color: $color-text-main;
+    margin: 0 0 0.5rem 0;
+    font-weight: 850;
+    letter-spacing: -0.3px;
   }
 
   p {
-    font-size: 1rem;
-    color: var(--color-on-surface-variant, #7a6b63);
-    margin-bottom: 2.5rem;
-    max-width: 320px;
+    font-size: 0.95rem;
+    color: $color-text-variant;
+    margin: 0 0 2rem 0;
+    max-width: 290px;
     line-height: 1.5;
   }
 
   .btn-primary {
-    background-color: var(--color-primary, #C4673A);
+    background: linear-gradient(135deg, $color-primary 0%, #A04A22 100%);
     color: white;
     border: none;
     padding: 1rem 2.5rem;
     border-radius: 50px;
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(196, 103, 58, 0.3);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(196, 103, 58, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      box-shadow: 0 12px 30px rgba(196, 103, 58, 0.35);
+      transform: translateY(-2px);
+    }
 
     &:active {
-      transform: scale(0.95);
-      box-shadow: 0 2px 8px rgba(196, 103, 58, 0.3);
+      transform: scale(0.96);
+      box-shadow: 0 4px 15px rgba(196, 103, 58, 0.2);
     }
   }
 }
 
-// ORDERS LIST
+// FLOAT KEYFRAME
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+// LISTA DE PEDIDOS
 .orders-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 0.5rem;
+  gap: 1.25rem;
 }
 
+// CARD DE PEDIDO ESTILO IFOOD
 .order-card {
   background: white;
-  border-radius: var(--rounded-lg, 12px);
-  padding: 1.25rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 8px 22px rgba(44, 30, 22, 0.04);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid rgba(0,0,0,0.02);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(196, 103, 58, 0.05);
+  position: relative;
+  overflow: hidden;
+
+  // Barra lateral dinâmica de status estilo iFood
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: $color-surface-dim;
+    transition: background-color 0.3s ease;
+  }
+
+  &.status-aguardando::before {
+    background-color: $status-pending;
+  }
+  
+  &.status-entregue::before {
+    background-color: $status-success;
+  }
+
+  &.status-expirado::before {
+    background-color: $status-danger;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(196, 103, 58, 0.08);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 28px rgba(196, 103, 58, 0.1);
+    border-color: rgba(196, 103, 58, 0.15);
+  }
+
+  &:active {
+    transform: translateY(-1px);
   }
 
   .order-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.8rem;
 
     .order-id {
-      font-weight: 800;
-      color: var(--color-on-surface);
-      font-size: 0.95rem;
+      font-weight: 850;
+      color: $color-text-main;
+      font-size: 1.1rem;
+      letter-spacing: -0.3px;
     }
 
     .order-date {
-      color: var(--color-on-surface-variant);
+      color: $color-text-variant;
       font-size: 0.85rem;
+      font-weight: 500;
     }
   }
 
@@ -169,206 +274,455 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
 
     .order-status {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: rgba(196, 103, 58, 0.1);
-      color: var(--color-primary);
-      padding: 0.3rem 0.6rem;
-      border-radius: 20px;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
+      transition: all 0.3s ease;
+      background: $color-primary-light;
+      color: $color-primary;
 
       .status-dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background-color: var(--color-primary);
+        background-color: $color-primary;
+        animation: pulse-dot 2s infinite;
       }
 
       &.entregue {
-        background: rgba(46, 125, 50, 0.1);
-        color: #2e7d32;
-        
+        background: $status-success-light;
+        color: darken($status-success, 10%);
         .status-dot {
-          background-color: #2e7d32;
+          background-color: $status-success;
+          animation: none;
+        }
+      }
+
+      &.expirado {
+        background: $status-danger-light;
+        color: darken($status-danger, 5%);
+        .status-dot {
+          background-color: $status-danger;
+          animation: none;
         }
       }
     }
 
     .order-total {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--color-on-surface);
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: $color-text-main;
+      letter-spacing: -0.4px;
     }
   }
 
   .order-footer {
     display: flex;
     justify-content: space-between;
-    border-top: 1px dashed rgba(0,0,0,0.06);
-    padding-top: 0.75rem;
+    align-items: center;
+    border-top: 1px dashed rgba(196, 103, 58, 0.1);
+    padding-top: 0.9rem;
 
     .items-count {
-      color: var(--color-on-surface-variant);
+      color: $color-text-variant;
       font-size: 0.85rem;
+      font-weight: 600;
     }
 
     .view-details {
-      color: var(--color-primary);
-      font-weight: 700;
+      color: $color-primary;
+      font-weight: 800;
       font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      transition: gap 0.2s ease;
+
+      &:hover {
+        gap: 5px;
+      }
     }
   }
 }
 
-// ORDER DETAILS
+// ANIMATION FOR STATUS DOT
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+// DETALHES DO PEDIDO
 .order-details {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 0.5rem;
 
   .status-card, .info-card {
     background: white;
-    border-radius: var(--rounded-lg, 12px);
+    border-radius: 24px;
     padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    box-shadow: 0 8px 25px rgba(44, 30, 22, 0.04);
+    border: 1px solid rgba(196, 103, 58, 0.05);
+    transition: all 0.3s ease;
 
     h2, h3 {
       margin-top: 0;
       margin-bottom: 1.25rem;
-      font-size: 1.15rem;
-      color: var(--color-on-surface);
-      font-weight: 800;
-    }
-  }
-
-  .info-card p {
-    margin: 0.5rem 0;
-    color: var(--color-on-surface-variant);
-    font-size: 0.95rem;
-
-    strong {
-      color: var(--color-on-surface);
-    }
-  }
-
-  .item-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
-    .item-row {
+      font-size: 1.2rem;
+      color: $color-text-main;
+      font-weight: 850;
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
+      gap: 6px;
+    }
+  }
 
-      .item-qtd {
-        font-weight: 800;
-        color: var(--color-primary);
-        width: 30px;
+  // CARD DE PIX PREMIUM
+  .pix-card {
+    background: linear-gradient(135deg, #FFFDFB 0%, #FFF5EF 100%);
+    border: 1.5px solid rgba(196, 103, 58, 0.12);
+    position: relative;
+    overflow: hidden;
+
+    h3 {
+      color: $color-primary;
+    }
+
+    // Cronômetro Regressivo
+    .timer-warning {
+      display: flex;
+      align-items: center;
+      background: #FFF0E6;
+      color: $color-primary;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: 1px solid rgba(196, 103, 58, 0.15);
+      animation: pulse-border-timer 2.5s infinite;
+
+      svg {
+        animation: spin-timer 10s linear infinite;
+        flex-shrink: 0;
       }
-      .item-name {
+
+      &.expired {
+        background: $status-danger-light;
+        color: $status-danger;
+        border-color: rgba(231, 76, 60, 0.2);
+        animation: none;
+
+        svg {
+          animation: none;
+        }
+      }
+    }
+
+    .pix-instructions {
+      margin-top: 1.25rem;
+
+      p {
+        font-size: 0.88rem;
+        line-height: 1.4;
+        color: $color-text-variant;
+        margin-bottom: 0.8rem;
+      }
+    }
+
+    // Caixa de Código Pix Melhorada
+    .pix-code-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1.5px solid rgba(196, 103, 58, 0.12);
+      border-radius: 14px;
+      padding: 0.5rem 0.5rem 0.5rem 1rem;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+
+      &.copied {
+        border-color: $status-success;
+        background: #F4FDF8;
+      }
+
+      .pix-code-text {
         flex: 1;
-        color: var(--color-on-surface);
-        font-weight: 600;
-      }
-      .item-price {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.8rem;
+        color: $color-text-main;
         font-weight: 700;
-        color: var(--color-on-surface-variant);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .btn-copy {
+        background: $color-primary;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 4px 10px rgba(196, 103, 58, 0.15);
+
+        &:hover {
+          background: $color-primary-hover;
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
+
+        &.success {
+          background: $status-success;
+          box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+        }
       }
     }
   }
 
-  .divider {
-    height: 1px;
-    background: dashed rgba(0,0,0,0.1);
-    margin: 1rem 0;
-  }
+  // AVISO DE EXPIRADO PREMIUM
+  .expired-warning-card {
+    background: linear-gradient(135deg, #FFFDFD 0%, #FFF5F5 100%);
+    border: 1.5px solid rgba(231, 76, 60, 0.15);
 
-  .total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--color-on-surface);
-    margin-bottom: 0.5rem;
+    .expired-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: $status-danger;
+      
+      h3 {
+        margin: 0;
+        color: $status-danger;
+      }
+    }
 
-    .total-value {
-      color: var(--color-primary);
+    p {
+      color: $color-text-variant;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-top: 0.75rem;
     }
   }
 
-  .payment-info {
-    font-size: 0.85rem;
-    color: var(--color-on-surface-variant);
-    margin: 0;
+  // CARD DE ENDEREÇO E DETALHES
+  .info-card {
+    p {
+      margin: 0.75rem 0;
+      color: $color-text-variant;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(196, 103, 58, 0.05);
+      padding-bottom: 0.5rem;
+
+      strong {
+        color: $color-text-main;
+        font-weight: 700;
+        text-align: right;
+        max-width: 60%;
+      }
+
+      &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 1rem;
+
+      .item-row {
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+
+        .item-qtd {
+          font-weight: 850;
+          color: $color-primary;
+          background: $color-primary-light;
+          padding: 0.2rem 0.5rem;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          margin-right: 0.8rem;
+          min-width: 25px;
+          text-align: center;
+        }
+
+        .item-name {
+          flex: 1;
+          color: $color-text-main;
+          font-weight: 700;
+          letter-spacing: -0.2px;
+        }
+
+        .item-price {
+          font-weight: 800;
+          color: $color-text-main;
+        }
+      }
+    }
+
+    .divider {
+      height: 1px;
+      border-top: 1px dashed rgba(196, 103, 58, 0.15);
+      margin: 1.25rem 0;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 850;
+      color: $color-text-main;
+      letter-spacing: -0.4px;
+      margin-bottom: 0.5rem;
+
+      .total-value {
+        color: $color-primary;
+        font-size: 1.35rem;
+      }
+    }
+
+    .payment-info {
+      font-size: 0.85rem;
+      color: $color-text-variant;
+      margin: 0.5rem 0 0 0;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(196, 103, 58, 0.05);
+
+      strong {
+        color: $color-primary;
+        font-weight: 800;
+      }
+    }
   }
 
-  // STEPPER
+  // STEPPER PREMIUM ESTILO TIMELINE IFOOD
   .stepper {
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    padding: 0 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
 
     .step {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
       z-index: 2;
 
       .step-icon {
-        width: 28px;
-        height: 28px;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
-        background: var(--color-surface-dim, #E0E0E0);
-        color: white;
+        background: #F0EDE9;
+        color: #A49B95;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.8rem;
-        font-weight: 800;
-        transition: all 0.3s;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid white;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
       }
 
       span {
-        font-size: 0.7rem;
-        color: var(--color-on-surface-variant);
+        font-size: 0.72rem;
+        color: $color-text-variant;
         text-align: center;
-        font-weight: 600;
-        max-width: 60px;
+        font-weight: 700;
+        max-width: 65px;
+        transition: color 0.3s;
       }
 
       &.active {
         .step-icon {
-          background: var(--color-primary);
-          box-shadow: 0 0 0 3px rgba(196, 103, 58, 0.2);
+          background: $color-primary;
+          color: white;
+          box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 4px rgba(196, 103, 58, 0.15);
+          transform: scale(1.1);
+          animation: pulse-active-step 3s infinite;
         }
         span {
-          color: var(--color-primary);
-          font-weight: 800;
+          color: $color-primary;
+          font-weight: 850;
         }
       }
     }
 
+    // Linha de Progresso do Stepper
     .step-line {
       flex: 1;
-      height: 3px;
-      background: var(--color-surface-dim, #E0E0E0);
-      margin: 0 -10px;
+      height: 4px;
+      background: #F0EDE9;
+      margin: 0 -8px;
       margin-top: -24px;
       z-index: 1;
-      transition: all 0.3s;
+      position: relative;
+      border-radius: 2px;
+      overflow: hidden;
 
-      &.active {
-        background: var(--color-primary);
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: $color-primary;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      &.active::after {
+        width: 100%;
       }
     }
   }
+}
+
+// KEYFRAMES DE TIMERS E STEPPERS
+@keyframes spin-timer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-border-timer {
+  0% { border-color: rgba(196, 103, 58, 0.15); }
+  50% { border-color: rgba(196, 103, 58, 0.4); box-shadow: 0 0 8px rgba(196, 103, 58, 0.1); }
+  100% { border-color: rgba(196, 103, 58, 0.1); }
+}
+
+@keyframes pulse-active-step {
+  0% { box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 0px rgba(196, 103, 58, 0.2); }
+  70% { box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 8px rgba(196, 103, 58, 0); }
+  100% { box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 0px rgba(196, 103, 58, 0); }
 }

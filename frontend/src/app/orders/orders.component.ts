@@ -17,7 +17,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   protected orderService = inject(OrderService);
   protected router = inject(Router);
 
-  protected orders: any[] = [];
+  protected orders = signal<any[]>([]);
   selectedOrder: any = null;
   
   // Timer de contagem regressiva
@@ -39,18 +39,22 @@ export class OrdersComponent implements OnInit, OnDestroy {
   }
 
   loadOrders() {
+    console.log('Chamando getOrders()...');
     this.orderService.getOrders().subscribe({
       next: (data) => {
-        this.orders = data;
+        console.log('PEDIDOS RECEBIDOS NO FRONTEND:', data);
+        this.orders.set(data);
         // Se houver um pedido selecionado, atualiza com os dados novos da API
         if (this.selectedOrder) {
-          const updated = this.orders.find(o => o.id === this.selectedOrder.id);
+          const updated = this.orders().find(o => o.id === this.selectedOrder.id);
           if (updated) {
             this.viewOrder(updated);
           }
         }
       },
-      error: (err) => console.error('Erro ao carregar pedidos:', err)
+      error: (err) => {
+        console.error('ERRO AO CARREGAR PEDIDOS:', err);
+      }
     });
   }
 
@@ -74,10 +78,13 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected pixCopied = signal<boolean>(false);
+
   protected copyPixCode(pixCode: string) {
     if (pixCode) {
       navigator.clipboard.writeText(pixCode).then(() => {
-        alert('Código Pix Copia e Cola copiado com sucesso!');
+        this.pixCopied.set(true);
+        setTimeout(() => this.pixCopied.set(false), 2000);
       }).catch(err => {
         console.error('Erro ao copiar código Pix:', err);
       });

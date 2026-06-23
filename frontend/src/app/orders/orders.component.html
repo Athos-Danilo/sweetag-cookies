@@ -1,7 +1,10 @@
 <div class="orders-container">
   <header class="page-header fade-in-up">
     <button class="btn-back" (click)="goBack()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
     </button>
     <h1 class="page-title">{{ selectedOrder ? 'Detalhes do Pedido' : 'Meus Pedidos' }}</h1>
     <div class="header-placeholder"></div>
@@ -9,112 +12,175 @@
 
   <main class="orders-content fade-in-up">
     <!-- LISTA DE PEDIDOS -->
-    <ng-container *ngIf="!selectedOrder">
-      @if (orders.length > 0) {
-        <div class="orders-list">
-          <div class="order-card" *ngFor="let order of orders" (click)="viewOrder(order)">
-            <div class="order-header">
-              <span class="order-id">#{{ order.id }}</span>
-              <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+    @if (!selectedOrder) {
+      @if (orders().length > 0) {
+      <div class="orders-list">
+        @for (order of orders(); track order.id) {
+        <div class="order-card" 
+          [class.status-aguardando]="order.status === 'Aguardando' || order.status === 'Em Preparo' || order.status === 'Em Rota'" 
+          [class.status-entregue]="order.status === 'Entregue'" 
+          [class.status-expirado]="order.status === 'EXPIRADO'" 
+          (click)="viewOrder(order)">
+          <div class="order-header">
+            <span class="order-id">#{{ order.id }}</span>
+            <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div class="order-body">
+            <div class="order-status"
+              [ngClass]="{'entregue': order.status === 'Entregue', 'expirado': order.status === 'EXPIRADO'}">
+              <span class="status-dot"></span>
+              {{ order.status }}
             </div>
-            
-            <div class="order-body">
-              <div class="order-status" [ngClass]="{'entregue': order.status === 'Entregue', 'expirado': order.status === 'EXPIRADO'}">
-                <span class="status-dot"></span>
-                {{ order.status }}
-              </div>
-              <div class="order-total">
-                {{ order.total | currency:'BRL':'symbol':'1.2-2' }}
-              </div>
-            </div>
-            
-            <div class="order-footer">
-              <span class="items-count">{{ order.items.length }} iten(s)</span>
-              <span class="view-details">Ver detalhes ></span>
+            <div class="order-total">
+              {{ order.total | currency:'BRL':'symbol':'1.2-2' }}
             </div>
           </div>
+
+          <div class="order-footer">
+            <span class="items-count">{{ order.items.length }} iten(s)</span>
+            <span class="view-details">Ver detalhes ></span>
+          </div>
         </div>
+        }
+      </div>
       } @else {
-        <!-- Empty State Elegante -->
-        <div class="empty-state">
-          <div class="empty-icon-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-            </svg>
-          </div>
-          <h2>Nenhum histórico de pedidos</h2>
-          <p>Você ainda não realizou nenhuma sessão com os nossos cookies. Volte para o cardápio e inicie seu tratamento!</p>
-          <button class="btn-primary" [routerLink]="['/']">Ver Cardápio</button>
+      <!-- Empty State Elegante -->
+      <div class="empty-state">
+        <div class="empty-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="empty-icon">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
         </div>
+        <h2>Nenhum histórico de pedidos</h2>
+        <p>Você ainda não realizou nenhuma sessão com os nossos cookies. Volte para o cardápio e inicie seu tratamento!
+        </p>
+        <button class="btn-primary" [routerLink]="['/']">Ver Cardápio</button>
+      </div>
       }
-    </ng-container>
+    }
 
     <!-- DETALHES DO PEDIDO -->
-    <ng-container *ngIf="selectedOrder">
+    @if (selectedOrder) {
       <div class="order-details animate-fade">
-        
+
         <!-- CARD PIX E CONTAGEM REGRESSIVA -->
-        <div class="info-card pix-card" *ngIf="selectedOrder.status === 'Aguardando' && selectedOrder.payment_method === 'PIX'">
+        @if (selectedOrder.status === 'Aguardando' && selectedOrder.payment_method === 'PIX') {
+        <div class="info-card pix-card">
           <h3>Pagamento via Pix</h3>
           <p class="timer-warning" [class.expired]="countdownText() === 'EXPIRADO'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+              stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 4px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
             {{ countdownText() || 'Calculando tempo limite...' }}
           </p>
-          
-          <div class="pix-instructions" *ngIf="countdownText() !== 'EXPIRADO'">
+
+          @if (countdownText() !== 'EXPIRADO') {
+          <div class="pix-instructions">
             <p>Copie o código abaixo e pague no app do seu banco para confirmar a reserva do estoque:</p>
-            <div class="pix-code-box">
+            <div class="pix-code-box" [class.copied]="pixCopied()">
               <span class="pix-code-text">{{ selectedOrder.pix_code || 'Chave Pix pendente de geração...' }}</span>
-              <button class="btn-copy" (click)="copyPixCode(selectedOrder.pix_code)">Copiar</button>
+              <button class="btn-copy" [class.success]="pixCopied()" (click)="copyPixCode(selectedOrder.pix_code)">
+                @if (pixCopied()) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 2px;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Copiado!
+                } @else {
+                  Copiar
+                }
+              </button>
             </div>
           </div>
+          }
         </div>
+        }
 
         <!-- AVISO DE EXPIRADO -->
-        <div class="info-card expired-warning-card" *ngIf="selectedOrder.status === 'EXPIRADO'">
+        @if (selectedOrder.status === 'EXPIRADO') {
+        <div class="info-card expired-warning-card">
           <div class="expired-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="#FF3B30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
             <h3>Pedido Expirado</h3>
           </div>
-          <p>O tempo de reserva de estoque de 30 minutos esgotou. Os cookies voltaram para o estoque e este pedido foi cancelado.</p>
+          <p>O tempo de reserva de estoque de 30 minutos esgotou. Os cookies voltaram para o estoque e este pedido foi
+            cancelado.</p>
         </div>
+        }
 
         <!-- STATUS TRACKING (Apenas se não estiver expirado) -->
-        <div class="status-card" *ngIf="selectedOrder.status !== 'EXPIRADO'">
+        @if (selectedOrder.status !== 'EXPIRADO') {
+        <div class="status-card">
           <h2>Status do Envio</h2>
-          
+
           <div class="stepper">
             <div class="step" [class.active]="selectedOrder.status_step >= 1">
-              <div class="step-icon">1</div>
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
               <span>Aguardando</span>
             </div>
             <div class="step-line" [class.active]="selectedOrder.status_step >= 2"></div>
+            
             <div class="step" [class.active]="selectedOrder.status_step >= 2">
-              <div class="step-icon">2</div>
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+              </div>
               <span>Em Preparo</span>
             </div>
             <div class="step-line" [class.active]="selectedOrder.status_step >= 3"></div>
+            
             <div class="step" [class.active]="selectedOrder.status_step >= 3">
-              <div class="step-icon">3</div>
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <rect x="1" y="3" width="15" height="13"></rect>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+              </div>
               <span>Em Rota</span>
             </div>
             <div class="step-line" [class.active]="selectedOrder.status_step >= 4"></div>
+            
             <div class="step" [class.active]="selectedOrder.status_step >= 4">
-              <div class="step-icon">4</div>
+              <div class="step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
               <span>Entregue</span>
             </div>
           </div>
         </div>
+        }
 
         <!-- RESUMO DO PEDIDO -->
         <div class="info-card">
           <h3>Resumo da Compra</h3>
           <div class="item-list">
-            <div class="item-row" *ngFor="let item of selectedOrder.items">
+            @for (item of selectedOrder.items; track item.id) {
+            <div class="item-row">
               <span class="item-qtd">{{ item.quantity }}x</span>
               <span class="item-name">{{ item.name }}</span>
               <span class="item-price">{{ item.price | currency:'BRL':'symbol':'1.2-2' }}</span>
             </div>
+            }
           </div>
           <div class="divider"></div>
           <div class="total-row">
@@ -125,14 +191,18 @@
         </div>
 
         <!-- ENDEREÇO DE ENTREGA -->
-        <div class="info-card" *ngIf="selectedOrder.address">
+        @if (selectedOrder.address) {
+        <div class="info-card">
           <h3>Local de Entrega</h3>
           <p><strong>Departamento/Curso:</strong> {{ selectedOrder.address.department }}</p>
           <p><strong>Bloco/Prédio:</strong> {{ selectedOrder.address.block }}</p>
           <p><strong>Sala:</strong> {{ selectedOrder.address.room }}</p>
-          <p *ngIf="selectedOrder.address.street"><strong>Ponto de Referência:</strong> {{ selectedOrder.address.street }}</p>
+          @if (selectedOrder.address.street) {
+          <p><strong>Ponto de Referência:</strong> {{ selectedOrder.address.street }}</p>
+          }
         </div>
+        }
       </div>
-    </ng-container>
+    }
   </main>
 </div>

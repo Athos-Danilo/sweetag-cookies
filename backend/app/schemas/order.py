@@ -36,6 +36,8 @@ class OrderResponse(OrderBase):
     created_at: datetime
     items: List[OrderItemResponse]
     address: AddressResponse
+    pix_code: Optional[str] = None
+    expires_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
