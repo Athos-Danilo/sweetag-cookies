@@ -6,7 +6,6 @@
     </div>
     <nav class="sidebar-nav">
       <a routerLink="/admin/dashboard" class="nav-item active">📊 Dashboard</a>
-      <!-- Add other placeholders here -->
     </nav>
     <div class="sidebar-footer">
       <button (click)="logout()" class="btn-logout">🚪 Sair</button>
@@ -15,17 +14,133 @@
 
   <main class="main-content">
     <header class="content-header">
-      <div class="welcome">
-        <h1>Olá, {{ adminName() }}!</h1>
-        <p>Bem-vindo ao painel de controle do SweetAg Cookies.</p>
+      <div class="welcome-container">
+        <div class="welcome">
+          <h1>Olá, {{ adminName() }}!</h1>
+          <p>Painel Geral de Controle da Campanha SweetAg Cookies.</p>
+        </div>
+        <button (click)="openEditModal()" class="btn-primary">
+          ⚙️ Gerenciar Campanha
+        </button>
       </div>
     </header>
 
-    <section class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>Painel Administrativo Iniciado</h3>
-        <p>A autenticação com permissão restrita de administrador (RBAC) e o guarda de rotas de segurança foram implementados com sucesso!</p>
+    @if (campaign()) {
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="card-icon money">💰</div>
+          <div class="card-info">
+            <span class="card-label">Total Arrecadado</span>
+            <h2 class="card-value">{{ campaign()?.current_arrecadado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</h2>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="card-icon goal">🎯</div>
+          <div class="card-info">
+            <span class="card-label">Meta da Campanha</span>
+            <h2 class="card-value">{{ campaign()?.total_goal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</h2>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="card-icon percent">📈</div>
+          <div class="card-info">
+            <span class="card-label">Progresso Geral</span>
+            <h2 class="card-value">{{ progressPercent() }}%</h2>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <div class="progress-section">
+        <div class="section-header">
+          <h3>Progresso da Meta Financeira</h3>
+          <span class="percent-tag">{{ progressPercent() }}% Atingido</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" [style.width.%]="progressPercent()">
+            <span class="progress-label">{{ progressPercent() }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="campaign-info-section">
+        <h3>Branding & Mensagem do Cliente</h3>
+        <div class="motivational-bubble">
+          <p class="quote">"{{ campaign()?.motivational_text }}"</p>
+        </div>
+      </div>
+    } @else {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Carregando dados da campanha...</p>
+      </div>
+    }
   </main>
 </div>
+
+<!-- Modal de Edição de Campanha -->
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Gerenciar Campanha</h2>
+        <button (click)="closeEditModal()" class="btn-close">✕</button>
+      </div>
+      <form [formGroup]="campaignForm" (ngSubmit)="saveCampaign()" class="modal-form">
+        <div class="form-group">
+          <label for="total_goal">Meta Total (R$)</label>
+          <input 
+            id="total_goal"
+            type="number" 
+            formControlName="total_goal" 
+            placeholder="Ex: 500.00"
+            step="0.01"
+            min="0"
+          />
+          @if (campaignForm.get('total_goal')?.touched && campaignForm.get('total_goal')?.invalid) {
+            <span class="error-text">Meta total inválida. O valor deve ser maior que 0.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="motivational_text">Texto Motivacional</label>
+          <textarea 
+            id="motivational_text" 
+            formControlName="motivational_text" 
+            rows="4"
+            placeholder="Ex: Juntos para alcançar a meta psicológica dos cookies!"
+          ></textarea>
+          @if (campaignForm.get('motivational_text')?.touched && campaignForm.get('motivational_text')?.invalid) {
+            <span class="error-text">Texto motivacional é obrigatório.</span>
+          }
+        </div>
+
+        @if (successMessage()) {
+          <div class="alert success">
+            <span>✅ {{ successMessage() }}</span>
+          </div>
+        }
+
+        @if (errorMessage()) {
+          <div class="alert error">
+            <span>⚠️ {{ errorMessage() }}</span>
+          </div>
+        }
+
+        <div class="modal-actions">
+          <button type="button" (click)="closeEditModal()" class="btn-secondary" [disabled]="isSubmitting()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="campaignForm.invalid || isSubmitting()">
+            @if (isSubmitting()) {
+              <span>Salvando...</span>
+            } @else {
+              <span>Salvar Alterações</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
