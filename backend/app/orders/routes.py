@@ -105,6 +105,18 @@ async def create_order(
         .where(Order.id == db_order.id)
     )
     full_order = result.scalars().first()
+
+    # Dispara alerta via WebSocket para os admins
+    try:
+        from app.websockets.manager import manager as ws_manager
+        await ws_manager.broadcast_to_admins({
+            "event": "new_order",
+            "order_id": db_order.id,
+            "total": db_order.total,
+            "user_name": current_user.nome
+        })
+    except Exception:
+        pass
     
     return full_order
 

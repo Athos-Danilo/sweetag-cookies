@@ -34,6 +34,7 @@ from app.notifications.routes import router as notifications_router
 from app.favorites.routes import router as favorites_router
 from app.products.routes import router as products_router
 from app.reports.routes import router as reports_router
+from app.api.admin.orders import router as admin_orders_router
 
 # Include Routers
 app.include_router(auth_router)
@@ -45,6 +46,7 @@ app.include_router(notifications_router)
 app.include_router(favorites_router)
 app.include_router(products_router)
 app.include_router(reports_router)
+app.include_router(admin_orders_router)
 
 
 from app.services.expiration_worker import start_expiration_worker

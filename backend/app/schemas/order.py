@@ -43,3 +43,13 @@ class OrderResponse(OrderBase):
 class OrderAddressUpdate(BaseModel):
     address_id: int
 
+
+from app.schemas.auth import UserResponse
+
+class AdminOrderStatusUpdate(BaseModel):
+    status: str
+    status_step: int
+
+class AdminOrderResponse(OrderResponse):
+    user: UserResponse
+

@@ -83,12 +83,12 @@ Lógica de negócios, endpoints REST e otimizações.
 - [ ] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
 
 ### 2.7 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
-- [ ] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
-- [ ] Aprovação de comprovantes Pix e reservas.
+- [/] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
+- [x] Aprovação de comprovantes Pix e reservas.
 
 ### 2.8 WebSockets e Comunicação em Tempo Real (`websockets`)
-- [ ] Gerenciador de conexões no backend.
-- [ ] Push de atualizações para o cliente (Timeline) e para o painel de admin (Alerta de novo pedido).
+- [x] Gerenciador de conexões no backend.
+- [/] Push de atualizações para o cliente (Timeline) e para o painel de admin (Alerta de novo pedido).
 
 ### 2.9 Módulo de Suporte (`support`)
 - [x] Endpoint `POST /api/support/tickets`.
