@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject, effect } from '@angular/core';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../core/services/cart.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { OrderService } from '../../../core/services/order.service';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -17,13 +18,23 @@ export class BottomNavComponent implements OnInit {
   protected itemCount = 0;
   protected currentUrl = '';
   protected readonly cartAnimating = signal<boolean>(false);
-  protected readonly hasActiveOrder = signal<boolean>(true); // MOCK: Simulando que há um pedido em andamento
+  protected readonly hasActiveOrder = signal<boolean>(false);
 
   private readonly destroyRef = inject(DestroyRef);
   protected authService = inject(AuthService);
+  private orderService = inject(OrderService);
 
   constructor(private cartService: CartService, private router: Router) {
     this.currentUrl = this.router.url;
+
+    // Monitora o estado de autenticação para recalcular a visibilidade do botão "Acompanhar"
+    effect(() => {
+      if (this.authService.isLoggedIn()) {
+        this.checkActiveOrders();
+      } else {
+        this.hasActiveOrder.set(false);
+      }
+    });
   }
 
   ngOnInit() {
@@ -39,7 +50,7 @@ export class BottomNavComponent implements OnInit {
         this.itemCount = newCount;
       });
 
-    // Monitora a rota ativa para atualizar a aba ativa na barra inferior
+    // Monitora a rota ativa para atualizar a aba ativa na barra inferior e verificar pedidos ativos
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -47,7 +58,29 @@ export class BottomNavComponent implements OnInit {
       )
       .subscribe((event: any) => {
         this.currentUrl = event.urlAfterRedirects || event.url;
+        this.checkActiveOrders();
       });
+
+    // Executa verificação inicial no carregamento do componente
+    this.checkActiveOrders();
+  }
+
+  private checkActiveOrders() {
+    if (!this.authService.isLoggedIn()) {
+      this.hasActiveOrder.set(false);
+      return;
+    }
+
+    this.orderService.getOrders().subscribe({
+      next: (orders) => {
+        // O botão Acompanhar só aparece se houver pedido que não esteja EXPIRADO nem Entregue
+        const active = orders.some(o => o.status !== 'EXPIRADO' && o.status !== 'Entregue');
+        this.hasActiveOrder.set(active);
+      },
+      error: () => {
+        this.hasActiveOrder.set(false);
+      }
+    });
   }
 
   protected isActive(route: string): boolean {
