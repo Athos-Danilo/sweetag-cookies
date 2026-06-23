@@ -1,0 +1,323 @@
+.admin-dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #12100e;
+  color: #f7ede2;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.sidebar {
+  width: 260px;
+  background: #1e1b18;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-sizing: border-box;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .badge {
+      background: #d48c4e;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: #b5a697;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+
+      &:hover, &.active {
+        background: rgba(212, 140, 78, 0.1);
+        color: #d48c4e;
+      }
+    }
+  }
+
+  .sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 20px;
+
+    .btn-logout {
+      width: 100%;
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #ff6b6b;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+  box-sizing: border-box;
+
+  .content-header {
+    margin-bottom: 40px;
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    p {
+      color: #b5a697;
+      margin: 0;
+    }
+  }
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: all 0.3s ease;
+
+  &.new-alert {
+    border-color: #d48c4e;
+    box-shadow: 0 0 15px rgba(212, 140, 78, 0.15);
+    animation: pulseNew 2s infinite alternate;
+  }
+}
+
+@keyframes pulseNew {
+  from { box-shadow: 0 0 15px rgba(212, 140, 78, 0.1); }
+  to { box-shadow: 0 0 25px rgba(212, 140, 78, 0.25); }
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 16px;
+
+  .order-id-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .order-id {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .order-time {
+      font-size: 0.85rem;
+      color: #b5a697;
+    }
+  }
+
+  .order-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    &.step-1 { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
+    &.step-2 { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+    &.step-3 { background: rgba(52, 152, 219, 0.15); color: #3498db; }
+    &.step-4 { background: rgba(155, 89, 182, 0.15); color: #9b59b6; }
+    &.step-5 { background: rgba(255, 255, 255, 0.1); color: #fff; }
+  }
+}
+
+.order-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+
+  .info-section {
+    h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.8rem;
+      color: #b5a697;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      margin: 0 0 4px 0;
+    }
+
+    .sub-info {
+      color: #b5a697;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+
+  .items-section {
+    grid-column: span 1;
+  }
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    display: flex;
+    gap: 8px;
+    font-size: 0.95rem;
+
+    .item-qty {
+      font-weight: 700;
+      color: #d48c4e;
+    }
+
+    .item-name {
+      flex: 1;
+    }
+
+    .item-price {
+      color: #b5a697;
+    }
+  }
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+
+  .order-payment {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .payment-label {
+      font-size: 0.85rem;
+      color: #b5a697;
+    }
+
+    .payment-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #2ecc71;
+    }
+  }
+}
+
+.order-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-action {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.approve {
+    background: #2ecc71;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+
+    &:hover {
+      background: darken(#2ecc71, 5%);
+      transform: translateY(-2px);
+    }
+  }
+
+  &.advance {
+    background: #d48c4e;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(212, 140, 78, 0.2);
+
+    &:hover {
+      background: darken(#d48c4e, 5%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.loading-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  border-top-color: #d48c4e;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

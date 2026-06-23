@@ -30,4 +30,15 @@ export class AdminService {
     const url = status ? `${this.apiUrl}/admin/orders?status=${status}` : `${this.apiUrl}/admin/orders`;
     return this.http.get<any[]>(url);
   }
+
+  approvePix(orderId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin/orders/${orderId}/approve-pix`, {});
+  }
+
+  updateOrderStatus(orderId: number, status: string, status_step: number): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/admin/orders/${orderId}/status`, {
+      status,
+      status_step
+    });
+  }
 }

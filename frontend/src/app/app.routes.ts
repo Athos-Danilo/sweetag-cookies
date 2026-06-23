@@ -12,6 +12,7 @@ import { PaymentsComponent } from './payments/payments.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AdminLoginComponent } from './admin-panel/login/login.component';
 import { AdminDashboardComponent } from './admin-panel/dashboard/dashboard.component';
+import { AdminOrdersComponent } from './admin-panel/orders/orders.component';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
   { path: 'user-profile', component: UserProfileComponent },
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
+  { path: 'admin/orders', component: AdminOrdersComponent, canActivate: [adminGuard] },
   { path: 'homepage', redirectTo: '', pathMatch: 'full' },
   { path: 'correta', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '' }

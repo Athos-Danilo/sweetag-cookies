@@ -1,0 +1,110 @@
+<div class="admin-dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>🧠 SweetAg</h2>
+      <span class="badge">Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" class="nav-item">📊 Dashboard</a>
+      <a routerLink="/admin/orders" class="nav-item active">🛒 Pedidos</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button routerLink="/admin/login" class="btn-logout">🚪 Sair</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="content-header">
+      <div class="header-title">
+        <h1>Gestão de Pedidos</h1>
+        <p>Gerenciamento em tempo real dos pedidos recebidos via WebSocket.</p>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Carregando pedidos ativos...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="alert error">
+        <span>⚠️ {{ errorMessage() }}</span>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <h3>Nenhum pedido no momento</h3>
+        <p>Aguardando novos pedidos entrarem via WebSocket...</p>
+      </div>
+    } @else {
+      <div class="orders-list">
+        @for (order of orders(); track order.id) {
+          <div class="order-card" [class.new-alert]="order.status === 'Aguardando'">
+            <div class="order-header">
+              <div class="order-id-group">
+                <span class="order-id">Pedido #{{ order.id }}</span>
+                <span class="order-time">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="order-status-badge" [class]="'step-' + order.status_step">
+                {{ order.status }}
+              </div>
+            </div>
+
+            <div class="order-body">
+              <div class="info-section">
+                <h4>👤 Cliente</h4>
+                <p><strong>{{ order.user?.nome }}</strong></p>
+                <p class="sub-info">📱 {{ order.user?.whatsapp }}</p>
+              </div>
+
+              <div class="info-section">
+                <h4>📍 Entrega</h4>
+                <p>{{ order.address?.title }}</p>
+                <p class="sub-info">
+                  Bloco {{ order.address?.block }}, Sala {{ order.address?.room }} 
+                  @if (order.address?.department) {
+                    ({{ order.address?.department }})
+                  }
+                </p>
+              </div>
+
+              <div class="info-section items-section">
+                <h4>🍪 Itens</h4>
+                <ul class="items-list">
+                  @for (item of order.items; track item.id) {
+                    <li>
+                      <span class="item-qty">{{ item.quantity }}x</span>
+                      <span class="item-name">{{ item.name }}</span>
+                      <span class="item-price">{{ item.price | currency:'BRL' }}</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+
+            <div class="order-footer">
+              <div class="order-payment">
+                <span class="payment-label">Total a Pagar ({{ order.payment_method }})</span>
+                <span class="payment-value">{{ order.total | currency:'BRL' }}</span>
+              </div>
+
+              <div class="order-actions">
+                @if (order.status_step === 1 && order.payment_method === 'Pix') {
+                  <button (click)="approvePix(order.id)" class="btn-action approve">
+                    ✅ Aprovar Pix
+                  </button>
+                }
+
+                @if (order.status_step >= 2 && order.status_step < 5) {
+                  <button (click)="advanceStatus(order)" class="btn-action advance">
+                    ➔ Avançar Status
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>
