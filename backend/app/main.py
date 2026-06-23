@@ -11,6 +11,7 @@ from app.models.address import Address
 from app.models.order import Order, OrderItem
 from app.models.favorite import Favorite
 from app.models.product import Product
+from app.models.campaign import CampaignState
 
 
 app = FastAPI(
@@ -32,6 +33,7 @@ from app.websockets.routes import router as websockets_router
 from app.notifications.routes import router as notifications_router
 from app.favorites.routes import router as favorites_router
 from app.products.routes import router as products_router
+from app.reports.routes import router as reports_router
 
 # Include Routers
 app.include_router(auth_router)
@@ -42,6 +44,7 @@ app.include_router(websockets_router)
 app.include_router(notifications_router)
 app.include_router(favorites_router)
 app.include_router(products_router)
+app.include_router(reports_router)
 
 
 from app.services.expiration_worker import start_expiration_worker

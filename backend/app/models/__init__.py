@@ -4,4 +4,5 @@ from app.models.order import Order, OrderItem
 from app.models.support import SupportTicket
 from app.models.push_subscription import PushSubscription
 from app.models.product import Product
+from app.models.campaign import CampaignState
 

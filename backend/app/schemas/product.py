@@ -33,3 +33,6 @@ class ProductResponse(ProductBase):
 
     class Config:
         from_attributes = True
+
+class ProductStockUpdate(BaseModel):
+    stock_quantity: int = Field(..., ge=0, description="Nova quantidade em estoque")

@@ -15,6 +15,7 @@ class UserResponse(BaseModel):
     whatsapp: str
     nome: str
     aceita_notificacoes: bool
+    is_admin: bool
     created_at: datetime
 
     class Config:

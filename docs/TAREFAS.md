@@ -32,8 +32,8 @@ Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
   - [x] Enum/Status de pedido dinâmicos.
 - [ ] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
   - [ ] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
-- [ ] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
-  - [ ] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente.
+- [x] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
+  - [x] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente.
 - [x] **M1.6: Modelo de Endereço (`Address`)**
   - [x] Campos detalhados para entrega interna (Bloco, Sala, etc).
 - [x] **M1.7: Modelo de Chamados de Suporte (`SupportTicket`)**
@@ -62,8 +62,8 @@ Lógica de negócios, endpoints REST e otimizações.
   - [x] `GET /api/products`: Lista todos os cookies ativos.
   - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico.
   - [ ] Performance: Implementar cache (ex: Redis ou cache em memória) na listagem de produtos para respostas super rápidas.
-- [ ] Endpoints protegidos (Admin - CRUD completo) (RF19):
-  - [ ] Criar, editar, deletar logicamente cookies e ajuste de estoque rápido (RF20).
+- [x] Endpoints protegidos (Admin - CRUD completo) (RF19):
+  - [x] Criar, editar, deletar logicamente cookies e ajuste de estoque rápido (RF20).
 
 ### 2.4 Módulo de Pedidos (`orders`) e Regras de Estoque
 - [x] Endpoint `POST /api/orders`: Criação de pedido imediato.

@@ -10,6 +10,7 @@ class User(Base):
     whatsapp = Column(String, unique=True, index=True, nullable=False)
     nome = Column(String, nullable=False)
     aceita_notificacoes = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     push_subscriptions = relationship("PushSubscription", back_populates="user", cascade="all, delete-orphan")
