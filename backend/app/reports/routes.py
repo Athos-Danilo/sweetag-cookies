@@ -58,3 +58,48 @@ async def update_campaign(
     await db.commit()
     await db.refresh(campaign)
     return campaign
+
+
+from sqlalchemy import func
+from app.models.order import Order, OrderItem
+from app.schemas.report import TopCookieResponse
+from typing import List
+
+@router.get("/api/admin/reports/top-cookies", response_model=List[TopCookieResponse])
+async def get_top_cookies(
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_current_admin_user)
+):
+    """
+    Retorna os 5 cookies mais vendidos (por quantidade total vendida)
+    para pedidos pagos ou confirmados (status_step >= 2).
+    """
+    stmt = (
+        select(
+            OrderItem.product_id,
+            OrderItem.name,
+            func.sum(OrderItem.quantity).label("total_quantity"),
+            func.sum(OrderItem.quantity * OrderItem.price).label("total_revenue")
+        )
+        .join(Order, OrderItem.order_id == Order.id)
+        .where(Order.status_step >= 2)
+        .group_by(OrderItem.product_id, OrderItem.name)
+        .order_by(func.sum(OrderItem.quantity).desc())
+        .limit(5)
+    )
+    
+    result = await db.execute(stmt)
+    rows = result.all()
+    
+    top_cookies = []
+    for row in rows:
+        top_cookies.append(
+            TopCookieResponse(
+                product_id=row.product_id,
+                name=row.name,
+                total_quantity=row.total_quantity,
+                total_revenue=float(row.total_revenue)
+            )
+        )
+        
+    return top_cookies
