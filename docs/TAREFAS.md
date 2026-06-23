@@ -135,7 +135,7 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 Interface responsiva otimizada para desktop.
 
 ### 4.1 a 4.4 Módulos Básicos do Painel
-- [ ] Login e Guardas de Rota.
+- [x] Login e Guardas de Rota.
 - [ ] Dashboard Executivo (Faturamento, Campanhas, Cookies mais vendidos).
 - [ ] Gestão de Pedidos com alertas sonoros em tempo real para novos pedidos e pagamentos.
 - [ ] Gestão de Produtos (CRUD e Calendário).

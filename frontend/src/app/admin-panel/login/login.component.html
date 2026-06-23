@@ -1,0 +1,65 @@
+<div class="admin-login-container">
+  <div class="background-decorations">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+  </div>
+
+  <div class="login-card">
+    <div class="card-header">
+      <div class="logo-area">
+        <span class="brain-icon">🧠</span>
+        <span class="cookie-icon">🍪</span>
+      </div>
+      <h2>Painel Administrativo</h2>
+      <p class="subtitle">Identifique-se para acessar as ferramentas de gestão</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="whatsapp">WhatsApp do Admin</label>
+        <div class="input-wrapper">
+          <span class="input-icon">📱</span>
+          <input 
+            id="whatsapp"
+            type="text" 
+            formControlName="whatsapp"
+            placeholder="(00) 00000-0000"
+            (input)="onWhatsappInput($event)"
+            [class.error]="loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.invalid"
+            autocomplete="off"
+          />
+        </div>
+        @if (loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.errors?.['required']) {
+          <span class="error-text">O número de WhatsApp é obrigatório.</span>
+        }
+        @if (loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.errors?.['pattern']) {
+          <span class="error-text">Digite um número válido no formato (XX) XXXXX-XXXX.</span>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert-box error-alert">
+          <span class="alert-icon">⚠️</span>
+          <span class="alert-message">{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <button 
+        type="submit" 
+        [disabled]="loginForm.invalid || isSubmitting()" 
+        class="btn-submit"
+      >
+        @if (isSubmitting()) {
+          <span class="spinner"></span>
+          <span>Autenticando...</span>
+        } @else {
+          <span>Entrar no Painel</span>
+        }
+      </button>
+    </form>
+    
+    <div class="card-footer">
+      <p>Desenvolvido para SweetAg Cookies 🧠🍪</p>
+    </div>
+  </div>
+</div>
