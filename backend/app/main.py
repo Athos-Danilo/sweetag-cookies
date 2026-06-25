@@ -55,11 +55,28 @@ app.include_router(admin_orders_router)
 
 from app.services.expiration_worker import start_expiration_worker
 
+from sqlalchemy import text
+
 @app.on_event("startup")
 async def startup():
     # Initialize DB tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        
+        # Migração automática leve para nuvem (PostgreSQL)
+        try:
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;"))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS aceita_notificacoes BOOLEAN DEFAULT FALSE;"))
+        except Exception:
+            # Fallback para SQLite local (não suporta ADD COLUMN IF NOT EXISTS na mesma sintaxe)
+            for col_query in [
+                "ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;",
+                "ALTER TABLE users ADD COLUMN aceita_notificacoes BOOLEAN DEFAULT FALSE;"
+            ]:
+                try:
+                    await conn.execute(text(col_query))
+                except Exception:
+                    pass
     
     # Start periodic worker to expire unpaid orders
     start_expiration_worker()
