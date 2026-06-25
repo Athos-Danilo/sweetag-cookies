@@ -30,8 +30,8 @@ Mapeamento dos dados necessários no PostgreSQL via SQLAlchemy.
   - [x] Tabela `orders`: ID, ID Usuário, Status, Endereço, Data, Tipo de pagamento, Chave Pix, Expiração da reserva (30 min).
   - [x] Tabela `order_items`: ID, ID Pedido, Nome, Quantidade, Preço.
   - [x] Enum/Status de pedido dinâmicos.
-- [ ] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
-  - [ ] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
+- [x] **M1.4: Modelo de Calendário/Disponibilidade Futura (`Availability`)**
+  - [x] Campos: ID, Data, ID Produto, Quantidade máxima de encomendas permitida.
 - [x] **M1.5: Modelo de Campanha/Meta Financeira (`CampaignState`)**
   - [x] Campos: ID, Meta total (R$), Valor atual arrecadado (R$), Texto motivacional, Mostrar valores publicamente.
 - [x] **M1.6: Modelo de Endereço (`Address`)**
@@ -52,7 +52,7 @@ Lógica de negócios, endpoints REST e otimizações.
 - [x] Gerador divertido de nomes automáticos de psicologia (RF05).
 - [x] Dependência de autenticação de tokens para rotas.
 - [x] Autenticação restrita para administradores e RBAC (Permissões).
-- [ ] Segurança Avançada: Implementar Rate Limiting (ex: `slowapi`) para evitar força bruta no login/cadastro.
+- [x] Segurança Avançada: Implementar Rate Limiting (ex: `slowapi`) para evitar força bruta no login/cadastro.
 
 ### 2.2 Módulo de Endereços (`addresses`)
 - [x] Endpoint `POST /api/addresses` e `GET /api/addresses`.
@@ -61,7 +61,7 @@ Lógica de negócios, endpoints REST e otimizações.
 - [/] Endpoints públicos (Cliente):
   - [x] `GET /api/products`: Lista todos os cookies ativos.
   - [x] `GET /api/products/{id}`: Retorna os detalhes de um cookie específico.
-  - [ ] Performance: Implementar cache (ex: Redis ou cache em memória) na listagem de produtos para respostas super rápidas.
+  - [x] Performance: Implementar cache (ex: Redis ou cache em memória) na listagem de produtos para respostas super rápidas.
 - [/] Endpoints protegidos (Admin - CRUD completo) (RF19):
   - [x] Criar, editar, deletar logicamente cookies e ajuste de estoque rápido (RF20).
 
@@ -81,7 +81,7 @@ Lógica de negócios, endpoints REST e otimizações.
   - [ ] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
 
 ### 2.6 Módulo de Agendamentos Futuros (`future-orders`)
-- [ ] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
+- [x] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
 
 ### 2.7 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
 - [/] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
@@ -174,7 +174,7 @@ Interface responsiva otimizada para desktop.
 - [/] Testes no backend (FastAPI):
   - [x] Scripts de banco, API e ordens (`test_db.py`, `test_api.py`, `test_orders.py`).
   - [x] Expiração de pedidos implementada.
-  - [ ] Testar cenários limites de concorrência massiva.
+  - [x] Testar cenários limites de concorrência massiva.
 - [ ] Testes no frontend (Angular) (WebSockets e Componentes).
 
 ---

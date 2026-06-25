@@ -21,9 +21,14 @@ export class ProductModalComponent {
   private router = inject(Router);
 
   quantity = signal(1);
+  isFullscreen = signal(false);
 
   closeModal() {
     this.close.emit();
+  }
+
+  toggleFullscreen() {
+    this.isFullscreen.update(val => !val);
   }
 
   increaseQuantity() {

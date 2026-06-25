@@ -233,6 +233,10 @@
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    max-width: 620px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 

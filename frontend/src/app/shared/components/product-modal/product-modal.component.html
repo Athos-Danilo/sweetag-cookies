@@ -1,15 +1,23 @@
-<div class="modal-backdrop" (click)="closeModal()">
+<div class="fullscreen-overlay" *ngIf="isFullscreen()" (click)="toggleFullscreen()">
+  <button class="btn-close-fullscreen" (click)="toggleFullscreen(); $event.stopPropagation()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  </button>
+  <img [src]="cookie.imagem" [alt]="cookie.nome" class="fullscreen-img" (click)="$event.stopPropagation()">
+</div>
+
+<div class="modal-backdrop" (click)="closeModal()" [style.display]="isFullscreen() ? 'none' : 'flex'">
   <div class="bottom-sheet" (click)="$event.stopPropagation()">
     
     <!-- Top Image Area -->
-    <div class="sheet-header-image">
-      <button class="btn-close" (click)="closeModal()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <div class="sheet-header-image" (click)="toggleFullscreen()">
+      <button class="btn-action-top btn-close" (click)="closeModal(); $event.stopPropagation()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
-      <button class="btn-favorite" (click)="toggleFavorite()" [class.is-favorite]="isFavorite()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" [attr.fill]="isFavorite() ? '#FF3B30' : 'none'" [attr.stroke]="isFavorite() ? '#FF3B30' : 'currentColor'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      <button class="btn-action-top btn-favorite" (click)="toggleFavorite(); $event.stopPropagation()" [class.is-favorite]="isFavorite()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" [attr.fill]="isFavorite() ? '#FF3B30' : 'none'" [attr.stroke]="isFavorite() ? '#FF3B30' : 'currentColor'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
       </button>
-      <img [src]="cookie.imagem" [alt]="cookie.nome">
+
+      <img [src]="cookie.imagem" [alt]="cookie.nome" class="main-cookie-img">
     </div>
 
     <!-- Scrollable Content -->
@@ -19,7 +27,9 @@
         <span class="product-price">R$ {{ cookie.valor | number:'1.2-2' }}</span>
       </div>
       
-      <p class="product-flavor">{{ cookie.sabor }}</p>
+      <div class="product-flavor-wrapper">
+        <span class="product-flavor-badge">{{ cookie.sabor }}</span>
+      </div>
 
       <div class="divider"></div>
 
