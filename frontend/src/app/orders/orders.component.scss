@@ -745,3 +745,142 @@ $status-danger-light: rgba(231, 76, 60, 0.1);
   70% { box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 8px rgba(196, 103, 58, 0); }
   100% { box-shadow: 0 4px 12px rgba(196, 103, 58, 0.3), 0 0 0 0px rgba(196, 103, 58, 0); }
 }
+
+/* ==========================================================================
+   ANIMAÇÃO DOS CARDS EM DETALHES
+   ========================================================================== */
+.animate-slide-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUpFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   LOCAL DE ENTREGA PREMIUM
+   ========================================================================== */
+.delivery-location-card {
+  padding: 1.5rem;
+  background: white;
+
+  .card-header-icon {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+
+    .icon-circle {
+      width: 40px;
+      height: 40px;
+      background: $color-primary-light;
+      color: $color-primary;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg { width: 20px; height: 20px; }
+    }
+
+    h3 { margin: 0; }
+  }
+
+  .location-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    .loc-item {
+      background: var(--color-surface-container-lowest, #FDFDFD);
+      border: 1px solid rgba(196, 103, 58, 0.08);
+      border-radius: 12px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      &.full-width {
+        grid-column: 1 / -1;
+      }
+
+      &.room-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(196, 103, 58, 0.03);
+      }
+
+      .loc-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: $color-text-variant;
+        font-weight: 700;
+      }
+
+      .loc-value {
+        font-size: 0.95rem;
+        color: $color-text-main;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        svg {
+          width: 16px;
+          height: 16px;
+          color: $color-primary;
+          opacity: 0.8;
+        }
+
+        &.room-badge {
+          background: white;
+          border: 1.5px solid $color-primary;
+          color: $color-primary;
+          padding: 0.2rem 0.8rem;
+          border-radius: 20px;
+          font-weight: 850;
+        }
+      }
+    }
+  }
+
+  .loc-reference-box {
+    display: flex;
+    gap: 12px;
+    background: #FFF9F5;
+    border: 1px dashed rgba(196, 103, 58, 0.3);
+    padding: 1rem;
+    border-radius: 12px;
+
+    .ref-icon {
+      font-size: 1.2rem;
+    }
+
+    .ref-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .ref-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: $color-primary;
+      }
+
+      .ref-value {
+        font-size: 0.9rem;
+        color: $color-text-main;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+    }
+  }
+}

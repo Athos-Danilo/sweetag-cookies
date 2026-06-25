@@ -153,7 +153,7 @@
 
         <!-- STATUS TRACKING (Apenas se não estiver expirado) -->
         @if (selectedOrder.status !== 'EXPIRADO') {
-        <div class="status-card">
+        <div class="status-card animate-slide-up" style="animation-delay: 0s;">
           <h2>Status do Envio</h2>
 
           <div class="stepper">
@@ -205,7 +205,7 @@
         }
 
         <!-- RESUMO DO PEDIDO -->
-        <div class="info-card">
+        <div class="info-card animate-slide-up" style="animation-delay: 0.1s;">
           <h3>Resumo da Compra</h3>
           <div class="item-list">
             @for (item of selectedOrder.items; track item.id) {
@@ -225,14 +225,50 @@
         </div>
 
         <!-- ENDEREÇO DE ENTREGA -->
+        <!-- ENDEREÇO DE ENTREGA PREMIUM -->
         @if (selectedOrder.address) {
-        <div class="info-card">
-          <h3>Local de Entrega</h3>
-          <p><strong>Departamento/Curso:</strong> {{ selectedOrder.address.department }}</p>
-          <p><strong>Bloco/Prédio:</strong> {{ selectedOrder.address.block }}</p>
-          <p><strong>Sala:</strong> {{ selectedOrder.address.room }}</p>
+        <div class="info-card delivery-location-card animate-slide-up" style="animation-delay: 0.2s;">
+          <div class="card-header-icon">
+            <div class="icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <h3>Local de Entrega</h3>
+          </div>
+          
+          <div class="location-details-grid">
+            <div class="loc-item">
+              <span class="loc-label">Departamento / Curso</span>
+              <span class="loc-value">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                {{ selectedOrder.address.department }}
+              </span>
+            </div>
+            
+            <div class="loc-item">
+              <span class="loc-label">Bloco / Prédio</span>
+              <span class="loc-value">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg>
+                {{ selectedOrder.address.block }}
+              </span>
+            </div>
+
+            <div class="loc-item full-width room-item">
+              <span class="loc-label">Sala</span>
+              <span class="loc-value room-badge">{{ selectedOrder.address.room }}</span>
+            </div>
+          </div>
+
           @if (selectedOrder.address.street) {
-          <p><strong>Ponto de Referência:</strong> {{ selectedOrder.address.street }}</p>
+            <div class="loc-reference-box">
+              <div class="ref-icon">📌</div>
+              <div class="ref-content">
+                <span class="ref-label">Informação Adicional / Agendamento</span>
+                <span class="ref-value">{{ selectedOrder.address.street }}</span>
+              </div>
+            </div>
           }
         </div>
         }
