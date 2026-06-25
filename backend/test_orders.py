@@ -82,9 +82,29 @@ async def test_workflow():
             
         orders = resp.json()
         print(f"Fetched {len(orders)} orders.")
+        order_id = orders[0].get("id")
         print("First order details:")
         print(json.dumps(orders[0], indent=2, ensure_ascii=False))
+
+        # 5. Pay the order
+        print(f"Paying order {order_id}...")
+        pay_resp = await client.post(f"{base_url}/api/orders/{order_id}/pay", headers=headers)
+        if pay_resp.status_code != 200:
+            print(f"Failed to pay order: {pay_resp.text}")
+            return
+        
+        pay_order_data = pay_resp.json()
+        print("Pay order response:")
+        print(json.dumps(pay_order_data, indent=2, ensure_ascii=False))
+
+        # 6. Try paying again (should fail)
+        print("Trying to pay again (should fail)...")
+        pay_again_resp = await client.post(f"{base_url}/api/orders/{order_id}/pay", headers=headers)
+        print(f"Double pay status code: {pay_again_resp.status_code} (Expected 400)")
+        print(f"Double pay response: {pay_again_resp.text}")
+        
         print("\nWorkflow completed successfully!")
 
 if __name__ == "__main__":
     asyncio.run(test_workflow())
+

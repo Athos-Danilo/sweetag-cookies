@@ -67,11 +67,19 @@ async def startup():
         try:
             await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;"))
             await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS aceita_notificacoes BOOLEAN DEFAULT FALSE;"))
+            await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS pix_code TEXT;"))
+            await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;"))
+            await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS status_step INTEGER DEFAULT 1;"))
+            await conn.execute(text("ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_id INTEGER REFERENCES products(id);"))
         except Exception:
-            # Fallback para SQLite local (não suporta ADD COLUMN IF NOT EXISTS na mesma sintaxe)
+            # Fallback para SQLite local
             for col_query in [
                 "ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;",
-                "ALTER TABLE users ADD COLUMN aceita_notificacoes BOOLEAN DEFAULT FALSE;"
+                "ALTER TABLE users ADD COLUMN aceita_notificacoes BOOLEAN DEFAULT FALSE;",
+                "ALTER TABLE orders ADD COLUMN pix_code TEXT;",
+                "ALTER TABLE orders ADD COLUMN expires_at TIMESTAMP WITH TIME ZONE;",
+                "ALTER TABLE orders ADD COLUMN status_step INTEGER DEFAULT 1;",
+                "ALTER TABLE order_items ADD COLUMN product_id INTEGER;"
             ]:
                 try:
                     await conn.execute(text(col_query))

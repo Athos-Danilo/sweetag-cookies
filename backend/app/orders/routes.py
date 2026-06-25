@@ -135,6 +135,68 @@ async def read_orders(
     orders = result.scalars().all()
     return orders
 
+
+@router.post("/{order_id}/pay", response_model=OrderResponse)
+async def pay_order(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Buscar o pedido e validar se pertence ao usuário logado
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items), selectinload(Order.address))
+        .where(Order.id == order_id, Order.user_id == current_user.id)
+    )
+    order = result.scalars().first()
+    
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Pedido não encontrado ou não pertence ao usuário."
+        )
+        
+    # 2. Verificar se o status atual é 'Aguardando' e não expirou
+    if order.status != "Aguardando":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Não é possível confirmar o pagamento para um pedido com status '{order.status}'."
+        )
+        
+    # Comparar com horário UTC (compatível com aware/naive timezone para SQLite/PostgreSQL)
+    if order.expires_at:
+        now = datetime.utcnow()
+        if order.expires_at.tzinfo is not None:
+            from datetime import timezone
+            now = datetime.now(timezone.utc)
+        if order.expires_at < now:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="A reserva deste pedido já expirou."
+            )
+        
+    # 3. Alterar status para PAGO_AGUARDANDO_APROVACAO
+    order.status = "PAGO_AGUARDANDO_APROVACAO"
+    
+    await db.commit()
+    await db.refresh(order)
+    
+    # 4. Disparar alerta via WebSockets para os administradores
+    try:
+        from app.websockets.manager import manager as ws_manager
+        await ws_manager.broadcast_to_admins({
+            "event": "payment_submitted",
+            "order_id": order.id,
+            "total": order.total,
+            "user_name": current_user.nome,
+            "message": f"O cliente {current_user.nome} confirmou que realizou o pagamento Pix para o pedido #{order.id}."
+        })
+    except Exception:
+        pass
+        
+    return order
+
+
 from app.notifications.services import notify_user
 
 @router.patch("/{order_id}/status")
