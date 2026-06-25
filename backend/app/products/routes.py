@@ -6,6 +6,7 @@ from typing import List
 from app.core.database import get_db
 from app.models.product import Product
 from app.schemas.product import ProductResponse
+from app.core.cache import products_cache
 
 router = APIRouter(prefix="/api/products", tags=["products"])
 
@@ -14,13 +15,26 @@ async def list_products(db: AsyncSession = Depends(get_db)):
     """
     Endpoint público para listar todos os cookies ativos (is_active=True)
     """
+    # 1. Tentar ler do cache em memória
+    cached = await products_cache.get()
+    if cached is not None:
+        return cached
+
+    # 2. Se não estiver em cache, buscar do banco
     result = await db.execute(
         select(Product)
         .where(Product.is_active == True)
         .order_by(Product.id.asc())
     )
     products = result.scalars().all()
-    return products
+    
+    # 3. Serializar dados para evitar problemas de session desanexada (detached session)
+    serialized_products = [ProductResponse.model_validate(p).model_dump() for p in products]
+    
+    # 4. Salvar no cache por 5 minutos (300 segundos)
+    await products_cache.set(serialized_products, ttl_seconds=300)
+    
+    return serialized_products
 
 @router.get("/{product_id}", response_model=ProductResponse)
 async def get_product(product_id: int, db: AsyncSession = Depends(get_db)):
@@ -60,6 +74,8 @@ async def create_product(
     db.add(db_product)
     await db.commit()
     await db.refresh(db_product)
+    # Invalidar o cache após criação
+    await products_cache.clear()
     return db_product
 
 
@@ -87,6 +103,8 @@ async def update_product(
         
     await db.commit()
     await db.refresh(product)
+    # Invalidar o cache após atualização
+    await products_cache.clear()
     return product
 
 
@@ -109,6 +127,8 @@ async def delete_product(
         
     product.is_active = False
     await db.commit()
+    # Invalidar o cache após soft delete
+    await products_cache.clear()
     return None
 
 
@@ -133,4 +153,6 @@ async def update_product_stock(
     product.stock_quantity = stock_in.stock_quantity
     await db.commit()
     await db.refresh(product)
+    # Invalidar o cache após ajuste de estoque
+    await products_cache.clear()
     return product
