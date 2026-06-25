@@ -125,6 +125,7 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 ### 3.3 Carrinho de Compras e Checkout (`cart` / `checkout`)
 - [x] Visualização do Carrinho (`cart`) e formulário de Checkout.
   - [x] Validação de estoque integrada ao backend.
+- [x] Tela de Sucesso Premium: animações fluidas, agradecimento personalizado, instruções de pagamento PIX e Dinheiro com design iFood.
 - [ ] Escolha de agendamento (Calendário) vs. Entrega imediata.
 
 ### 3.4 Pagamento e Timeline de Acompanhamento (`order-tracking`)
@@ -133,7 +134,8 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
   - [ ] Botão "Já Realizei o Pagamento" (informando ao backend/admin).
 - [ ] Timeline Reativa via WebSockets.
 - [ ] Permitir ao cliente editar o local de entrega pós-compra (enquanto o status for < PREPARACAO) (RN06).
-- [ ] Alinhamento do Stepper de status do frontend com os status cronológicos e etapas reais do backend (RF13).
+- [x] Alinhamento do Stepper de status do frontend com os status cronológicos e etapas reais do backend (RF13).
+- [x] Interface Premium na lista e detalhes de "Meus Pedidos" (Avatares, Títulos Psicológicos dinâmicos, Grid de Local de Entrega e animações em cascata).
 
 ### 3.5 Canal de Suporte (`support`)
 - [x] Integração da tela de suporte (`SupportComponent`) com a API HTTP.
@@ -180,8 +182,19 @@ Interface responsiva otimizada para desktop.
 ## ✨ Fase 6: UI/UX & "Uau" Factor (Estética e Experiência)
 Tarefas adicionadas para tornar a aplicação incrivelmente bonita, fluida e cativante.
 
-- [ ] **Microinterações e Animações 🎨**: Adicionar transições suaves de entrada de tela, fade-ins em imagens, e botões reativos ao toque/clique (ripple effect, scale-up no hover).
-- [ ] **Glassmorphism e Sombras Modernas 🪞**: Refinar o design visual com uso moderado de efeito vidro (blur) em modais e navbar, além de sombras super suaves e modernas.
+- [/] **Microinterações e Animações 🎨**: Adicionadas transições suaves (slide-up, fades), ícones com stroke animations (checkmark) e botões reativos.
+- [/] **Glassmorphism e Sombras Modernas 🪞**: Refinado o design visual com sombras super suaves e modernas nos cards do painel e pedidos.
 - [ ] **Feedback Visual Premium 💬**: Substituir os alertas padrões por Toast Notifications bonitos, não-intrusivos e animados (ex: ao adicionar no carrinho).
 - [ ] **Dark Mode (Tema Escuro) 🌙**: Oferecer chaveador de tema elegante com paleta noturna adaptada para a identidade da marca.
-- [ ] **State Feedback (Carregamento Mágico) ⏳**: Implementar *Skeleton loaders* (estruturas de carregamento animadas) no lugar de telas vazias e ilustrações atrativas para estados vazios ("Seu carrinho está vazio!").
+- [ ] **State Feedback (Carregamento Mágico) ⏳**: Implementar *Skeleton loaders* (estruturas de carregamento animadas) no lugar de telas vazias.
+
+---
+
+## 🚀 Ideias e Sugestões de Evolução (Features Futuras)
+Recursos adicionais sugeridos para aumentar o engajamento e as vendas, aproveitando a temática única de psicologia e bem-estar.
+
+- [ ] **Sistema de Avaliações Terapêuticas (NPS)**: Após receber o pedido, o usuário avalia sua "Sessão Terapêutica" de 1 a 5 estrelas e pode deixar um depoimento sobre como os cookies melhoraram seu dia.
+- [ ] **Programa de Fidelidade (Cartão SUS - Sistema Único de Sabores)**: A cada 10 compras realizadas, o cliente ganha 1 "Consulta de Retorno" grátis (1 cookie). O backend acumula os pontos automaticamente.
+- [ ] **Cupons de Desconto e Indicação**: Permitir cupons temáticos (Ex: `TERAPIA10` para 10% de desconto) e links de indicação para o usuário mandar para um amigo que está estressado.
+- [ ] **Compartilhamento Social Automático**: Ao concluir um pedido, exibir um botão "Compartilhar Receita Médica" que gera uma imagem divertida para o Stories do Instagram ("A farmácia acaba de liberar minha dose de dopamina da Sweetag!").
+- [ ] **Observações Terapêuticas**: Campo livre no checkout para o cliente enviar uma nota para o atendente (Ex: "Mandar um bilhetinho motivacional junto!" ou "Entregar sem fazer barulho").
