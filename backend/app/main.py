@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.auth.routes import router as auth_router
 from app.support.routes import router as support_router
@@ -12,6 +12,10 @@ from app.models.order import Order, OrderItem
 from app.models.favorite import Favorite
 from app.models.product import Product
 from app.models.campaign import CampaignState
+from app.core.limiter import limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from fastapi.responses import JSONResponse
 
 
 app = FastAPI(
@@ -19,6 +23,16 @@ app = FastAPI(
     description="Backend API for SweetAg Cookies platform - Theme: Psychology Cookies",
     version="1.0.0"
 )
+
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Muitas requisições. Por favor, tente novamente em um minuto."}
+    )
 
 # Configure CORS
 app.add_middleware(
