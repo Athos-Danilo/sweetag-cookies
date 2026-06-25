@@ -18,9 +18,15 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   checkoutForm: FormGroup;
   total: number = 0;
-  currentStep: 'cart' | 'schedule' | 'delivery' | 'payment' = 'cart';
+  currentStep: 'cart' | 'schedule' | 'delivery' | 'payment' | 'success' = 'cart';
   errorMessage: string = '';
   isSubmitting: boolean = false;
+
+  // Lógica da Tela de Sucesso
+  confirmedPaymentMethod: string = '';
+  showPixQrCode: boolean = false;
+  pixCopySuccess: boolean = false;
+  mockPixKey: string = 'b9683c10-73d6-4eaa-bcd9-92e86df2a9ae';
 
   // Lógica de Cupom
   couponCode: string = '';
@@ -222,11 +228,13 @@ export class CartComponent implements OnInit {
           this.orderService.createOrder(orderPayload).subscribe({
             next: (order) => {
               this.isSubmitting = false;
+              this.confirmedPaymentMethod = this.checkoutForm.value.paymentMethod;
               this.cartService.clearCart();
               this.checkoutForm.reset({ paymentMethod: 'PIX', needsChange: false });
               
-              // Redireciona para listagem de pedidos
-              this.router.navigate(['/orders']);
+              // Em vez de navegar direto, vamos para a tela de sucesso
+              this.currentStep = 'success';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             },
             error: (orderErr) => {
               this.isSubmitting = false;
@@ -255,8 +263,31 @@ export class CartComponent implements OnInit {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (this.currentStep === 'schedule') {
       this.goToCart();
+    } else if (this.currentStep === 'success') {
+      // Impede voltar se já estiver no sucesso
+      return;
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  // Ações da Tela de Sucesso
+  togglePixQrCode() {
+    this.showPixQrCode = !this.showPixQrCode;
+  }
+
+  copyPixKey() {
+    navigator.clipboard.writeText(this.mockPixKey).then(() => {
+      this.pixCopySuccess = true;
+      setTimeout(() => {
+        this.pixCopySuccess = false;
+      }, 2000);
+    }).catch(err => {
+      console.error('Falha ao copiar PIX:', err);
+    });
+  }
+
+  finishAndTrackOrder() {
+    this.router.navigate(['/orders']);
   }
 }

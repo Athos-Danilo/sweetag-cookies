@@ -16,30 +16,64 @@
       @if (orders().length > 0) {
       <div class="orders-list">
         @for (order of orders(); track order.id) {
-        <div class="order-card" 
+        <div class="order-card-premium" 
           [class.status-aguardando]="order.status === 'Aguardando' || order.status === 'Em Preparo' || order.status === 'Em Rota'" 
           [class.status-entregue]="order.status === 'Entregue'" 
           [class.status-expirado]="order.status === 'EXPIRADO'" 
           (click)="viewOrder(order)">
-          <div class="order-header">
-            <span class="order-id">#{{ order.id }}</span>
-            <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-
-          <div class="order-body">
-            <div class="order-status"
-              [ngClass]="{'entregue': order.status === 'Entregue', 'expirado': order.status === 'EXPIRADO'}">
-              <span class="status-dot"></span>
-              {{ order.status }}
+          
+          <div class="order-header-premium">
+            <div class="brand-avatar">
+              <span class="emoji-avatar">🍪</span>
             </div>
-            <div class="order-total">
-              {{ order.total | currency:'BRL':'symbol':'1.2-2' }}
+            <div class="header-titles">
+              <span class="store-name">{{ getPsychologyTitle(order.id) }}</span>
+              <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy • HH:mm' }}</span>
+            </div>
+            <div class="order-id-badge">
+              <span>#{{ order.id }}</span>
             </div>
           </div>
 
-          <div class="order-footer">
-            <span class="items-count">{{ order.items.length }} iten(s)</span>
-            <span class="view-details">Ver detalhes ></span>
+          <div class="order-status-banner"
+              [ngClass]="{
+                'entregue': order.status === 'Entregue', 
+                'expirado': order.status === 'EXPIRADO',
+                'em-rota': order.status === 'Em Rota',
+                'preparo': order.status === 'Em Preparo'
+              }">
+              
+              <div class="status-icon">
+                @if (order.status === 'Aguardando' || order.status === 'Em Preparo') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                } @else if (order.status === 'Em Rota') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                } @else if (order.status === 'Entregue') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                } @else if (order.status === 'EXPIRADO') {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                }
+              </div>
+              <span class="status-text">{{ order.status === 'EXPIRADO' ? 'Cancelado / Expirado' : order.status }}</span>
+          </div>
+
+          <div class="order-items-preview">
+            <span class="items-names">
+              <span class="item-qtd">{{ order.items[0]?.quantity }}x</span> {{ order.items[0]?.name }}
+              @if (order.items.length > 1) {
+                , <span class="item-qtd">{{ order.items[1]?.quantity }}x</span> {{ order.items[1]?.name }}
+              }
+              @if (order.items.length > 2) {
+                ... (+{{order.items.length - 2}})
+              }
+            </span>
+          </div>
+
+          <div class="order-footer-premium">
+            <span class="order-total">{{ order.total | currency:'BRL':'symbol':'1.2-2' }}</span>
+            <div class="action-buttons">
+              <span class="view-details-link">Ver detalhes</span>
+            </div>
           </div>
         </div>
         }

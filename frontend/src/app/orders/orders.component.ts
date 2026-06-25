@@ -123,4 +123,22 @@ export class OrdersComponent implements OnInit, OnDestroy {
     }
     this.countdownText.set('');
   }
+
+  // Gera um nome divertido temático de psicologia para cada pedido
+  getPsychologyTitle(orderId: number): string {
+    const titles = [
+      'Sessão Terapêutica',
+      'Dose de Dopamina',
+      'Reforço Positivo',
+      'Terapia Intensiva',
+      'Análise Sensorial',
+      'Insight Adocicado',
+      'Catarse de Chocolate',
+      'Equilíbrio Emocional',
+      'Terapia Cognitiva',
+      'Resgate Interior'
+    ];
+    // Garante que o mesmo ID de pedido sempre retorne o mesmo título
+    return titles[(orderId || 0) % titles.length];
+  }
 }

@@ -1,7 +1,7 @@
 .cart-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 7.5rem 1rem;
+  padding: 1.5rem 1rem 9rem 1rem;
   font-family: var(--font-body);
 
   @media (min-width: 768px) {
@@ -461,6 +461,11 @@
 .summary-aside-container {
   position: sticky;
   top: 2rem;
+
+  @media (max-width: 992px) {
+    position: relative;
+    top: 0;
+  }
 }
 
 .summary-card-premium {
@@ -1722,7 +1727,337 @@
   animation: spinWheel 0.8s linear infinite;
   display: inline-block;
 }
-
 @keyframes spinWheel {
   to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   ETAPA 5: TELA DE SUCESSO (AGRADECIMENTO E PAGAMENTO)
+   ========================================================================== */
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.success-card-premium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 4px solid var(--color-primary);
+
+  @media (max-width: 480px) {
+    padding: 2rem 1.25rem;
+  }
+}
+
+.success-header-anim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+
+  .success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(122, 158, 126, 0.1); /* Secondary light */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 24px rgba(122, 158, 126, 0.15);
+  }
+
+  .success-title {
+    font-size: 1.8rem;
+    font-weight: 850;
+    color: var(--color-primary);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.5px;
+    font-family: var(--font-headline);
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+    color: var(--color-on-surface-variant);
+    max-width: 320px;
+    line-height: 1.4;
+  }
+}
+
+/* Animação do Checkmark (Draw effect) */
+.checkmark-draw-icon {
+  width: 44px;
+  height: 44px;
+  stroke: var(--color-secondary);
+  stroke-width: 3.5;
+  stroke-miterlimit: 10;
+
+  .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+  }
+}
+
+@keyframes stroke {
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Blocos de Instruções (Pix / Dinheiro) */
+.payment-instructions-box {
+  background: var(--color-surface-bright);
+  border: 1px solid var(--color-surface-dim);
+  border-radius: var(--rounded-lg);
+  padding: 1.5rem;
+  width: 100%;
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: 2rem;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+
+  &.money-mode {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(122, 158, 126, 0.04);
+    border-color: rgba(122, 158, 126, 0.2);
+
+    h3 {
+      font-size: 1.3rem;
+      color: var(--color-secondary);
+      margin: 1rem 0 0.5rem 0;
+    }
+
+    p {
+      color: var(--color-on-surface);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      max-width: 280px;
+    }
+  }
+
+  .money-icon-large {
+    font-size: 3rem;
+    animation: floatUpDown 3s ease-in-out infinite;
+  }
+}
+
+.instructions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+
+  .pix-logo-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    color: #32BCAD; /* Pix Official Color */
+    font-size: 1.1rem;
+    background: rgba(50, 188, 173, 0.1);
+    padding: 4px 12px;
+    border-radius: var(--rounded-full);
+  }
+
+  .approval-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+    background: var(--color-surface-container-low);
+    padding: 4px 10px;
+    border-radius: var(--rounded-full);
+  }
+}
+
+.toggle-qrcode-btn {
+  width: 100%;
+  background: none;
+  border: 1.5px solid var(--color-surface-dim);
+  padding: 0.8rem 1rem;
+  border-radius: var(--rounded-md);
+  color: var(--color-on-surface);
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1.5rem;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-on-surface-variant);
+    transition: transform 0.3s ease;
+
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  &:hover {
+    background-color: var(--color-surface-container-low);
+  }
+}
+
+.qrcode-expandable-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideDownFade 0.4s ease;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed var(--color-surface-dim);
+  margin-bottom: 1.5rem;
+
+  .qrcode-image-box {
+    background: white;
+    padding: 10px;
+    border-radius: var(--rounded-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.25rem;
+
+    .qrcode-img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+  }
+
+  .pix-receiver-details {
+    width: 100%;
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-surface-dim);
+    border-radius: var(--rounded-md);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      
+      .label {
+        color: var(--color-on-surface-variant);
+        font-weight: 600;
+      }
+      .value {
+        color: var(--color-on-surface);
+        font-weight: 750;
+      }
+    }
+  }
+}
+
+@keyframes slideDownFade {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.pix-copy-paste-box {
+  background: var(--color-surface-container-lowest);
+  border: 1.5px dashed rgba(196, 103, 58, 0.4);
+  border-radius: var(--rounded-md);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  .box-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+    margin-bottom: 0.5rem;
+  }
+
+  .copy-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    .key-text {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--color-on-surface);
+      background: var(--color-surface-bright);
+      padding: 0.75rem;
+      border-radius: var(--rounded-sm);
+      border: 1px solid var(--color-surface-dim);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-copy-action {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: var(--rounded-sm);
+      font-weight: 750;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+
+      svg { width: 16px; height: 16px; }
+
+      &:hover {
+        background: #a35029;
+      }
+
+      &.success {
+        background: var(--color-secondary);
+        animation: popScale 0.3s ease;
+      }
+    }
+  }
+}
+
+@keyframes popScale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.pix-steps-list {
+  background: rgba(196, 103, 58, 0.05);
+  border-radius: var(--rounded-md);
+  padding: 1rem;
+
+  p {
+    font-size: 0.85rem;
+    color: var(--color-on-surface);
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.success-footer-actions {
+  width: 100%;
 }

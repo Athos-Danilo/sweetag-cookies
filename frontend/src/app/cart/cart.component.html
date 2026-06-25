@@ -14,7 +14,7 @@
   </header>
 
   <!-- Stepper de 4 Etapas Premium -->
-  <div class="steps-indicator-premium" *ngIf="cartItems.length > 0">
+  <div class="steps-indicator-premium" *ngIf="cartItems.length > 0 && currentStep !== 'success'">
     <!-- Passo 1: Sacola -->
     <div class="step-item" [class.active]="currentStep === 'cart'" [class.completed]="currentStep !== 'cart'" (click)="goToCart()">
       <div class="step-icon-wrapper">
@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <div class="cart-content-wrapper" *ngIf="cartItems.length > 0; else emptyCart">
+  <div class="cart-content-wrapper" *ngIf="cartItems.length > 0 || currentStep === 'success'; else emptyCart">
     
     <!-- ETAPA 1: REVISÃO DE ITENS (Sacola) -->
     <div class="step-section animate-slide-fade" *ngIf="currentStep === 'cart'">
@@ -478,6 +478,110 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ETAPA 5: SUCESSO E PAGAMENTO (Agradecimento) -->
+    <div class="step-section animate-slide-up-fade" *ngIf="currentStep === 'success'">
+      <div class="checkout-single-column-card success-card-premium">
+        
+        <div class="success-header-anim">
+          <div class="success-icon-wrapper">
+            <svg class="checkmark-draw-icon" viewBox="0 0 52 52">
+              <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+              <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+          </div>
+          <h2 class="success-title">Pedido Confirmado!</h2>
+          <p class="success-subtitle">Sua sessão de terapia saborosa foi agendada com sucesso.</p>
+        </div>
+
+        <!-- MODO PIX -->
+        <div class="payment-instructions-box" *ngIf="confirmedPaymentMethod === 'PIX'">
+          <div class="instructions-header">
+            <div class="pix-logo-badge">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M12 2L2 12l10 10 10-10L12 2zm0 15.5L6.5 12 12 6.5 17.5 12 12 17.5z"/>
+              </svg>
+              <span>Pix</span>
+            </div>
+            <span class="approval-badge">Aprovação imediata</span>
+          </div>
+
+          <!-- Botão Expandir QR Code -->
+          <button class="toggle-qrcode-btn" (click)="togglePixQrCode()">
+            <span>{{ showPixQrCode ? 'Ocultar QR Code' : 'Exibir QR Code para pagamento' }}</span>
+            <svg [class.rotated]="showPixQrCode" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- Área do QR Code (Aparece se expandido) -->
+          <div class="qrcode-expandable-area" *ngIf="showPixQrCode">
+            <!-- QR Code estático do print -->
+            <div class="qrcode-image-box">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020126440014br.gov.bcb.pix0122athosdanilomarques@gmail.com5204000053039865802BR5915Athos%20Danilo6009SAO%20PAULO62070503***6304620F" alt="QR Code Pix" class="qrcode-img">
+            </div>
+            
+            <div class="pix-receiver-details">
+              <div class="detail-row">
+                <span class="label">Nome:</span>
+                <span class="value">Athos Danilo Marques Inácio</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">CPF:</span>
+                <span class="value">***.410.204-**</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Instituição:</span>
+                <span class="value">Neon Pagamentos S.A.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pix Copia e Cola -->
+          <div class="pix-copy-paste-box">
+            <span class="box-label">Chave Pix (Aleatória)</span>
+            <div class="copy-input-group">
+              <div class="key-text">{{ mockPixKey }}</div>
+              <button class="btn-copy-action" (click)="copyPixKey()" [class.success]="pixCopySuccess">
+                <svg *ngIf="!pixCopySuccess" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <svg *ngIf="pixCopySuccess" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {{ pixCopySuccess ? 'Copiado!' : 'Copiar' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="pix-steps-list">
+            <p>1. Abra o app do seu banco e vá na área Pix.</p>
+            <p>2. Escolha "Ler QR Code" ou "Pix Copia e Cola".</p>
+            <p>3. Confirme o valor e finalize o pagamento.</p>
+          </div>
+        </div>
+
+        <!-- MODO DINHEIRO -->
+        <div class="payment-instructions-box money-mode" *ngIf="confirmedPaymentMethod === 'DINHEIRO'">
+          <div class="money-icon-large">💵</div>
+          <h3>Pagamento na Entrega</h3>
+          <p>Tudo certo! Lembre-se de separar o valor em dinheiro (e checar o troco, se você solicitou) para entregar diretamente ao entregador.</p>
+        </div>
+
+        <!-- Ação Final -->
+        <div class="success-footer-actions">
+          <button type="button" class="premium-primary-btn track-order-btn" (click)="finishAndTrackOrder()">
+            Acompanhar Pedido
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-next-icon">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
       </div>
     </div>
 
