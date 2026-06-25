@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, Date
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
@@ -15,6 +15,7 @@ class Order(Base):
     status_step = Column(Integer, default=1)
     pix_code = Column(Text, nullable=True)
     expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    scheduled_date = Column(Date, nullable=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
     # Relationships

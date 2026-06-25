@@ -12,6 +12,7 @@ from app.models.order import Order, OrderItem
 from app.models.favorite import Favorite
 from app.models.product import Product
 from app.models.campaign import CampaignState
+from app.models.availability import Availability
 from app.core.limiter import limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -53,6 +54,7 @@ from app.favorites.routes import router as favorites_router
 from app.products.routes import router as products_router
 from app.reports.routes import router as reports_router
 from app.api.admin.orders import router as admin_orders_router
+from app.availability.routes import router as availability_router
 
 # Include Routers
 app.include_router(auth_router)
@@ -65,6 +67,7 @@ app.include_router(favorites_router)
 app.include_router(products_router)
 app.include_router(reports_router)
 app.include_router(admin_orders_router)
+app.include_router(availability_router)
 
 
 from app.services.expiration_worker import start_expiration_worker
@@ -85,6 +88,7 @@ async def startup():
             await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;"))
             await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS status_step INTEGER DEFAULT 1;"))
             await conn.execute(text("ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_id INTEGER REFERENCES products(id);"))
+            await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS scheduled_date DATE;"))
         except Exception:
             # Fallback para SQLite local
             for col_query in [
@@ -93,7 +97,8 @@ async def startup():
                 "ALTER TABLE orders ADD COLUMN pix_code TEXT;",
                 "ALTER TABLE orders ADD COLUMN expires_at TIMESTAMP WITH TIME ZONE;",
                 "ALTER TABLE orders ADD COLUMN status_step INTEGER DEFAULT 1;",
-                "ALTER TABLE order_items ADD COLUMN product_id INTEGER;"
+                "ALTER TABLE order_items ADD COLUMN product_id INTEGER;",
+                "ALTER TABLE orders ADD COLUMN scheduled_date DATE;"
             ]:
                 try:
                     await conn.execute(text(col_query))

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, date
 from app.schemas.address import AddressResponse
 
 class OrderItemBase(BaseModel):
@@ -28,6 +28,9 @@ class OrderBase(BaseModel):
 class OrderCreate(OrderBase):
     items: List[OrderItemCreate]
 
+class OrderScheduleCreate(OrderCreate):
+    scheduled_date: date
+
 class OrderResponse(OrderBase):
     id: int
     user_id: int
@@ -38,6 +41,7 @@ class OrderResponse(OrderBase):
     address: AddressResponse
     pix_code: Optional[str] = None
     expires_at: Optional[datetime] = None
+    scheduled_date: Optional[date] = None
 
     class Config:
         from_attributes = True

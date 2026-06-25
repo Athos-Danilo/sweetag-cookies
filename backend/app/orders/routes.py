@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 from typing import List
 
 from app.core.database import get_db
@@ -9,7 +10,8 @@ from app.api.deps import get_current_user
 from app.models.user import User
 from app.models.order import Order, OrderItem
 from app.models.address import Address
-from app.schemas.order import OrderCreate, OrderResponse, OrderAddressUpdate
+from app.schemas.order import OrderCreate, OrderResponse, OrderAddressUpdate, OrderScheduleCreate
+from app.models.availability import Availability
 
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
@@ -119,6 +121,130 @@ async def create_order(
         pass
     
     return full_order
+
+
+@router.post("/schedule", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
+async def schedule_order(
+    order_in: OrderScheduleCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Verify address belongs to user
+    result = await db.execute(select(Address).where(Address.id == order_in.address_id, Address.user_id == current_user.id))
+    address = result.scalars().first()
+    if not address:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endereço não encontrado ou não pertence ao usuário.")
+        
+    try:
+        db_order_items = []
+        
+        # 2. Lock and validate each product
+        for item in order_in.items:
+            if item.product_id:
+                stmt = select(Product).where(Product.id == item.product_id, Product.is_active == True).with_for_update()
+            else:
+                stmt = select(Product).where(Product.name == item.name, Product.is_active == True).with_for_update()
+                
+            prod_result = await db.execute(stmt)
+            product = prod_result.scalars().first()
+            
+            if not product:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, 
+                    detail=f"Sabor temático '{item.name}' não encontrado ou indisponível."
+                )
+                
+            # 3. Check scheduled availability for the requested scheduled_date
+            stmt_avail = select(Availability).where(
+                Availability.product_id == product.id,
+                Availability.date == order_in.scheduled_date
+            ).with_for_update()
+            avail_result = await db.execute(stmt_avail)
+            availability = avail_result.scalars().first()
+            
+            if not availability:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Não há entregas programadas de '{product.name}' para a data {order_in.scheduled_date}."
+                )
+                
+            # Calculate currently ordered count
+            stmt_ordered = select(func.sum(OrderItem.quantity)).join(Order).where(
+                Order.scheduled_date == order_in.scheduled_date,
+                OrderItem.product_id == product.id,
+                Order.status != "EXPIRADO"
+            )
+            ordered_result = await db.execute(stmt_ordered)
+            quantity_ordered = ordered_result.scalar() or 0
+            
+            if quantity_ordered + item.quantity > availability.max_quantity_allowed:
+                remaining = max(0, availability.max_quantity_allowed - quantity_ordered)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Cota de agendamento esgotada para '{product.name}' em {order_in.scheduled_date}. Limite restante: {remaining}, Solicitado: {item.quantity}."
+                )
+                
+            # Prepare OrderItem
+            db_item = OrderItem(
+                product_id=product.id,
+                name=product.name,
+                quantity=item.quantity,
+                price=item.price
+            )
+            db_order_items.append(db_item)
+            
+        # 4. Create Scheduled Order (initial status: RESERVA_ANALISE)
+        db_order = Order(
+            user_id=current_user.id,
+            address_id=order_in.address_id,
+            total=order_in.total,
+            payment_method=order_in.payment_method,
+            status="RESERVA_ANALISE",
+            status_step=1,
+            scheduled_date=order_in.scheduled_date
+        )
+        
+        db.add(db_order)
+        await db.flush()
+        
+        for db_item in db_order_items:
+            db_item.order_id = db_order.id
+            db.add(db_item)
+            
+        await db.commit()
+        
+    except Exception as e:
+        await db.rollback()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao processar o agendamento: {str(e)}"
+        )
+        
+    # Reload order with relationships
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items), selectinload(Order.address))
+        .where(Order.id == db_order.id)
+    )
+    full_order = result.scalars().first()
+
+    # Dispara alerta via WebSocket para os admins
+    try:
+        from app.websockets.manager import manager as ws_manager
+        await ws_manager.broadcast_to_admins({
+            "event": "new_schedule_order",
+            "order_id": db_order.id,
+            "total": db_order.total,
+            "user_name": current_user.nome,
+            "scheduled_date": str(order_in.scheduled_date)
+        })
+    except Exception:
+        pass
+        
+    return full_order
+
 
 
 @router.get("", response_model=List[OrderResponse])
