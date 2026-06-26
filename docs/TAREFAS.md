@@ -149,7 +149,9 @@ Interface responsiva e dinâmica (Mobile-First) (RNF01, RNF02).
 Interface responsiva otimizada para desktop.
 
 ### 4.1 a 4.4 Módulos do Painel
-- [x] Login e Guardas de Rota.
+- [x] Login, Guardas de Rota e Autenticação.
+- [x] Fluxo de Criação do Administrador Supremo e Novos Administradores.
+- [x] Recuperação de Senha (Esqueci a Senha) com códigos de recuperação.
 - [/] Dashboard Executivo (Faturamento, Campanhas, Cookies mais vendidos):
   - [x] Visualização e gerenciamento da campanha financeira (progresso, metas e frases).
   - [ ] Tabela ou gráfico dos cookies mais vendidos (integrando a rota `/api/admin/reports/top-cookies`).
