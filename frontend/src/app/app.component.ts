@@ -14,11 +14,11 @@ import { NotificationService } from './core/services/notification.service';
   imports: [RouterOutlet, CommonModule, HeaderComponent, BottomNavComponent, PreloaderComponent],
   template: `
     <div [class]="'app-layout-container ' + currentRouteClass + (showPreloader ? ' preloader-active' : '') + (isRevealing ? ' preloader-reveal' : '')">
-      <app-header></app-header>
+      <app-header *ngIf="showHeader"></app-header>
       <main class="app-content">
         <router-outlet></router-outlet>
       </main>
-      <app-bottom-nav></app-bottom-nav>
+      <app-bottom-nav *ngIf="showBottomNav"></app-bottom-nav>
     </div>
     <app-preloader *ngIf="showPreloader" (slideStart)="onPreloaderSlideStart()" (finished)="onPreloaderFinished()"></app-preloader>
   `,
@@ -66,6 +66,8 @@ export class App implements OnInit {
   protected currentRouteClass = 'route-home';
   protected showPreloader = false;
   protected isRevealing = false; // Controla o efeito visual de revelação da homepage
+  protected showBottomNav = true;
+  protected showHeader = true;
   private lastUrl = '';
   private readonly destroyRef = inject(DestroyRef);
   private notificationService = inject(NotificationService);
@@ -141,6 +143,10 @@ export class App implements OnInit {
   }
 
   private updateRouteClass(url: string) {
+    const isAdminRoute = url.startsWith('/admin') || url.startsWith('admin');
+    this.showBottomNav = !isAdminRoute;
+    this.showHeader = !isAdminRoute;
+
     if (url === '/' || url === '/homepage' || url === '') {
       this.currentRouteClass = 'route-home';
     } else if (url.startsWith('/cart')) {
