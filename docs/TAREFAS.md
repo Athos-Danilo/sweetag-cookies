@@ -85,9 +85,9 @@ Lógica de negócios, endpoints REST e otimizações.
 
 ### 2.7 Módulo Administrativo & Relatórios (`reports` / `admin-panel`)
 - [/] Endpoints protegidos de gestão (status de pedidos, dashboard financeiro, campanhas).
-- [/] Aprovação de comprovantes Pix e reservas:
+- [x] Aprovação de comprovantes Pix e reservas:
   - [x] Aprovação manual de comprovantes Pix e integração com saldo da campanha (RN10).
-  - [ ] Aprovação de reservas futuras (agendamentos).
+  - [x] Aprovação de reservas futuras (agendamentos).
 
 ### 2.8 WebSockets e Comunicação em Tempo Real (`websockets`)
 - [x] Gerenciador de conexões no backend.
