@@ -59,3 +59,9 @@ class AdminOrderStatusUpdate(BaseModel):
 class AdminOrderResponse(OrderResponse):
     user: UserResponse
 
+
+class ReviewScheduleRequest(BaseModel):
+    approved: bool
+    justification: Optional[str] = None
+
+

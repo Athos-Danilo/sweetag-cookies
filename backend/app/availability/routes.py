@@ -29,7 +29,7 @@ async def get_calendar_availability(db: AsyncSession = Depends(get_db)):
             .where(
                 Order.scheduled_date == avail.date,
                 OrderItem.product_id == avail.product_id,
-                Order.status != "EXPIRADO"
+                Order.status.notin_(["EXPIRADO", "RESERVA_REJEITADA"])
             )
         )
         ordered_result = await db.execute(stmt_ordered)

@@ -172,7 +172,7 @@ async def schedule_order(
             stmt_ordered = select(func.sum(OrderItem.quantity)).join(Order).where(
                 Order.scheduled_date == order_in.scheduled_date,
                 OrderItem.product_id == product.id,
-                Order.status != "EXPIRADO"
+                Order.status.notin_(["EXPIRADO", "RESERVA_REJEITADA"])
             )
             ordered_result = await db.execute(stmt_ordered)
             quantity_ordered = ordered_result.scalar() or 0

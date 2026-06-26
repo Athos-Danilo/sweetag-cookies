@@ -76,9 +76,9 @@ Lógica de negócios, endpoints REST e otimizações.
 - [x] Endpoint `PATCH /api/orders/{id}/address`: Alteração de bloco/sala pós-compra (se status < PREPARACAO).
 
 ### 2.5 Módulo de Pagamento manual via Pix (`payments`)
-- [/] Integração de pagamento manual:
+- [x] Integração de pagamento manual:
   - [x] Geração e vinculação de código Pix Copia e Cola ao pedido.
-  - [ ] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
+  - [x] Endpoint `POST /api/orders/{id}/pay`: Confirmação do usuário de que pagou.
 
 ### 2.6 Módulo de Agendamentos Futuros (`future-orders`)
 - [x] Endpoints `POST /api/orders/schedule` e `GET /api/availability/calendar`.
@@ -91,7 +91,7 @@ Lógica de negócios, endpoints REST e otimizações.
 
 ### 2.8 WebSockets e Comunicação em Tempo Real (`websockets`)
 - [x] Gerenciador de conexões no backend.
-- [/] Push de atualizações para o cliente (Timeline) e para o painel de admin (Alerta de novo pedido).
+- [x] Push de atualizações para o cliente (Timeline) e para o painel de admin (Alerta de novo pedido).
 
 ### 2.9 Módulo de Suporte (`support`)
 - [x] Endpoint `POST /api/support/tickets`.

@@ -9,7 +9,7 @@ from app.api.deps import get_current_admin_user
 from app.models.user import User
 from app.models.order import Order
 from app.models.campaign import CampaignState
-from app.schemas.order import AdminOrderResponse, AdminOrderStatusUpdate
+from app.schemas.order import AdminOrderResponse, AdminOrderStatusUpdate, ReviewScheduleRequest
 from app.notifications.services import notify_user
 
 router = APIRouter(prefix="/api/admin/orders", tags=["admin-orders"])
@@ -158,3 +158,74 @@ async def approve_order_pix(
         pass
         
     return order
+
+
+@router.post("/{order_id}/review-schedule", response_model=AdminOrderResponse)
+async def review_scheduled_order(
+    order_id: int,
+    payload: ReviewScheduleRequest,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_current_admin_user)
+):
+    """
+    Avaliação de reservas futuras pelo administrador.
+    - Se aprovado: muda status para 'AGENDADO_APROVADO'.
+    - Se rejeitado: muda status para 'RESERVA_REJEITADA' (a cota é liberada ao não considerar este status no cálculo).
+    """
+    async with db.begin_nested():
+        result = await db.execute(
+            select(Order)
+            .options(
+                selectinload(Order.items),
+                selectinload(Order.address),
+                selectinload(Order.user)
+            )
+            .where(Order.id == order_id)
+            .with_for_update()
+        )
+        order = result.scalars().first()
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Pedido não encontrado."
+            )
+        
+        if order.scheduled_date is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Este pedido não é um agendamento / reserva futura."
+            )
+            
+        if order.status != "RESERVA_ANALISE":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Não é possível revisar uma reserva com status '{order.status}'. Deve estar em 'RESERVA_ANALISE'."
+            )
+            
+        if payload.approved:
+            order.status = "AGENDADO_APROVADO"
+            order.status_step = 2
+            notification_msg = "Sua reserva de cookie foi aprovada com sucesso! 📅🍪"
+        else:
+            order.status = "RESERVA_REJEITADA"
+            order.status_step = 0
+            notification_msg = "Sua reserva de cookie infelizmente foi rejeitada."
+            if payload.justification:
+                notification_msg += f" Motivo: {payload.justification}"
+                
+    await db.commit()
+    await db.refresh(order)
+    
+    # Notificar o usuário via WebSocket
+    try:
+        await notify_user(
+            db,
+            order.user_id,
+            notification_msg,
+            {"order_id": order.id, "status": order.status, "status_step": order.status_step}
+        )
+    except Exception:
+        pass
+        
+    return order
+
