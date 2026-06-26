@@ -84,6 +84,10 @@ async def startup():
         try:
             await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;"))
             await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS aceita_notificacoes BOOLEAN DEFAULT FALSE;"))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_superadmin BOOLEAN DEFAULT FALSE;"))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS hashed_password VARCHAR(255);"))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS recovery_codes TEXT;"))
+            await conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS admin_creation_password VARCHAR(255);"))
             await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS pix_code TEXT;"))
             await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;"))
             await conn.execute(text("ALTER TABLE orders ADD COLUMN IF NOT EXISTS status_step INTEGER DEFAULT 1;"))
@@ -94,6 +98,10 @@ async def startup():
             for col_query in [
                 "ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;",
                 "ALTER TABLE users ADD COLUMN aceita_notificacoes BOOLEAN DEFAULT FALSE;",
+                "ALTER TABLE users ADD COLUMN is_superadmin BOOLEAN DEFAULT FALSE;",
+                "ALTER TABLE users ADD COLUMN hashed_password VARCHAR(255);",
+                "ALTER TABLE users ADD COLUMN recovery_codes TEXT;",
+                "ALTER TABLE users ADD COLUMN admin_creation_password VARCHAR(255);",
                 "ALTER TABLE orders ADD COLUMN pix_code TEXT;",
                 "ALTER TABLE orders ADD COLUMN expires_at TIMESTAMP WITH TIME ZONE;",
                 "ALTER TABLE orders ADD COLUMN status_step INTEGER DEFAULT 1;",

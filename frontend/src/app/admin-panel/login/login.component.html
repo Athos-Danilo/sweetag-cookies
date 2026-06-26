@@ -1,65 +1,409 @@
-<div class="admin-login-container">
-  <div class="background-decorations">
-    <div class="circle circle-1"></div>
-    <div class="circle circle-2"></div>
-  </div>
+<div class="admin-login-wrapper">
+  <!-- Ethereal Background Elements -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
 
-  <div class="login-card">
-    <div class="card-header">
-      <div class="logo-area">
-        <span class="brain-icon">🧠</span>
-        <span class="cookie-icon">🍪</span>
+  <div class="login-container-glass">
+    <div class="login-header">
+      <div class="logo-mark">
+        <img src="/icon_cookie_admin.png" alt="Admin Logo" class="admin-logo-img">
       </div>
-      <h2>Painel Administrativo</h2>
-      <p class="subtitle">Identifique-se para acessar as ferramentas de gestão</p>
+      <h1 class="title">SweetAg Cookies <span>Admin</span></h1>
+      <p class="subtitle">Acesso restrito à gestão corporativa</p>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="whatsapp">WhatsApp do Admin</label>
-        <div class="input-wrapper">
-          <span class="input-icon">📱</span>
+      <!-- WhatsApp (Credencial) -->
+      <div class="input-group" [class.focused]="isFocused" [class.has-error]="loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.invalid">
+        <label for="whatsapp">Credencial de Acesso</label>
+        <div class="input-box">
+          <div class="icon-prefix">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          </div>
           <input 
             id="whatsapp"
             type="text" 
             formControlName="whatsapp"
             placeholder="(00) 00000-0000"
-            (input)="onWhatsappInput($event)"
-            [class.error]="loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.invalid"
+            (input)="formatWhatsappControl(loginForm, 'whatsapp', $event)"
+            (focus)="isFocused = true"
+            (blur)="isFocused = false"
             autocomplete="off"
           />
         </div>
         @if (loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.errors?.['required']) {
-          <span class="error-text">O número de WhatsApp é obrigatório.</span>
+          <span class="error-feedback">Credencial obrigatória.</span>
         }
         @if (loginForm.get('whatsapp')?.touched && loginForm.get('whatsapp')?.errors?.['pattern']) {
-          <span class="error-text">Digite um número válido no formato (XX) XXXXX-XXXX.</span>
+          <span class="error-feedback">Formato inválido. Use (XX) XXXXX-XXXX.</span>
+        }
+      </div>
+
+      <!-- Senha -->
+      <div class="input-group" [class.focused]="isFocusedPassword" [class.has-error]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+        <div class="label-wrapper">
+          <label for="password">Senha</label>
+          <button type="button" class="btn-forgot-password" (click)="openRecoverModal()">Esqueci a senha</button>
+        </div>
+        <div class="input-box">
+          <div class="icon-prefix">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+          </div>
+          <input 
+            id="password"
+            type="password" 
+            formControlName="password"
+            placeholder="Digite sua senha"
+            (focus)="isFocusedPassword = true"
+            (blur)="isFocusedPassword = false"
+          />
+        </div>
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']) {
+          <span class="error-feedback">Senha obrigatória.</span>
+        }
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']) {
+          <span class="error-feedback">A senha deve ter pelo menos 6 caracteres.</span>
         }
       </div>
 
       @if (errorMessage()) {
-        <div class="alert-box error-alert">
-          <span class="alert-icon">⚠️</span>
-          <span class="alert-message">{{ errorMessage() }}</span>
+        <div class="error-alert-glass">
+          <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>{{ errorMessage() }}</span>
         </div>
       }
 
       <button 
         type="submit" 
         [disabled]="loginForm.invalid || isSubmitting()" 
-        class="btn-submit"
+        class="btn-premium"
       >
+        <div class="btn-content" [class.invisible]="isSubmitting()">
+          <span>Autenticar</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </div>
         @if (isSubmitting()) {
-          <span class="spinner"></span>
-          <span>Autenticando...</span>
-        } @else {
-          <span>Entrar no Painel</span>
+          <div class="loader-container">
+            <span class="loader"></span>
+          </div>
         }
       </button>
+
+      <div class="form-actions-secondary">
+        <button type="button" class="btn-text-link" (click)="openRegisterModal()">Adicionar novo administrador</button>
+      </div>
     </form>
     
-    <div class="card-footer">
-      <p>Desenvolvido para SweetAg Cookies 🧠🍪</p>
+    <div class="footer-branding">
+      <div class="separator"></div>
+      <p>Desenvolvido para SweetAg Cookies &copy; {{ currentYear }}</p>
     </div>
   </div>
+
+  <!-- Modal de Cadastro de Admin -->
+  @if (showRegisterModal()) {
+    <div class="modal-overlay-glass" (click)="closeRegisterModal()">
+      <div class="modal-content-glass" (click)="$event.stopPropagation()">
+        <button type="button" class="btn-close-modal" (click)="closeRegisterModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <!-- Etapa 1: Autenticação do Administrador Supremo -->
+        @if (registerStep() === 'superadmin-auth') {
+          <div class="modal-header">
+            <h2 class="modal-title">Autorização Exigida</h2>
+            <p class="modal-subtitle">Digite a senha do Administrador Supremo para poder criar um novo administrador</p>
+          </div>
+
+          <form [formGroup]="superadminAuthForm" (ngSubmit)="onVerifySuperPassword()" class="modal-form">
+            <div class="input-group">
+              <label for="superadminPassword">Senha do Supremo</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                </div>
+                <input 
+                  id="superadminPassword"
+                  type="password" 
+                  formControlName="superadminPassword"
+                  placeholder="Senha de Autorização"
+                  autocomplete="off"
+                />
+              </div>
+              @if (superPasswordError()) {
+                <span class="error-feedback error-spaced">{{ superPasswordError() }}</span>
+              }
+            </div>
+
+            <button type="submit" [disabled]="superadminAuthForm.invalid || isVerifyingSuperPassword()" class="btn-premium">
+              <div class="btn-content" [class.invisible]="isVerifyingSuperPassword()">
+                <span>Verificar e Prosseguir</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+              @if (isVerifyingSuperPassword()) {
+                <div class="loader-container">
+                  <span class="loader"></span>
+                </div>
+              }
+            </button>
+          </form>
+        }
+
+        <!-- Etapa 2: Formulário de Cadastro do Novo Admin -->
+        @if (registerStep() === 'register-form') {
+          <div class="modal-header">
+            @if (isBootstrapMode()) {
+              <h2 class="modal-title">Novo Supremo Admin</h2>
+              <p class="modal-subtitle">Nenhum supremo cadastrado. Configure o primeiro admin agora.</p>
+            } @else {
+              <h2 class="modal-title">Novo Administrador</h2>
+              <p class="modal-subtitle">Insira os dados do novo gestor do sistema</p>
+            }
+          </div>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onRegisterAdmin()" class="modal-form">
+            <!-- Nome -->
+            <div class="input-group">
+              <label for="reg-nome">Nome Completo</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <input 
+                  id="reg-nome"
+                  type="text" 
+                  formControlName="nome"
+                  placeholder="Nome do Admin"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="input-group">
+              <label for="reg-whatsapp">WhatsApp</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                </div>
+                <input 
+                  id="reg-whatsapp"
+                  type="text" 
+                  formControlName="whatsapp"
+                  placeholder="(00) 00000-0000"
+                  (input)="formatWhatsappControl(registerForm, 'whatsapp', $event)"
+                  autocomplete="off"
+                />
+              </div>
+              @if (registerForm.get('whatsapp')?.touched && registerForm.get('whatsapp')?.errors?.['pattern']) {
+                <span class="error-feedback">Formato inválido. Use (XX) XXXXX-XXXX.</span>
+              }
+            </div>
+
+            <!-- Senha -->
+            <div class="input-group">
+              <label for="reg-password">Senha de Acesso</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                </div>
+                <input 
+                  id="reg-password"
+                  type="password" 
+                  formControlName="password"
+                  placeholder="Senha forte (mín. 6 caracteres)"
+                />
+              </div>
+              @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']) {
+                <span class="error-feedback">A senha deve ter pelo menos 6 caracteres.</span>
+              }
+            </div>
+
+            @if (registerError()) {
+              <div class="error-alert-glass">
+                <span>{{ registerError() }}</span>
+              </div>
+            }
+
+            <button type="submit" [disabled]="registerForm.invalid || isSubmitting()" class="btn-premium">
+              <div class="btn-content" [class.invisible]="isSubmitting()">
+                <span>Criar Conta</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+              @if (isSubmitting()) {
+                <div class="loader-container">
+                  <span class="loader"></span>
+                </div>
+              }
+            </button>
+          </form>
+        }
+
+        <!-- Etapa 3: Exibição dos Códigos de Recuperação -->
+        @if (registerStep() === 'recovery-codes') {
+          <div class="modal-header">
+            <h2 class="modal-title">Códigos de Segurança</h2>
+            <p class="modal-subtitle">Copie e guarde esses 5 códigos de recuperação. Eles são a única forma de redefinir sua senha se você esquecer.</p>
+          </div>
+
+          <div class="codes-container">
+            <div class="codes-grid">
+              @for (code of recoveryCodes(); track code) {
+                <div class="code-badge">{{ code }}</div>
+              }
+            </div>
+            
+            <button type="button" class="btn-copy-codes" (click)="copyCodesToClipboard()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copiar Todos os Códigos
+            </button>
+          </div>
+
+          <button type="button" (click)="finishRegistration()" class="btn-premium">
+            <div class="btn-content">
+              <span>Acessar o Painel</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Recuperação de Senha -->
+  @if (showRecoverModal()) {
+    <div class="modal-overlay-glass" (click)="closeRecoverModal()">
+      <div class="modal-content-glass" (click)="$event.stopPropagation()">
+        <button type="button" class="btn-close-modal" (click)="closeRecoverModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <!-- Etapa 1: Formulário de Redefinição -->
+        @if (recoverStep() === 'recover-form') {
+          <div class="modal-header">
+            <h2 class="modal-title">Esqueci a Senha</h2>
+            <p class="modal-subtitle">Use um dos seus códigos de recuperação de 6 dígitos para criar uma nova senha</p>
+          </div>
+
+          <form [formGroup]="recoverForm" (ngSubmit)="onRecoverPassword()" class="modal-form">
+            <!-- WhatsApp -->
+            <div class="input-group">
+              <label for="rec-whatsapp">WhatsApp do Admin</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                </div>
+                <input 
+                  id="rec-whatsapp"
+                  type="text" 
+                  formControlName="whatsapp"
+                  placeholder="(00) 00000-0000"
+                  (input)="formatWhatsappControl(recoverForm, 'whatsapp', $event)"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <!-- Código de Recuperação -->
+            <div class="input-group">
+              <label for="rec-code">Código de Recuperação</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                </div>
+                <input 
+                  id="rec-code"
+                  type="text" 
+                  formControlName="recoveryCode"
+                  placeholder="SWT-XXXXXX"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <!-- Nova Senha -->
+            <div class="input-group">
+              <label for="rec-new-password">Nova Senha</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                </div>
+                <input 
+                  id="rec-new-password"
+                  type="password" 
+                  formControlName="newPassword"
+                  placeholder="Crie uma nova senha"
+                />
+              </div>
+              @if (recoverForm.get('newPassword')?.touched && recoverForm.get('newPassword')?.errors?.['minlength']) {
+                <span class="error-feedback">A senha deve ter pelo menos 6 caracteres.</span>
+              }
+            </div>
+
+            <!-- Confirmar Nova Senha -->
+            <div class="input-group">
+              <label for="rec-confirm-password">Confirmar Nova Senha</label>
+              <div class="input-box">
+                <div class="icon-prefix">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <input 
+                  id="rec-confirm-password"
+                  type="password" 
+                  formControlName="confirmPassword"
+                  placeholder="Digite novamente a nova senha"
+                />
+              </div>
+              @if (recoverForm.get('confirmPassword')?.touched && recoverForm.errors?.['passwordMismatch']) {
+                <span class="error-feedback">As senhas não coincidem.</span>
+              }
+            </div>
+
+            @if (recoverError()) {
+              <div class="error-alert-glass">
+                <span>{{ recoverError() }}</span>
+              </div>
+            }
+
+            <button type="submit" [disabled]="recoverForm.invalid || isSubmitting()" class="btn-premium">
+              <div class="btn-content" [class.invisible]="isSubmitting()">
+                <span>Atualizar Senha</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </div>
+              @if (isSubmitting()) {
+                <div class="loader-container">
+                  <span class="loader"></span>
+                </div>
+              }
+            </button>
+          </form>
+        }
+
+        <!-- Etapa 2: Novo Código Reposto -->
+        @if (recoverStep() === 'new-code') {
+          <div class="modal-header">
+            <h2 class="modal-title">Nova Senha Definida!</h2>
+            <p class="modal-subtitle">Seu código foi validado com sucesso. Guarde o novo código gerado abaixo para continuar com 5 códigos de recuperação ativos.</p>
+          </div>
+
+          <div class="new-code-container">
+            <div class="new-code-box">{{ newRecoveryCode() }}</div>
+            
+            <button type="button" class="btn-copy-codes" (click)="copyNewCodeToClipboard()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copiar Novo Código
+            </button>
+          </div>
+
+          <button type="button" (click)="closeRecoverModal()" class="btn-premium">
+            <div class="btn-content">
+              <span>Ir para Login</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+  }
 </div>
