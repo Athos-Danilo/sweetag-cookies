@@ -19,10 +19,14 @@ export class AdminLoginComponent implements OnInit {
 
   isSubmitting = signal<boolean>(false);
   errorMessage = signal<string>('');
+  showPassword = signal<boolean>(false);
   
   isFocused = false;
   isFocusedPassword = false;
   currentYear = new Date().getFullYear();
+
+  private cookieClickCount = 0;
+  private cookieClickTimeout: any = null;
 
   // Modais e fluxos
   showRegisterModal = signal<boolean>(false);
@@ -282,6 +286,22 @@ export class AdminLoginComponent implements OnInit {
     }).catch(err => {
       console.error('Erro ao copiar código:', err);
     });
+  }
+
+  onCookieClick() {
+    this.cookieClickCount++;
+    if (this.cookieClickTimeout) {
+      clearTimeout(this.cookieClickTimeout);
+    }
+
+    if (this.cookieClickCount === 5) {
+      this.cookieClickCount = 0;
+      this.router.navigate(['/']);
+    } else {
+      this.cookieClickTimeout = setTimeout(() => {
+        this.cookieClickCount = 0;
+      }, 2000);
+    }
   }
 
   private redirect() {

@@ -68,7 +68,7 @@
   animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   
   @media (max-width: 480px) {
-    padding: 40px 24px;
+    padding: 24px 20px;
     border-radius: 24px;
   }
 }
@@ -92,6 +92,7 @@
       width: 72px;
       height: 72px;
       object-fit: contain;
+      cursor: pointer;
     }
   }
 
@@ -165,7 +166,7 @@
       width: 100%;
       background: transparent;
       border: none;
-      padding: 18px 20px 18px 56px;
+      padding: 18px 56px 18px 56px;
       font-size: 16px;
       color: #F5ECD7;
       outline: none;
@@ -175,6 +176,25 @@
 
       &::placeholder {
         color: rgba(245, 236, 215, 0.2);
+      }
+    }
+
+    .btn-toggle-password {
+      position: absolute;
+      right: 20px;
+      background: none;
+      border: none;
+      color: rgba(245, 236, 215, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.2s ease;
+      z-index: 5;
+
+      &:hover {
+        color: #D28F27;
       }
     }
   }
@@ -578,3 +598,61 @@
   text-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
 }
 
+@media (max-width: 480px) {
+  .admin-login-wrapper {
+    padding: 12px;
+  }
+
+  .login-header {
+    margin-bottom: 24px;
+
+    .logo-mark {
+      margin-bottom: 16px;
+
+      .admin-logo-img {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    .title {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .login-form {
+    gap: 20px;
+  }
+
+  .input-group {
+    gap: 6px;
+
+    .input-box {
+      input {
+        padding: 15px 48px;
+        font-size: 15px;
+      }
+
+      .icon-prefix {
+        left: 16px;
+      }
+
+      .btn-toggle-password {
+        right: 16px;
+      }
+    }
+  }
+
+  .btn-premium {
+    height: 52px;
+  }
+
+  .footer-branding {
+    margin-top: 32px;
+
+    .separator {
+      margin-bottom: 16px;
+    }
+  }
+}
