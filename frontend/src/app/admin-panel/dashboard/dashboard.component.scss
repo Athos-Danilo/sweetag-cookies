@@ -1,93 +1,203 @@
+// Variáveis de Design SweetAg
+$color-bg-dark: #0D0C0B;
+$color-card-bg: rgba(25, 22, 20, 0.6);
+$color-card-border: rgba(255, 255, 255, 0.07);
+$color-gold-light: #F5ECD7;
+$color-gold-muted: #e2d8cd;
+$color-primary-gold: #D28F27;
+$color-secondary-gold: #A66E19;
+
+$gradient-gold-premium: linear-gradient(135deg, #D28F27 0%, #A66E19 100%);
+$gradient-success: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+$gradient-info: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+$gradient-purple: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+
 .admin-dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background: #12100e;
-  color: #f7ede2;
+  background-color: $color-bg-dark;
+  color: $color-gold-light;
   font-family: 'Outfit', 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+
+  // Efeito de Orbs no fundo (combinando com a tela de login)
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+  &::before {
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, $color-primary-gold 0%, transparent 70%);
+    top: -10vw;
+    right: -10vw;
+  }
+  &::after {
+    width: 35vw;
+    height: 35vw;
+    background: radial-gradient(circle, #7A9E7E 0%, transparent 70%);
+    bottom: -5vw;
+    left: -5vw;
+  }
 }
 
+// ----------------------------------------------------
+// 1. SIDEBAR (Layout Desktop)
+// ----------------------------------------------------
 .sidebar {
-  width: 260px;
-  background: #1e1b18;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  width: 280px;
+  background: rgba(20, 17, 15, 0.75);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-right: 1px solid $color-card-border;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 32px 24px;
   box-sizing: border-box;
+  z-index: 10;
+  position: relative;
 
   .sidebar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
 
     h2 {
       margin: 0;
-      font-size: 1.4rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, $color-gold-light, $color-primary-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .badge {
-      background: #d48c4e;
-      color: #fff;
-      font-size: 0.75rem;
-      padding: 4px 8px;
+      background: rgba($color-primary-gold, 0.15);
+      border: 1px solid rgba($color-primary-gold, 0.3);
+      color: $color-primary-gold;
+      font-size: 0.7rem;
+      padding: 4px 10px;
       border-radius: 20px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   }
 
   .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     flex: 1;
 
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      border-radius: 12px;
-      color: #b5a697;
+      padding: 16px 20px;
+      border-radius: 16px;
+      color: $color-gold-muted;
       text-decoration: none;
       font-weight: 600;
-      transition: all 0.2s ease;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
 
-      &:hover, &.active {
-        background: rgba(212, 140, 78, 0.1);
-        color: #d48c4e;
+      &:hover {
+        color: $color-gold-light;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      &.active {
+        background: rgba($color-primary-gold, 0.08);
+        border-color: rgba($color-primary-gold, 0.2);
+        color: #F5ECD7;
+        text-shadow: 0 0 10px rgba($color-primary-gold, 0.2);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+        // Pequeno indicador visual na esquerda
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 25%;
+          height: 50%;
+          width: 4px;
+          background-color: $color-primary-gold;
+          border-radius: 0 4px 4px 0;
+        }
       }
     }
   }
 
   .sidebar-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 24px;
 
     .btn-logout {
       width: 100%;
-      background: rgba(255, 107, 107, 0.1);
-      border: 1px solid rgba(255, 107, 107, 0.2);
+      background: linear-gradient(135deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 59, 48, 0.03) 100%);
+      border: 1px solid rgba(255, 59, 48, 0.25);
       color: #ff6b6b;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+      svg {
+        transition: transform 0.3s ease;
+      }
 
       &:hover {
-        background: #ff6b6b;
+        background: linear-gradient(135deg, #FF3B30 0%, #C41C16 100%);
+        border-color: transparent;
         color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 59, 48, 0.35);
+
+        svg {
+          transform: translateX(2px);
+        }
+      }
+      
+      &:active {
+        transform: translateY(1px);
       }
     }
   }
 }
 
+// Oculto por padrão no desktop
+.mobile-header {
+  display: none;
+}
+
+// ----------------------------------------------------
+// 2. CONTEÚDO PRINCIPAL (Main Content)
+// ----------------------------------------------------
 .main-content {
   flex: 1;
-  padding: 40px;
+  padding: 48px;
   box-sizing: border-box;
+  z-index: 1;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 
   .content-header {
     margin-bottom: 40px;
@@ -96,151 +206,263 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 24px;
     }
 
     h1 {
       margin: 0 0 8px 0;
-      font-size: 2.2rem;
-      font-weight: 700;
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: $color-gold-light;
     }
 
     p {
-      color: #b5a697;
+      color: $color-gold-muted;
       margin: 0;
+      font-size: 1.05rem;
+      font-weight: 400;
     }
   }
 }
 
+// ----------------------------------------------------
+// 3. CARDS DE MÉTRICA
+// ----------------------------------------------------
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 40px;
 }
 
 .metric-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 24px;
+  background: $color-card-bg;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid $color-card-border;
+  border-radius: 24px;
+  padding: 28px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  transition: transform 0.2s ease;
+  gap: 24px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   &:hover {
     transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(35, 30, 27, 0.8);
+    border-color: rgba($color-primary-gold, 0.25);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 20px rgba($color-primary-gold, 0.05);
   }
 
   .card-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
-    &.money { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
-    &.goal { background: rgba(52, 152, 219, 0.15); color: #3498db; }
-    &.percent { background: rgba(155, 89, 182, 0.15); color: #9b59b6; }
+    &.money { 
+      background: rgba(46, 204, 113, 0.12); 
+      color: #2ecc71; 
+      border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+    &.goal { 
+      background: rgba(52, 152, 219, 0.12); 
+      color: #3498db; 
+      border: 1px solid rgba(52, 152, 219, 0.2);
+    }
+    &.percent { 
+      background: rgba(155, 89, 182, 0.12); 
+      color: #9b59b6; 
+      border: 1px solid rgba(155, 89, 182, 0.2);
+    }
   }
 
   .card-info {
+    flex: 1;
     .card-label {
-      color: #b5a697;
-      font-size: 0.85rem;
-      font-weight: 600;
+      color: $color-gold-muted;
+      font-size: 0.8rem;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .card-value {
-      margin: 4px 0 0 0;
-      font-size: 1.6rem;
-      font-weight: 700;
+      margin: 6px 0 0 0;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: $color-gold-light;
+      letter-spacing: -0.3px;
     }
   }
 }
 
+// ----------------------------------------------------
+// 4. SEÇÃO DE PROGRESSO DA META
+// ----------------------------------------------------
 .progress-section {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 32px;
+  background: $color-card-bg;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid $color-card-border;
+  border-radius: 28px;
+  padding: 36px;
   margin-bottom: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     h3 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: $color-gold-muted;
     }
 
     .percent-tag {
-      background: rgba(212, 140, 78, 0.15);
-      color: #d48c4e;
-      padding: 6px 12px;
+      background: rgba($color-primary-gold, 0.1);
+      border: 1px solid rgba($color-primary-gold, 0.25);
+      color: $color-primary-gold;
+      padding: 6px 16px;
       border-radius: 20px;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.3px;
     }
   }
 
   .progress-bar-container {
-    height: 24px;
-    background: rgba(255, 255, 255, 0.05);
+    height: 28px;
+    background: rgba(0, 0, 0, 0.4);
     border-radius: 30px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
   }
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #d48c4e 0%, #ffaa5a 100%);
+    background: linear-gradient(90deg, #b27035 0%, #D28F27 50%, #FFB940 100%);
     border-radius: 30px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding-right: 12px;
+    padding-right: 16px;
     box-sizing: border-box;
-    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 15px rgba($color-primary-gold, 0.3);
+    position: relative;
+
+    // Efeito de brilho animado que passa pela barra
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+      animation: barGlow 3s infinite linear;
+    }
 
     .progress-label {
-      color: #12100e;
-      font-weight: 800;
-      font-size: 0.8rem;
+      color: #1a100a;
+      font-weight: 900;
+      font-size: 0.85rem;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
     }
   }
 }
 
+@keyframes barGlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+// ----------------------------------------------------
+// 5. MENSAGEM DO CLIENTE / BRANDING
+// ----------------------------------------------------
 .campaign-info-section {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 32px;
+  background: $color-card-bg;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid $color-card-border;
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   h3 {
-    margin: 0 0 16px 0;
+    margin: 0 0 20px 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: $color-gold-muted;
   }
 
   .motivational-bubble {
-    background: rgba(255, 255, 255, 0.02);
-    border-left: 4px solid #d48c4e;
-    padding: 16px 24px;
-    border-radius: 0 16px 16px 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 4px solid $color-primary-gold;
+    padding: 24px 28px;
+    border-radius: 0 20px 20px 0;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &::before {
+      content: '“';
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      font-size: 4rem;
+      color: rgba($color-primary-gold, 0.15);
+      font-family: Georgia, serif;
+    }
 
     .quote {
       margin: 0;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-style: italic;
-      color: #dfd5ca;
-      line-height: 1.5;
+      color: $color-gold-light;
+      line-height: 1.6;
+      font-weight: 400;
     }
+  }
+}
+
+// ----------------------------------------------------
+// 6. BOTÕES E COMPONENTES AUXILIARES
+// ----------------------------------------------------
+.btn-primary {
+  background: $gradient-gold-premium;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 28px;
+  color: #1a100a;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba($color-primary-gold, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba($color-primary-gold, 0.35);
+    filter: brightness(1.1);
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 }
 
@@ -249,167 +471,412 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  gap: 16px;
+  min-height: 400px;
+  gap: 20px;
 
   .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.05);
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.05);
     border-radius: 50%;
-    border-top-color: #d48c4e;
-    animation: spin 0.8s linear infinite;
+    border-top-color: $color-primary-gold;
+    animation: spin 0.9s linear infinite;
+  }
+  p {
+    color: $color-gold-muted;
+    font-size: 1.05rem;
   }
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #d48c4e 0%, #b27035 100%);
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 16px rgba(212, 140, 78, 0.15);
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(212, 140, 78, 0.25);
-  }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-// Modal styles
+// ----------------------------------------------------
+// 7. ESTILOS DO MODAL (Glassmorphic Tema Escuro)
+// ----------------------------------------------------
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(80px);
-  -webkit-backdrop-filter: blur(8px);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(13, 12, 11, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1000;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .modal-card {
-  background: #1e1b18;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  background: rgba(25, 22, 20, 0.9);
+  border: 1px solid $color-card-border;
+  border-radius: 28px;
   width: 100%;
-  max-width: 500px;
-  padding: 32px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  max-width: 520px;
+  padding: 40px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
   box-sizing: border-box;
-  animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: modalReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @media (max-width: 480px) {
+    padding: 32px 20px;
+    border-radius: 20px;
+  }
 }
 
-@keyframes modalScaleUp {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+@keyframes modalReveal {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 
   h2 {
     margin: 0;
     font-size: 1.5rem;
+    font-weight: 800;
+    color: $color-gold-light;
   }
 
   .btn-close {
-    background: none;
-    border: none;
-    color: #b5a697;
-    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-gold-muted;
     cursor: pointer;
+    transition: all 0.2s;
 
-    &:hover { color: #fff; }
+    &:hover {
+      background: rgba(255, 59, 48, 0.1);
+      border-color: rgba(255, 59, 48, 0.2);
+      color: #FF3B30;
+      transform: rotate(90deg);
+    }
   }
 }
 
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 
   label {
-    color: #dfd5ca;
-    font-size: 0.85rem;
-    font-weight: 600;
+    color: $color-gold-muted;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 4px;
   }
 
   input, textarea {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 12px 16px;
-    color: #fff;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 16px 20px;
+    color: $color-gold-light;
     font-size: 0.95rem;
     font-family: inherit;
     outline: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    width: 100%;
+
+    &::placeholder {
+      color: rgba(245, 236, 215, 0.2);
+    }
 
     &:focus {
-      border-color: #d48c4e;
-      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba($color-primary-gold, 0.5);
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 4px rgba($color-primary-gold, 0.1);
     }
   }
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: #FF3B30;
+  margin-left: 4px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 14px;
   margin-top: 12px;
 
   .btn-secondary {
     background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    color: #b5a697;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-weight: 600;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    color: $color-gold-muted;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s;
 
     &:hover {
       background: rgba(255, 255, 255, 0.02);
-      color: #fff;
+      color: $color-gold-light;
     }
   }
 }
 
-.alert {
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-
-  &.success {
-    background: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
-    border: 1px solid rgba(46, 204, 113, 0.2);
+// ----------------------------------------------------
+// 8. ADAPTAÇÃO PARA DISPOSITIVOS MÓVEIS (Celular)
+// ----------------------------------------------------
+@media (max-width: 767px) {
+  .admin-dashboard-layout {
+    flex-direction: column;
   }
 
-  &.error {
-    background: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border: 1px solid rgba(231, 76, 60, 0.2);
-  }
-}
+  // A Sidebar vira um Bottom-Nav Fixo
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 72px;
+    padding: 0 16px;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px 20px 0 0;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    background: rgba(18, 15, 13, 0.96);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+    .sidebar-header {
+      display: none; // Esconde o logo do SweetAg da barra lateral
+    }
+
+    .sidebar-nav {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      gap: 16px;
+      flex: none;
+
+      .nav-item {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        border-radius: 12px;
+        flex: 1;
+        justify-content: center;
+        text-align: center;
+
+        &.active {
+          &::before {
+            // Em mobile, a borda vira uma linha superior no item ativo
+            left: 25%;
+            top: 0;
+            height: 3px;
+            width: 50%;
+            border-radius: 0 0 3px 3px;
+          }
+        }
+      }
+    }
+
+    .sidebar-footer {
+      display: none; // Esconde o botão "Sair" do rodapé original
+    }
+  }
+
+  // Header móvel superior exibido apenas em celulares
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .logo-emoji {
+        font-size: 1.4rem;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: $color-gold-light;
+
+        span {
+          color: $color-primary-gold;
+          font-weight: 300;
+        }
+      }
+    }
+
+    .btn-logout-mobile {
+      background: linear-gradient(135deg, rgba(255, 59, 48, 0.12) 0%, rgba(255, 59, 48, 0.05) 100%);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+      color: #ff6b6b;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+      svg {
+        transition: transform 0.2s ease;
+      }
+
+      &:hover, &:active {
+        background: linear-gradient(135deg, #FF3B30 0%, #C41C16 100%);
+        border-color: transparent;
+        color: #fff;
+        
+        svg {
+          transform: translateX(2px);
+        }
+      }
+    }
+  }
+
+  // Ajustes no conteúdo principal para celulares
+  .main-content {
+    padding: 16px;
+    padding-bottom: 100px; // Espaço extra inferior para rolar além do bottom-nav
+
+    .content-header {
+      margin-bottom: 24px;
+
+      .welcome-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        
+        .welcome {
+          width: 100%;
+        }
+
+        .btn-primary {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      h1 {
+        font-size: 1.7rem;
+        letter-spacing: -0.5px;
+      }
+
+      p {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // Cards de Métricas em Mobile
+  .metrics-grid {
+    grid-template-columns: 1fr; // Um por linha no celular
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .metric-card {
+    padding: 20px;
+    gap: 16px;
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      font-size: 1.5rem;
+      border-radius: 16px;
+    }
+
+    .card-info {
+      .card-value {
+        font-size: 1.5rem;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  // Progresso em Mobile
+  .progress-section {
+    padding: 24px 20px;
+    margin-bottom: 28px;
+    border-radius: 20px;
+
+    .section-header {
+      margin-bottom: 16px;
+      h3 {
+        font-size: 1.1rem;
+      }
+      .percent-tag {
+        padding: 4px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .progress-bar-container {
+      height: 24px;
+    }
+    
+    .progress-bar-fill {
+      padding-right: 12px;
+      .progress-label {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  // Mensagem do Cliente em Mobile
+  .campaign-info-section {
+    padding: 24px 20px;
+    border-radius: 20px;
+
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .motivational-bubble {
+      padding: 16px 20px;
+      &::before {
+        font-size: 3rem;
+        top: -8px;
+        left: 6px;
+      }
+      .quote {
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+    }
+  }
 }
