@@ -30,6 +30,12 @@
   margin-bottom: 24px;
   
   .greeting {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente o subtítulo e a frase */
+    text-align: center; /* Centraliza o texto */
+    width: 100%;
+    
     .subtitle {
       font-size: 13px;
       font-weight: 700;
@@ -39,14 +45,81 @@
       margin-bottom: 6px;
     }
     
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Mantém a frase e o autor centralizados horizontalmente */
+      text-align: center; /* Centraliza o texto das frases */
+      width: 100%;
+      min-height: 72px; /* Reduzido de acordo com as novas dimensões de fonte */
+      justify-content: flex-start;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      opacity: 1;
+      transform: translateY(0);
+      
+      &.fade-out {
+        opacity: 0;
+        transform: translateY(-2px); /* Efeito sutil de subida suave ao apagar */
+      }
+      
+      @media (min-width: 768px) {
+        min-height: 56px;
+      }
+    }
+    
     .title {
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 16px; /* Fonte menor e discreta */
+      font-weight: 500; /* Mais fina e elegante */
       color: var(--color-on-surface);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      margin: 0;
+      display: inline;
+      text-wrap: balance; /* Distribui e equilibra o texto perfeitamente pelas linhas sem deixar buracos vazios na direita */
+      
+      &.initial-title {
+        font-size: clamp(15px, 4.5vw, 19px); /* Garante que a frase inicial caiba em uma linha e não fique gigante */
+        font-weight: 600; /* Leve destaque para o título inicial */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+        text-wrap: nowrap; /* Impede quebras na frase inicial */
+      }
+      
+      .cursor {
+        display: inline-block;
+        margin-left: 2px;
+        color: var(--color-primary);
+        font-weight: 200; /* Cursor bem fino acompanhando a fonte */
+        
+        &.blink {
+          animation: cursorBlink 0.8s steps(2, start) infinite;
+        }
+      }
+    }
+    
+    .quote-author {
+      font-size: 11px; /* Autor mais delicado */
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-top: 4px;
+      margin-bottom: 0;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      letter-spacing: 0.02em;
+      
+      &.show {
+        opacity: 0.85;
+        transform: translateY(0);
+      }
     }
   }
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* Promo Banner */

@@ -3,7 +3,14 @@
   <header class="home-header fade-in-up">
     <div class="greeting">
       <p class="subtitle">Olá, paciente!</p>
-      <h1 class="title">Qual a sua prescrição de hoje?</h1>
+      <div class="title-container" [class.fade-out]="isFadingOut()">
+        <h1 class="title" [class.initial-title]="isInitialPhrase()">
+          {{ displayText() }}<span class="cursor" [class.blink]="isCursorBlinking()">|</span>
+        </h1>
+        <p class="quote-author" [class.show]="showAuthor()">
+          — {{ displayAuthor() }}
+        </p>
+      </div>
     </div>
   </header>
 
